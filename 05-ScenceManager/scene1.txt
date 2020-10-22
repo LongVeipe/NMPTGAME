@@ -4,6 +4,10 @@
 20	textures\misc.png	176	224	248
 10	textures\enemies.png	3	26	110
 
+#id	tileSet_path	MapInfo_path
+[MAP]
+1	map\map1\1-1_bank.png	map\map1\1-1_TileSet.txt
+
 # id	left	top	right	bottom	texture_id
 [SPRITES]
 # BIG MARIO 

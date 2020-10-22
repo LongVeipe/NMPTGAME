@@ -1,9 +1,12 @@
+#include <fstream>
+#include <iostream>
 #include "Map.h"
 
-Map::Map(LPDIRECT3DTEXTURE9 texture, int _tileWidth, int _tileHeight, int _totalColsOfTileSet, int _totalRowsOfTileSet, int _totalColsOfMap, int _totalRowsOfMap, int _totalTiles)
+
+Map::Map(LPDIRECT3DTEXTURE9 texture)
 {
 	this->TileSet = texture;
-	this->TotalColsOfMap = _totalColsOfMap;
+	/*this->TotalColsOfMap = _totalColsOfMap;
 	this->TotalColsOfTileSet = _totalColsOfTileSet;
 	this->TotalRowsOfMap = _totalRowsOfMap;
 	this->TotalRowsOfTileSet = _totalRowsOfTileSet;
@@ -14,7 +17,7 @@ Map::Map(LPDIRECT3DTEXTURE9 texture, int _tileWidth, int _tileHeight, int _total
 	for (int i = 0; i < TotalRowsOfMap; i++)
 	{
 		Matrix[i] = new int[TotalColsOfMap];
-	}
+	}*/
 }
 Map::~Map()
 {
@@ -41,6 +44,28 @@ void Map::CreateTilesFromTileSet()
 		LPSPRITE Tile = new CSprite(i, left, top, right, bottom, TileSet);
 		this->Tiles.push_back(Tile);
 	}
+}
+
+void Map::Load(LPCWSTR path)
+{
+	ifstream f;
+
+	f.open(path);
+	//load map innfo
+	f >> TileWidth >> TileHeight>> TotalRowsOfTileSet >> TotalColsOfTileSet >> TotalRowsOfMap >> TotalColsOfMap >> TotalTiles;
+	//Init Matrix
+
+	this->Matrix = new int* [TotalRowsOfMap];
+	for (int i = 0; i < TotalRowsOfMap; i++)
+	{
+		Matrix[i] = new int[TotalColsOfMap];
+		for (int j = 0; j < TotalColsOfMap; j++)
+		{
+			f >> Matrix[i][j];
+		}
+	}
+	f.close();
+
 }
 
 void Map::Render()
