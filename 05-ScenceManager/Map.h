@@ -17,10 +17,10 @@ private:
 
 
 public:
-	Map(LPDIRECT3DTEXTURE9 texture);
+	Map(int idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTileSet, int	_tRMap, int	_tCMap, int	_totalTiles);
 	~Map();
 	void CreateTilesFromTileSet();
-	void Load(LPCWSTR path);
+	void LoadMatrix(LPCWSTR path);
 	void Render();
 	void Draw(float x, float y);
 

@@ -56,12 +56,21 @@ void CPlayScene::_ParseSection_MAP(string line)
 {
 	vector<string> tokens = split(line);
 
-	if (tokens.size() < 3) return; // skip invalid lines
+	if (tokens.size() < 9) return; // skip invalid lines
 
-	int MapID = atoi(tokens[0].c_str());
-	wstring TileSet_Path = ToWSTR(tokens[1]);
-	wstring MatrixInfo_Path = ToWSTR(tokens[2]);
+	int idMap = atoi(tokens[0].c_str());
+	int tileWidth = atoi(tokens[1].c_str()); 
+	int tileHeight = atoi(tokens[2].c_str());
+	int tRTileSet = atoi(tokens[3].c_str());
+	int tCTileSet = atoi(tokens[4].c_str());
+	int tRMap = atoi(tokens[5].c_str());
+	int tCMap = atoi(tokens[6].c_str());
+	int totalTiles = atoi(tokens[7].c_str());
+	wstring MatrixPath = ToWSTR(tokens[8]);
 
+	this->map = new Map(idMap, tileWidth, tileHeight, tRTileSet, tCTileSet, tRMap, tCMap, totalTiles);
+	map->LoadMatrix(MatrixPath.c_str());
+	map->CreateTilesFromTileSet();
 }
 
 void CPlayScene::_ParseSection_SPRITES(string line)
@@ -268,6 +277,8 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
+	if (map)
+		this->map->Render();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }
@@ -279,9 +290,14 @@ void CPlayScene::Unload()
 {
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
-
+	
 	objects.clear();
 	player = NULL;
+
+	delete map;
+	map = nullptr;
+
+
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }

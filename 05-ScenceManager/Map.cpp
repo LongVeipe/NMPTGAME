@@ -1,23 +1,19 @@
 #include <fstream>
 #include <iostream>
 #include "Map.h"
+#include "Textures.h"
 
 
-Map::Map(LPDIRECT3DTEXTURE9 texture)
+Map::Map(int _idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTileSet, int	_tRMap, int	_tCMap, int	_totalTiles)
 {
-	this->TileSet = texture;
-	/*this->TotalColsOfMap = _totalColsOfMap;
-	this->TotalColsOfTileSet = _totalColsOfTileSet;
-	this->TotalRowsOfMap = _totalRowsOfMap;
-	this->TotalRowsOfTileSet = _totalRowsOfTileSet;
+	this->TileSet = CTextures::GetInstance()->Get(_idMap);
+	this->TotalColsOfMap = _tCMap;
+	this->TotalColsOfTileSet = _tCTileSet;
+	this->TotalRowsOfMap = _tRMap;
+	this->TotalRowsOfTileSet = _tRTileSet;
 	this->TileHeight = _tileHeight;
 	this->TileWidth = _tileWidth;
 	this->TotalTiles = _totalTiles;
-	this->Matrix = new int* [TotalRowsOfMap];
-	for (int i = 0; i < TotalRowsOfMap; i++)
-	{
-		Matrix[i] = new int[TotalColsOfMap];
-	}*/
 }
 Map::~Map()
 {
@@ -46,13 +42,11 @@ void Map::CreateTilesFromTileSet()
 	}
 }
 
-void Map::Load(LPCWSTR path)
+void Map::LoadMatrix(LPCWSTR path)
 {
 	ifstream f;
 
 	f.open(path);
-	//load map innfo
-	f >> TileWidth >> TileHeight>> TotalRowsOfTileSet >> TotalColsOfTileSet >> TotalRowsOfMap >> TotalColsOfMap >> TotalTiles;
 	//Init Matrix
 
 	this->Matrix = new int* [TotalRowsOfMap];
@@ -61,7 +55,7 @@ void Map::Load(LPCWSTR path)
 		Matrix[i] = new int[TotalColsOfMap];
 		for (int j = 0; j < TotalColsOfMap; j++)
 		{
-			f >> Matrix[i][j];
+   			f >> Matrix[i][j];
 		}
 	}
 	f.close();
@@ -70,9 +64,9 @@ void Map::Load(LPCWSTR path)
 
 void Map::Render()
 {
-	for(int r = 0; r<this->TotalRowsOfMap; r++)
-		for (int c = 0; c < this->TotalColsOfMap; c++)
+	for(int r = 0; r<TotalRowsOfMap; r++)
+		for (int c = 0; c < TotalColsOfMap; c++)
 		{
-			Tiles[Matrix[r][c] - 1]->Draw(r * TileWidth, c * TileHeight, 255);
+			Tiles[Matrix[r][c] - 1]->Draw(c * TileWidth,r * TileHeight, 255);
 		}
 }
