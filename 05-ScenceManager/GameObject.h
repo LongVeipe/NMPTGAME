@@ -94,6 +94,6 @@ public:
 	virtual void SetState(int state) { this->state = state; }
 
 
-	~CGameObject();
+	virtual ~CGameObject();
 };
 

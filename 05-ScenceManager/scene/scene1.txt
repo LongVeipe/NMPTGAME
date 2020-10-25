@@ -116,7 +116,7 @@
 
 # BRICK 
 # --- platform (hint: I created the list using Excel!) ----
-1	0	150	2
+1	0	32	2
 1	16	150	2
 1	32	150	2
 1	48	150	2

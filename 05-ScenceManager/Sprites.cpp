@@ -53,5 +53,11 @@ void CSprites::Clear()
 	sprites.clear();
 }
 
+CSprite::~CSprite()
+{
+	/*delete this->texture;
+	this->texture = nullptr;*/
+}
+
 
 

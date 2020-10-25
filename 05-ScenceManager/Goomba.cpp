@@ -18,12 +18,12 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	
 	CGameObject::Update(dt, coObjects);
 
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
-
 	x += dx;
 	y += dy;
 
@@ -61,4 +61,9 @@ void CGoomba::SetState(int state)
 		case GOOMBA_STATE_WALKING: 
 			vx = -GOOMBA_WALKING_SPEED;
 	}
+}
+
+CGoomba::~CGoomba()
+{
+
 }

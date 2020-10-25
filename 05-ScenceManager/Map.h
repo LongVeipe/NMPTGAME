@@ -12,12 +12,14 @@ private:
 	int TotalColsOfMap, TotalRowsOfMap;
 	int TotalTiles;
 	int TileWidth, TileHeight;
+	int MapWidth, MapHeight;
 	LPDIRECT3DTEXTURE9 TileSet;
 	vector<LPSPRITE> Tiles;
 
 
 public:
-	Map(int idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTileSet, int	_tRMap, int	_tCMap, int	_totalTiles);
+	Map(int idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTileSet, int	_tRMap, int	_tCMap
+		, int	_totalTiles);
 	~Map();
 	void CreateTilesFromTileSet();
 	void LoadMatrix(LPCWSTR path);
@@ -28,4 +30,6 @@ public:
 	int GetTotalRowsOfMap() { return this->TotalRowsOfMap; }
 	int GetTileWidth() { return this->TileWidth; }
 	int GetTileHeight() { return this->TileHeight; }
+	int GetMapHeight() { return this->MapHeight; }
+	int GetMapWidth() { return this->MapWidth; }
 };

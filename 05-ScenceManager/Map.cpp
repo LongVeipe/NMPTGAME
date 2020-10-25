@@ -14,6 +14,7 @@ Map::Map(int _idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTil
 	this->TileHeight = _tileHeight;
 	this->TileWidth = _tileWidth;
 	this->TotalTiles = _totalTiles;
+	this->MapHeight = this->MapWidth = 0;
 }
 Map::~Map()
 {
@@ -59,7 +60,8 @@ void Map::LoadMatrix(LPCWSTR path)
 		}
 	}
 	f.close();
-
+	this->MapHeight = TileHeight * TotalRowsOfMap;
+	this->MapWidth = TileWidth * TotalColsOfMap;
 }
 
 void Map::Render()

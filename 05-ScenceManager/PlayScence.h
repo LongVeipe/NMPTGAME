@@ -35,7 +35,6 @@ public:
 	virtual void Unload();
 
 	CMario * GetPlayer() { return player; } 
-
 	//friend class CPlayScenceKeyHandler;
 };
 

@@ -47,8 +47,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
-		x += dx; 
-		y += dy;
+		if (x + dx < 0)
+			x = 0;
+		else
+			x += dx; 
+
+
+		if (y + dy < -30)
+			y = -30;
+		else
+			y += dy;
 	}
 	else
 	{
