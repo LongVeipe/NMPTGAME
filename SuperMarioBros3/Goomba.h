@@ -13,6 +13,8 @@
 #define GOOMBA_ANI_WALKING 0
 #define GOOMBA_ANI_DIE 1
 
+#define GOOMBA_TIME_TO_STOP_RENDERING 200
+
 class CGoomba : public CGameObject
 {
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
@@ -23,4 +25,7 @@ public:
 	CGoomba();
 	virtual void SetState(int state);
 	virtual ~CGoomba();
+	void SetDeadTime();
+private:
+	DWORD DeadTime;
 };

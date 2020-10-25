@@ -76,7 +76,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		y += min_ty*dy + ny*0.4f;
 
 		if (nx!=0) vx = 0;
-		if (ny!=0) vy = 0;
+		if (ny != 0)
+		{
+			vy = 0;
+			if (ny == -1)
+				this->ny = 0;
+		}
 
 
 		//
@@ -96,7 +101,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					if (goomba->GetState()!= GOOMBA_STATE_DIE)
 					{
 						goomba->SetState(GOOMBA_STATE_DIE);
+						goomba->SetDeadTime();
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
+						ny = -1;
 					}
 				}
 				else if (e->nx != 0)
@@ -182,6 +189,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_JUMP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
 		vy = -MARIO_JUMP_SPEED_Y;
+		ny = -1;
 		break; 
 	case MARIO_STATE_IDLE: 
 		vx = 0;

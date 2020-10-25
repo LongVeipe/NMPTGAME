@@ -3,11 +3,11 @@
 0	textures\mario.png	255	255	255
 20	textures\misc.png	176	224	248
 10	textures\enemies.png	3	26	110
-11	map\map1\1-1_bank.png	255	255	255
+30	map\map1\1-1_bank.png	255	255	255
 
 #ID	TileWidth	TileHeight	TRTileSet	TCTileSet	TRMap	TCMap	TotalTiles	Matrix_Path
 [MAP]
-11	16	16	10	11	27	176	102	map\map1\1-1.txt
+30	16	16	10	11	27	176	102	map\map1\1-1.txt
 
 # id	left	top	right	bottom	texture_id
 [SPRITES]

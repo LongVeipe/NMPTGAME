@@ -2,18 +2,24 @@
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
+	DeadTime = 0;
 }
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	left = x;
-	top = y;
-	right = x + GOOMBA_BBOX_WIDTH;
+	if (this->state == GOOMBA_STATE_DIE)
+			left = top = right = bottom = 0;
+	else
+	{
+		left = x;
+		top = y;
+		right = x + GOOMBA_BBOX_WIDTH;
 
-	if (state == GOOMBA_STATE_DIE)
-		bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
-	else 	
-		bottom = y + GOOMBA_BBOX_HEIGHT;
+		if (state == GOOMBA_STATE_DIE)
+			bottom = y + GOOMBA_BBOX_HEIGHT_DIE;
+		else
+			bottom = y + GOOMBA_BBOX_HEIGHT;
+	}
 }
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -38,12 +44,19 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CGoomba::Render()
 {
+	if (this->state == GOOMBA_STATE_DIE)
+	{
+		if (DeadTime != 0 && (GetTickCount() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
+			return;
+	}
 	int ani = GOOMBA_ANI_WALKING;
-	if (state == GOOMBA_STATE_DIE) {
+	if (state == GOOMBA_STATE_DIE)
+	{
 		ani = GOOMBA_ANI_DIE;
 	}
 
-	animation_set->at(ani)->Render(x,y);
+	animation_set->at(ani)->Render(x, y);
+
 
 	//RenderBoundingBox();
 }
@@ -61,6 +74,11 @@ void CGoomba::SetState(int state)
 		case GOOMBA_STATE_WALKING: 
 			vx = -GOOMBA_WALKING_SPEED;
 	}
+}
+
+void CGoomba::SetDeadTime()
+{
+	this->DeadTime = GetTickCount();
 }
 
 CGoomba::~CGoomba()
