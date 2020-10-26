@@ -31,6 +31,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPAS	3
+#define OBJECT_TYPE_BLOCK	4
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -177,6 +178,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
 	case OBJECT_TYPE_BRICK: obj = new CBrick(); break;
 	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
+	case OBJECT_TYPE_BLOCK: obj = new CBlock(); break;
 	case OBJECT_TYPE_PORTAL:
 		{	
 			float r = atof(tokens[4].c_str());
@@ -284,7 +286,7 @@ void CPlayScene::Update(DWORD dt)
 	else
 		cy -= game->GetScreenHeight() / 2;
 
-	CGame::GetInstance()->SetCamPos(cx, cy);
+	CGame::GetInstance()->SetCamPos(round(cx), round(cy));
 }
 
 void CPlayScene::Render()
@@ -292,7 +294,15 @@ void CPlayScene::Render()
 	if (map)
 		this->map->Render();
 	for (int i = 0; i < objects.size(); i++)
-		objects[i]->Render();
+	{
+		if(dynamic_cast<CBlock*>(objects[i]))
+			objects[i]->Render();
+	}
+	for (int i = 0; i < objects.size(); i++)
+	{
+		if (!dynamic_cast<CBlock*>(objects[i]))
+			objects[i]->Render();
+	}
 }
 
 /*
@@ -322,7 +332,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-   		if(mario->ny == 0)
+   		//if(mario->ny == 0)
 			mario->SetState(MARIO_STATE_JUMP);
 		break;
 	case DIK_A: 
