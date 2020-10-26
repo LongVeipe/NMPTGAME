@@ -45,7 +45,7 @@ void Map::CreateTilesFromTileSet()
 
 void Map::LoadMatrix(LPCWSTR path)
 {
-	ifstream f;
+  	ifstream f;
 
 	f.open(path);
 	//Init Matrix
