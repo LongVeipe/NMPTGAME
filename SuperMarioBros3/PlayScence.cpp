@@ -299,14 +299,9 @@ void CPlayScene::Render()
 		this->map->Render();
 	for (int i = 0; i < objects.size(); i++)
 	{
-		if(dynamic_cast<CBlock*>(objects[i]))
-			objects[i]->Render();
+		objects[i]->Render();
 	}
-	for (int i = 0; i < objects.size(); i++)
-	{
-		if (!dynamic_cast<CBlock*>(objects[i]))
-			objects[i]->Render();
-	}
+	
 }
 
 /*
