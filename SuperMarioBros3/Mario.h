@@ -58,4 +58,5 @@ public:
 	void Reset();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0);
 };

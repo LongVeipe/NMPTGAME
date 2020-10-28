@@ -7,7 +7,7 @@
 
 #include "Goomba.h"
 #include "Portal.h"
-#include "Block.h"
+#include "Brick.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -77,42 +77,35 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		//
 		// Collision logic with other objects
 		//
+		float x0 = x, y0 = y;
 
+		
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (dynamic_cast<CBlock*>(e->obj))
+			if (dynamic_cast<CBrick*>(e->obj))
 			{
-				if (e->ny < 0)
+				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+				if (brick->GetDetailType() == BRICK_TYPE_NORMAL)
 				{
-					vy = 0;
-					if (ny == -1)
-						this->ny = 0;
+					BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
 				}
-				else
+				else if(brick->GetDetailType() == BRICK_TYPE_BIG_BLOCK)
 				{
-					x += dx;
-					y += dy;
-					ny = 0;
+					if (e->ny == -1)
+					{
+						BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
+					}
+					else
+					{
+						x = x0 + dx;
+						y = y0 + dy;
+					}
 				}
 			}
-		}
-		
-		x += min_tx * dx + nx * 0.4f;
-		y += min_ty * dy + ny * 0.4f;
-
-		if (nx != 0) vx = 0;
-		if (ny != 0)
-		{
-			vy = 0;
-			if (ny == -1)
-				this->ny = 0;
-		}
-		for (UINT i = 0; i < coEventsResult.size(); i++)
-		{
-			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
+				BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
 				// jump on top >> kill Goomba and deflect a bit 
@@ -145,6 +138,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			} // if Goomba
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
+				BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
 				CPortal* p = dynamic_cast<CPortal*>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
 			}
@@ -155,6 +149,20 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+}
+
+void CMario::BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0)
+{
+	this->x = x0 + min_tx * this->dx + nx * 0.4f;
+	this->y = y0 + min_ty * this->dy + ny * 0.4f;
+
+	if (nx != 0) this->vx = 0;
+	if (ny != 0)
+	{
+		this->vy = 0;
+		if (ny == -1)
+			this->ny = 0;
+	}
 }
 
 void CMario::Render()
