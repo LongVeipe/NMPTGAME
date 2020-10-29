@@ -88,11 +88,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
 				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
-				if (brick->GetDetailType() == BRICK_TYPE_NORMAL)
+				switch (brick->GetDetailType())
 				{
+				case BRICK_TYPE_NORMAL:
 					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
-				}
-				else if(brick->GetDetailType() == BRICK_TYPE_BIG_BLOCK)
+					break;
+				case BRICK_TYPE_BIG_BLOCK:
 				{
 					if (e->ny == -1)
 					{
@@ -103,7 +104,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						x = x0 + dx;
 						y = y0 + dy;
 					}
+					break;
 				}
+				case BRICK_TYPE_QUESTION:
+					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+					if (brick->GetState() == BRICK_STATE_QUESTION_INTACT && e->ny == 1)
+						brick->SetState(BRICK_STATE_QUESTION_EMPTY);
+					break;
+				}
+				
 			}
 			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
@@ -180,8 +189,7 @@ void CMario::Render()
 	int ani = -1;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
-	else
-	if (level == MARIO_LEVEL_BIG)
+	else if(level == MARIO_LEVEL_BIG)
 	{
 		if (vx == 0)
 		{
