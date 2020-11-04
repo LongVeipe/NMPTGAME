@@ -61,7 +61,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-		float min_tx, min_ty, nx = 0, ny;
+ 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0; 
 		float rdy = 0;
 
@@ -88,16 +88,16 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
 				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
-				switch (brick->GetDetailType())
+				switch (brick->GetType())
 				{
 				case BRICK_TYPE_NORMAL:
-					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+					BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
 					break;
 				case BRICK_TYPE_BIG_BLOCK:
 				{
 					if (e->ny == -1)
 					{
-						BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+						BasicCollision(min_tx, min_ty, nx,ny, x0, y0);
 					}
 					else
 					{
@@ -107,9 +107,19 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					break;
 				}
 				case BRICK_TYPE_QUESTION:
-					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
-					if (brick->GetState() == BRICK_STATE_QUESTION_INTACT && e->ny == 1)
-						brick->SetState(BRICK_STATE_QUESTION_EMPTY);
+					
+					BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
+					if (brick->GetDetailType() == BRICK_DETAIL_TYPE_QUESTION_INTACT && e->ny == 1 )
+					{
+						//this->ny = 1;
+						if (dynamic_cast<CCoin*>(brick->GetReward()))
+						{
+							CCoin* coin = (CCoin*)brick->GetReward();
+							coin->SetState(COIN_STATE_SHOW_JUMP);
+						}
+						brick->SetDetailType(BRICK_DETAIL_TYPE_QUESTION_EMPTY);
+						brick->SetState(BRICK_STATE_JUMP);
+					}
 					break;
 				}
 				
@@ -149,7 +159,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			} // if Goomba
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
-				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+				BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
 				if (e->ny == -1 && this->state == MARIO_STATE_BEND_DOWN)
 				{
 					CPortal* p = dynamic_cast<CPortal*>(e->obj);
@@ -167,9 +177,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CMario::BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0)
 {
-	
-	
-
 	if (nx != 0)
 	{
 		this->vx = 0;
@@ -250,18 +257,18 @@ void CMario::SetState(int state)
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	left = x;
+	left = x-1;
 	top = y; 
 
 	if (level==MARIO_LEVEL_BIG)
 	{
-		right = x + MARIO_BIG_BBOX_WIDTH;
-		bottom = y + MARIO_BIG_BBOX_HEIGHT;
+		right = left + MARIO_BIG_BBOX_WIDTH;
+		bottom = top + MARIO_BIG_BBOX_HEIGHT;
 	}
 	else
 	{
-		right = x + MARIO_SMALL_BBOX_WIDTH;
-		bottom = y + MARIO_SMALL_BBOX_HEIGHT;
+		right = left + MARIO_SMALL_BBOX_WIDTH ;
+		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "Textures.h"
 #include "Sprites.h"
 #include "Portal.h"
+#include "Coin.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPAS	3
-#define OBJECT_TYPE_BLOCK	4
+#define OBJECT_TYPE_COIN	5
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -178,11 +179,39 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
 	case OBJECT_TYPE_BRICK:
 	{
-		int detailType = atoi(tokens[4].c_str());
-		obj = new CBrick(detailType);
+		int Type = atoi(tokens[4].c_str());
+		obj = new CBrick(x, y, Type);
+		//CBrick* brick = dynamic_cast<CBrick*>(obj);
+		CBrick* brick = (CBrick*)obj;
+
+		//Create Reward
+		int TypeReward = atoi(tokens[5].c_str());
+		CGameObject* rew = NULL;
+		switch (TypeReward)
+		{
+		case TYPE_REWARD_COIN:
+			rew = new CCoin(x, y -24, COIN_STATE_HIDDEN);
+			LPANIMATION_SET coin_ani_set = animation_sets->Get(1000);
+			rew->SetAnimationSet(coin_ani_set);
+			objects.push_back(rew);
+			brick->SetReward(rew);
+			
+			break;
+		/*case TYPE_REWARD_SUPER_LEAF:
+			break;
+		case TYPE_REWARD_SUPER_MUSHROOM:
+			break;*/
+		}
+		
 		break;
 	}
 	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
+	case OBJECT_TYPE_COIN: 
+	{
+		int State = atoi(tokens[4].c_str());
+		obj = new CCoin(x, y, State);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -270,12 +299,11 @@ void CPlayScene::Update(DWORD dt)
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 
+
 	// Update camera to follow mario
 	float cx, cy;
 	player->GetPosition(cx, cy);
-
 	CGame *game = CGame::GetInstance();
-
 	if (map != nullptr && (cx > map->GetMapWidth() - game->GetScreenWidth() / 2))
 		cx = map->GetMapWidth() - game->GetScreenWidth();
 	else if (cx < game->GetScreenWidth() / 2)
