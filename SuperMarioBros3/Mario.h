@@ -4,6 +4,7 @@
 #define MARIO_WALKING_SPEED		0.15f 
 //0.1f
 #define MARIO_JUMP_SPEED_Y		0.5f
+#define MARIO_HIGH_JUMP_SPEED_Y		0.1f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define MARIO_GRAVITY			0.002f
 #define MARIO_DIE_DEFLECT_SPEED	 0.5f
@@ -14,6 +15,7 @@
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_DIE				400
 #define MARIO_STATE_BEND_DOWN		500
+#define MARIO_STATE_HIGH_JUMP		600
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
 #define MARIO_ANI_BIG_IDLE_LEFT			1
@@ -55,6 +57,7 @@ public:
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+
 
 	void Reset();
 

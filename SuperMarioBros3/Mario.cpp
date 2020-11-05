@@ -27,6 +27,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt);
 
 	// Simple fall down
+
 	vy += MARIO_GRAVITY*dt;
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -124,7 +125,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				
 			}
-			if (dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
+			else if(dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
 				BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
@@ -157,6 +158,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 				}
 			} // if Goomba
+			else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
+			{
+				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
+				coin->SetState(COIN_STATE_HIDDEN);
+			}
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
 				BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
@@ -187,7 +193,10 @@ void CMario::BasicCollision(float min_tx, float min_ty, float nx, float ny, floa
 		this->vy = 0;
 		this->y = y0 + min_ty * this->dy + ny * 0.1f;
 		if (ny == -1)
+		{
 			this->ny = 0;
+			this->SetState(MARIO_STATE_IDLE);
+		}
 	}
 }
 
@@ -246,6 +255,10 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_SPEED_Y;
 		ny = -1;
 		break; 
+	/*case MARIO_STATE_HIGH_JUMP:
+		vy -= MARIO_HIGH_JUMP_SPEED_Y;
+		ny = -1;
+		break;*/
 	case MARIO_STATE_IDLE: 
 		vx = 0;
 		break;

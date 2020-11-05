@@ -1,4 +1,5 @@
 #include "Goomba.h"
+#include "Brick.h"
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -30,16 +31,54 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
-	x += dx;
-	y += dy;
+	vy += dt*GOOMBA_GRAVITY;
+	vector<LPCOLLISIONEVENT> coEvents;
+	vector<LPCOLLISIONEVENT> coEventsResult;
 
-	if (vx < 0 && x < 0) {
-		x = 0; vx = -vx;
+	coEvents.clear();
+	CalcPotentialCollisions(coObjects, coEvents);
+	if (coEvents.size() == 0)
+	{
+			x += dx;
+			y += dy;
+	}
+	else
+	{
+		float min_tx, min_ty, nx = 0, ny;
+		float rdx = 0;
+		float rdy = 0;
+
+		// TODO: This is a very ugly designed function!!!!
+		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		float x0 = x, y0 = y;
+		x = x0 + dx;
+		y = y0 + dy;
+
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
+			if (dynamic_cast<CBrick*>(e->obj))
+			{
+				if (nx != 0)
+				{
+					this->x = x0 + min_tx * this->dx + nx * 0.1f;
+					this->vx = -vx;
+				}
+				if (ny != 0)
+				{
+					this->vy = 0;
+					this->y = y0 + min_ty * this->dy + ny * 0.1f;
+					
+				}
+			}
+
+		}
+
 	}
 
-	if (vx > 0 && x > 290) {
-		x = 290; vx = -vx;
-	}
+	// clean up collision events
+	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
 void CGoomba::Render()

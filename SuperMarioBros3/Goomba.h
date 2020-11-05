@@ -13,6 +13,9 @@
 #define GOOMBA_ANI_WALKING 0
 #define GOOMBA_ANI_DIE 1
 
+#define GOOMBA_GRAVITY 0.2f;
+
+
 #define GOOMBA_TIME_TO_STOP_RENDERING 200
 
 class CGoomba : public CGameObject
