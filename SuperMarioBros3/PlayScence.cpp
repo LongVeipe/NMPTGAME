@@ -369,8 +369,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		//if (mario->ny == 0)
+		if (mario->IsTouchingGround == true)
+		{
+			mario->SetJumpNum(0);
+			mario->IsReadyJump = true;
 			mario->SetState(MARIO_STATE_JUMP);
+			mario->UpJumNum();
+			mario->IsTouchingGround = false;
+		}
 		break;
 	case DIK_A: 
 		mario->Reset();
@@ -387,6 +393,12 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	{
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_IDLE);
+		break;
+	case DIK_SPACE:
+		mario->SetJumpNum(MAXRIO_MAX_JUMPIMG_STACKS);
+		mario->IsReadyJump = false;
+		break;
+		
 	}
 }
 
@@ -396,15 +408,24 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 
 	// disable control key when Mario die 
+	
 	if (mario->GetState() == MARIO_STATE_DIE) return;
+	
 	if (game->IsKeyDown(DIK_RIGHT))
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 	else if (game->IsKeyDown(DIK_LEFT))
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
 	else if(game->IsKeyDown(DIK_SPACE))
 	{ 
-		//if (mario->state != MARIO_STATE_HIGH_JUMP)
-			//mario->SetState(MARIO_STATE_HIGH_JUMP);
+		/*if ((mario->IsTouchingGround == true) || (mario->IsFalling == false && mario->IsTouchingGround == false))
+			mario->SetState(MARIO_STATE_HIGH_JUMP);*/
+		if (mario->IsReadyJump == true && mario->GetJumNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+		{
+
+			mario->SetState(MARIO_STATE_JUMP);
+			mario->UpJumNum();
+		}
+
 	}
 		
 	else

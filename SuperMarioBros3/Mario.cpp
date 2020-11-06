@@ -19,8 +19,11 @@ CMario::CMario(float x, float y) : CGameObject()
 	start_x = x; 
 	start_y = y; 
 	this->x = x; 
-	this->y = y; 
+	this->y = y;
+	IsReadyJump = true;
+	IsTouchingGround = true;
 }
+
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -30,6 +33,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// Simple fall down
 
 	vy += MARIO_GRAVITY*dt;
+	
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -90,16 +94,17 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
 				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+				//if (e->ny == -1)
 				switch (brick->GetType())
 				{
 				case BRICK_TYPE_NORMAL:
-					BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
+					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					break;
 				case BRICK_TYPE_BIG_BLOCK:
 				{
 					if (e->ny == -1)
 					{
-						BasicCollision(min_tx, min_ty, nx,ny, x0, y0);
+						BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					}
 					else
 					{
@@ -110,7 +115,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				case BRICK_TYPE_QUESTION:
 					
-					BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
+					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					if (brick->GetDetailType() == BRICK_DETAIL_TYPE_QUESTION_INTACT  )
 					{
 						if (e->ny == 1)
@@ -143,12 +148,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if(dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
-				BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
+				
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
+					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
 						goomba->SetState(GOOMBA_STATE_DIE);
@@ -181,11 +187,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
-				BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
-				if (e->ny == -1 && this->state == MARIO_STATE_BEND_DOWN)
+				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+
+				if (e->ny == -1)
 				{
-					CPortal* p = dynamic_cast<CPortal*>(e->obj);
-					CGame::GetInstance()->SwitchScene(p->GetSceneId());
+					if (this->state == MARIO_STATE_BEND_DOWN)
+					{
+						CPortal* p = dynamic_cast<CPortal*>(e->obj);
+						CGame::GetInstance()->SwitchScene(p->GetSceneId());
+					}
 				}
 			}
 
@@ -194,7 +204,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 
 	// clean up collision events
-	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	for (UINT i = 0; i < coEvents.size(); i++) 
+		delete coEvents[i];
 }
 
 void CMario::BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0)
@@ -211,7 +222,12 @@ void CMario::BasicCollision(float min_tx, float min_ty, float nx, float ny, floa
 		if (ny == -1)
 		{
 			this->ny = 0;
+			IsTouchingGround = true;
 			this->SetState(MARIO_STATE_IDLE);
+		}
+		else if (ny == 1)
+		{
+			IsReadyJump = false;
 		}
 	}
 }
@@ -268,13 +284,9 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-		vy = -MARIO_JUMP_SPEED_Y;
-		ny = -1;
+			vy = -MARIO_JUMP_SPEED_Y;
+			ny = -1;
 		break; 
-	/*case MARIO_STATE_HIGH_JUMP:
-		vy -= MARIO_HIGH_JUMP_SPEED_Y;
-		ny = -1;
-		break;*/
 	case MARIO_STATE_IDLE: 
 		vx = 0;
 		break;

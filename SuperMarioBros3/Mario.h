@@ -3,8 +3,7 @@
 
 #define MARIO_WALKING_SPEED		0.15f 
 //0.1f
-#define MARIO_JUMP_SPEED_Y		0.5f
-#define MARIO_HIGH_JUMP_SPEED_Y		0.1f
+#define MARIO_JUMP_SPEED_Y		0.2f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define MARIO_GRAVITY			0.002f
 #define MARIO_DIE_DEFLECT_SPEED	 0.5f
@@ -15,7 +14,6 @@
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_DIE				400
 #define MARIO_STATE_BEND_DOWN		500
-#define MARIO_STATE_HIGH_JUMP		600
 
 #define MARIO_ANI_BIG_IDLE_RIGHT		0
 #define MARIO_ANI_BIG_IDLE_LEFT			1
@@ -39,7 +37,7 @@
 #define MARIO_SMALL_BBOX_HEIGHT 16
 
 #define MARIO_UNTOUCHABLE_TIME 5000
-
+#define MAXRIO_MAX_JUMPIMG_STACKS 19
 
 class CMario : public CGameObject
 {
@@ -49,7 +47,10 @@ class CMario : public CGameObject
 
 	float start_x;			// initial position of Mario at scene
 	float start_y; 
+	int jumpNum;
 public: 
+	bool IsReadyJump;
+	bool IsTouchingGround;
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
@@ -57,10 +58,16 @@ public:
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	void SetJumpNum(int _num) { jumpNum = _num; }
 
 
 	void Reset();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	int GetJumNum() { return jumpNum; }
+	void UpJumNum() { jumpNum += 1; }
 	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0);
+
+	
+	
 };
