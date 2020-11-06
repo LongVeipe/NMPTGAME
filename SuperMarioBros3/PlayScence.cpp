@@ -7,6 +7,7 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
+#include "SuperLeaf.h"
 
 using namespace std;
 
@@ -186,21 +187,30 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		//Create Reward
 		int TypeReward = atoi(tokens[5].c_str());
-		CGameObject* rew = NULL;
+		CGameObject* rew = nullptr;
 		switch (TypeReward)
 		{
 		case TYPE_REWARD_COIN:
-			rew = new CCoin(x, y -24, COIN_STATE_HIDDEN);
+		{
+			rew = new CCoin(x, y - 24, COIN_STATE_HIDDEN);
 			LPANIMATION_SET coin_ani_set = animation_sets->Get(1000);
 			rew->SetAnimationSet(coin_ani_set);
 			objects.push_back(rew);
 			brick->SetReward(rew);
-			
 			break;
-		/*case TYPE_REWARD_SUPER_LEAF:
+		
+		}
+
+		case TYPE_REWARD_SUPER_LEAF:
+		{
+			rew = new CSuperLeaf(x, y, SUPER_LEAF_STATE_HIDDEN);
+			LPANIMATION_SET leaf_ani_set = animation_sets->Get(SUPER_LEAF_ANI_SET);
+			rew->SetAnimationSet(leaf_ani_set);
+			objects.push_back(rew);
+			brick->SetReward(rew);
 			break;
-		case TYPE_REWARD_SUPER_MUSHROOM:
-			break;*/
+		}
+		
 		}
 		
 		break;

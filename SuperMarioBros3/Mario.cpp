@@ -8,6 +8,7 @@
 #include "Goomba.h"
 #include "Portal.h"
 #include "Brick.h"
+#include "SuperLeaf.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -110,17 +111,32 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				case BRICK_TYPE_QUESTION:
 					
 					BasicCollision(min_tx, min_ty, nx, ny, x0, y0);
-					if (brick->GetDetailType() == BRICK_DETAIL_TYPE_QUESTION_INTACT && e->ny == 1 )
+					if (brick->GetDetailType() == BRICK_DETAIL_TYPE_QUESTION_INTACT  )
 					{
-						//this->ny = 1;
-						if (dynamic_cast<CCoin*>(brick->GetReward()))
+						if (e->ny == 1)
+							//this->ny = 1;
 						{
-							CCoin* coin = (CCoin*)brick->GetReward();
-							coin->SetState(COIN_STATE_SHOW_JUMP);
+							if (dynamic_cast<CCoin*>(brick->GetReward()))
+							{
+								CCoin* coin = (CCoin*)brick->GetReward();
+								coin->SetState(COIN_STATE_SHOW_JUMP);
+							}
+							else if (dynamic_cast<CSuperLeaf*>(brick->GetReward()))
+							{
+								CSuperLeaf* leaf = (CSuperLeaf*)brick->GetReward();
+								leaf->SetState(SUPER_LEAF_STATE_JUMP);
+								
+							}
+							brick->SetState(BRICK_STATE_JUMP);
+							brick->SetDetailType(BRICK_DETAIL_TYPE_QUESTION_EMPTY);
+							
 						}
-						brick->SetDetailType(BRICK_DETAIL_TYPE_QUESTION_EMPTY);
-						brick->SetState(BRICK_STATE_JUMP);
+						else if (e->nx == 1 || e->nx == -1)
+						{
+
+						}
 					}
+
 					break;
 				}
 				

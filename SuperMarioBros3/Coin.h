@@ -12,7 +12,6 @@
 #define COIN_STATE_SHOW_IDLE	1
 #define COIN_STATE_SHOW_JUMP	2
 
-#define COIN_ANI_HIDDEN	100
 #define COIN_ANI_SHOW	200
 
 

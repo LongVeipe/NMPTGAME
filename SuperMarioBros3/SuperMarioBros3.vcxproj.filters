@@ -47,7 +47,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Coin.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Reward</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperLeaf.cpp">
+      <Filter>Source Files\Reward</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +100,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Coin.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Reward</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperLeaf.h">
+      <Filter>Header Files\Reward</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +112,12 @@
     </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{ee4b2f66-a236-4ae8-9b19-d8c39dba8f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Reward">
+      <UniqueIdentifier>{a37a4d34-5558-46ec-928f-5a0b627d1baa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Reward">
+      <UniqueIdentifier>{847c4ee5-1fac-46ac-901c-6ce888fa2aac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
