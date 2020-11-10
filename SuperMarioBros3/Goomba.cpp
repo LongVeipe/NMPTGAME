@@ -1,5 +1,6 @@
 #include "Goomba.h"
 #include "Brick.h"
+#include "Mario.h"
 CGoomba::CGoomba()
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -58,7 +59,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			if (dynamic_cast<CBrick*>(e->obj)|| dynamic_cast<CBrick*>(e->obj))
+			if (dynamic_cast<CBrick*>(e->obj))
 			{
 				if (nx != 0)
 				{
@@ -70,6 +71,20 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					this->vy = 0;
 					this->y = y0 + min_ty * this->dy + ny * 0.1f;
 					
+				}
+			}
+			else if (dynamic_cast<CMario*>(e->obj))
+			{
+				if (nx != 0)
+				{
+					this->x = x0 + min_tx * this->dx + nx * 0.1f;
+					this->vx = -vx;
+				}
+				if (ny != 0)
+				{
+					this->vy = 0;
+					this->y = y0 + min_ty * this->dy + ny * 0.1f;
+
 				}
 			}
 

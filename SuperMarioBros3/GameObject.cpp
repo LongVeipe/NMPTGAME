@@ -14,12 +14,13 @@ CGameObject::CGameObject()
 	vx = vy = 0;
 	nx = 1;	
 	ny = 0;
+	ax = ay = 0;
 }
 
 void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	this->dt = dt;
-	dx = vx*dt;
+	dx = vx*dt +(ax*dt*dt)/2;
 	dy = vy*dt;
 }
 

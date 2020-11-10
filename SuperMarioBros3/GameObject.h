@@ -57,6 +57,8 @@ public:
 	int nx;
 	int ny;
 
+	float ax, ay;
+
 	int state;
 
 	DWORD dt; 

@@ -374,7 +374,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetJumpNum(0);
 			mario->IsReadyJump = true;
 			mario->SetState(MARIO_STATE_JUMP);
-			mario->UpJumNum();
+			mario->UpJumpNum();
 			mario->IsTouchingGround = false;
 		}
 		break;
@@ -383,6 +383,16 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_BEND_DOWN);
+		break;
+	case DIK_Z:
+		int newLevel = mario->GetLevel() + 1;
+		if (newLevel > MARIO_MAX_LEVEL)
+			newLevel = 1;
+		float cur_x, cur_y;
+		mario->GetPosition(cur_x, cur_y);
+		mario->SetPosition(cur_x, cur_y - 16);
+		mario->SetLevel(newLevel);
+		break;
 	}
 }
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
@@ -412,22 +422,51 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (mario->GetState() == MARIO_STATE_DIE) return;
 	
 	if (game->IsKeyDown(DIK_RIGHT))
+	{
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
-	else if (game->IsKeyDown(DIK_LEFT))
-		mario->SetState(MARIO_STATE_WALKING_LEFT);
-	else if(game->IsKeyDown(DIK_SPACE))
-	{ 
-		/*if ((mario->IsTouchingGround == true) || (mario->IsFalling == false && mario->IsTouchingGround == false))
-			mario->SetState(MARIO_STATE_HIGH_JUMP);*/
-		if (mario->IsReadyJump == true && mario->GetJumNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+		if (game->IsKeyDown(DIK_SPACE))
 		{
+			if (mario->IsReadyJump == true && mario->GetJumpNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+			{
 
-			mario->SetState(MARIO_STATE_JUMP);
-			mario->UpJumNum();
+				mario->SetState(MARIO_STATE_JUMP);
+				mario->UpJumpNum();
+			}
 		}
 
 	}
+	else if (game->IsKeyDown(DIK_LEFT))
+	{
+		mario->SetState(MARIO_STATE_WALKING_LEFT);
+		if (game->IsKeyDown(DIK_SPACE))
+		{
+			if (mario->IsReadyJump == true && mario->GetJumpNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+			{
+
+				mario->SetState(MARIO_STATE_JUMP);
+				mario->UpJumpNum();
+			}
+		}
+	}
+	else if(game->IsKeyDown(DIK_SPACE))
+	{ 
+		if (mario->IsReadyJump == true && mario->GetJumpNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+		{
+
+			mario->SetState(MARIO_STATE_JUMP);
+			mario->UpJumpNum();
+
+			if(game->IsKeyDown(DIK_RIGHT))
+				mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			else if(game->IsKeyDown(DIK_LEFT))
+				mario->SetState(MARIO_STATE_WALKING_LEFT);
+		}
+	}
+	
+	else 
+	{ 
+		if(mario->IsTouchingGround)
+			mario->SetState(MARIO_STATE_IDLE);
+	}
 		
-	else
-		mario->SetState(MARIO_STATE_IDLE);
 }
