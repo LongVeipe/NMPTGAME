@@ -13,7 +13,7 @@
 
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_BIG;
+	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 
@@ -21,8 +21,10 @@ CMario::CMario(float x, float y) : CGameObject()
 	start_y = y; 
 	this->x = x; 
 	this->y = y;
+
 	jumpStack = 0;
 	imminentStack = 0;
+
 	IsReadyJump = true;
 	IsTouchingGround = true;
 	IsJumping = false;
@@ -265,6 +267,14 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		
 	}
 
+	if (vy > 0)
+	{
+		if (IsJumping == true)
+		{
+			IsJumping = false;
+			IsFalling = true;
+		}
+	}
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) 
 		delete coEvents[i];
@@ -290,12 +300,20 @@ void CMario::BasicCollision(float min_tx, float min_ty, float _nx, float _ny, fl
 		{
 			this->ny = 0;
 			IsTouchingGround = true;
+			IsJumping = false;
+			IsFalling = false;
 			//this->SetState(MARIO_STATE_IDLE);
 		}
 		else if (_ny == 1)
 		{
+			IsTouchingGround = false;
 			IsReadyJump = false;
+
 		}
+	}
+	else
+	{
+		IsTouchingGround = false;
 	}
 }
 
@@ -316,13 +334,7 @@ void CMario::Render()
 				ani = MARIO_ANI_BIG_SKIDDING_RIGHT;
 			else
 				ani = MARIO_ANI_BIG_WALKING_RIGHT;
-		else if (state == MARIO_STATE_JUMP)
-		{
-			if (nx > 0)
-				ani = MARIO_ANI_BIG_JUMPING_RIGHT;
-			else if (nx < 0)
-				ani = MARIO_ANI_BIG_JUMPING_LEFT;
-		}
+		
 		else //if (state == MARIO_STATE_IDLE)
 		{
 			if (vx > 0)
@@ -334,41 +346,112 @@ void CMario::Render()
 					ani = MARIO_ANI_BIG_IDLE_RIGHT;
 				else
 					ani = MARIO_ANI_BIG_IDLE_LEFT;
+		} 
+		if (IsJumping == true || IsFalling == true) //if (state == MARIO_STATE_JUMP)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_BIG_JUMPING_RIGHT;
+			else if (nx < 0)
+				ani = MARIO_ANI_BIG_JUMPING_LEFT;
 		}
 		if (IsHolding)
 		{
 			if (vx > 0)
-				ani = MARIO_ANI_BIG_HOLDING_RIGHT;
-			else if (vx < 0)
-				ani = MARIO_ANI_BIG_HOLDING_LEFT;
-			else
-				if (nx > 0)
-					ani = MARIO_ANI_BIG_HOLDING_IDLE_RIGHT;
+			{
+				if (IsJumping || IsFalling)
+					ani = MARIO_ANI_BIG_HOLDING_JUMP_RIGHT;
 				else
-					ani = MARIO_ANI_BIG_HOLDING_IDLE_LEFT;
+					ani = MARIO_ANI_BIG_HOLDING_RIGHT;
+
+			}
+			else if (vx < 0)
+				if (IsJumping || IsFalling)
+					ani = MARIO_ANI_BIG_HOLDING_JUMP_LEFT;
+				else
+					ani = MARIO_ANI_BIG_HOLDING_LEFT;
+			else
+			{
+				if (IsJumping || IsFalling)
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_BIG_HOLDING_JUMP_RIGHT;
+					else
+						ani = MARIO_ANI_BIG_HOLDING_JUMP_LEFT;
+				}
+				else
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_BIG_HOLDING_IDLE_RIGHT;
+					else
+						ani = MARIO_ANI_BIG_HOLDING_IDLE_LEFT;
+				}
+			}
 		}
 	}
 	else if (level == MARIO_LEVEL_SMALL)
 	{
-		if (vx == 0)
-		{
-			if (nx>0) ani = MARIO_ANI_SMALL_IDLE_RIGHT;
-			else ani = MARIO_ANI_SMALL_IDLE_LEFT;
-		}
-		else if (vx > 0)
-		{
-			if (IsTouchingGround == true)
-				ani = MARIO_ANI_SMALL_WALKING_RIGHT;
+		if (state == MARIO_STATE_WALKING_LEFT)
+			if (vx >= 0)
+				ani = MARIO_ANI_SMALL_SKIDDING_LEFT;
 			else
-				ani = MARIO_ANI_SMALL_JUMPING_RIGHT;
-		}
+				ani = MARIO_ANI_SMALL_WALKING_LEFT;
+		else if (state == MARIO_STATE_WALKING_RIGHT)
+			if (vx <= 0)
+				ani = MARIO_ANI_SMALL_SKIDDING_RIGHT;
+			else
+				ani = MARIO_ANI_SMALL_WALKING_RIGHT;
 
-		else
+		else //if (state == MARIO_STATE_IDLE)
 		{
-			if (IsTouchingGround == true)
+			if (vx > 0)
+				ani = MARIO_ANI_SMALL_WALKING_RIGHT;
+			else if (vx < 0)
 				ani = MARIO_ANI_SMALL_WALKING_LEFT;
 			else
+				if (nx > 0)
+					ani = MARIO_ANI_SMALL_IDLE_RIGHT;
+				else
+					ani = MARIO_ANI_SMALL_IDLE_LEFT;
+		}
+		if (IsJumping == true || IsFalling == true) //if (state == MARIO_STATE_JUMP)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_SMALL_JUMPING_RIGHT;
+			else if (nx < 0)
 				ani = MARIO_ANI_SMALL_JUMPING_LEFT;
+		}
+		if (IsHolding)
+		{
+			if (vx > 0)
+			{
+				if (IsJumping || IsFalling)
+					ani = MARIO_ANI_SMALL_HOLDING_JUMP_RIGHT;
+				else
+					ani = MARIO_ANI_SMALL_HOLDING_RIGHT;
+
+			}
+			else if (vx < 0)
+				if (IsJumping || IsFalling)
+					ani = MARIO_ANI_SMALL_HOLDING_JUMP_LEFT;
+				else
+					ani = MARIO_ANI_SMALL_HOLDING_LEFT;
+			else
+			{
+				if (IsJumping || IsFalling)
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_SMALL_HOLDING_JUMP_RIGHT;
+					else
+						ani = MARIO_ANI_SMALL_HOLDING_JUMP_LEFT;
+				}
+				else
+				{
+					if (nx > 0)
+						ani = MARIO_ANI_SMALL_HOLDING_IDLE_RIGHT;
+					else
+						ani = MARIO_ANI_SMALL_HOLDING_IDLE_LEFT;
+				}
+			}
 		}
 	}
 
@@ -409,8 +492,9 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
-			vy = -MARIO_JUMP_SPEED_Y;
-			ny = -1;
+		IsJumping = true;
+		vy = -MARIO_JUMP_SPEED_Y;
+		ny = -1;
 		break; 
 	case MARIO_STATE_IDLE:
 		if (IsTouchingGround == true )

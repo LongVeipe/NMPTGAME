@@ -117,10 +117,10 @@ void CKoopas:: BeHeld()
 		float l, t, r, b;
 		mario->GetBoundingBox(l, t, r, b);
 		if (mario->nx > 0)
-			this->x = (r - 2);
+			this->x = (r - 4);
 		else
-			this->x = l - 14;
-		this->y = ((t + b) / 2 - 8);
+			this->x = l - 12;
+		this->y = ((t + b) / 2 - 9);
 		this->vx = this->vy = 0;
 	}
 	else

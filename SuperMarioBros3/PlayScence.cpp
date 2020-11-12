@@ -412,7 +412,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->SetState(MARIO_STATE_IDLE);
 		break;
 	case DIK_SPACE:
-		mario->SetJumpStack(MAXRIO_MAX_JUMPIMG_STACKS);
+		mario->SetJumpStack(MARIO_MAX_JUMPIMG_STACKS);
 		mario->IsReadyJump = false;
 		break;
 	case DIK_B:
@@ -436,7 +436,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 		if (game->IsKeyDown(DIK_SPACE))
 		{
-			if (mario->IsReadyJump == true && mario->GetJumpStack() < MAXRIO_MAX_JUMPIMG_STACKS)
+			if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
 			{
 
 				mario->SetState(MARIO_STATE_JUMP);
@@ -450,7 +450,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
 		if (game->IsKeyDown(DIK_SPACE))
 		{
-			if (mario->IsReadyJump == true && mario->GetJumpStack() < MAXRIO_MAX_JUMPIMG_STACKS)
+			if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
 			{
 
 				mario->SetState(MARIO_STATE_JUMP);
@@ -460,12 +460,11 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	}
 	else if(game->IsKeyDown(DIK_SPACE))
 	{ 
-		if (mario->IsReadyJump == true && mario->GetJumpStack() < MAXRIO_MAX_JUMPIMG_STACKS)
+		if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
 		{
 
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->UpJumpStack();
-
 			if(game->IsKeyDown(DIK_RIGHT))
 				mario->SetState(MARIO_STATE_WALKING_RIGHT);
 			else if(game->IsKeyDown(DIK_LEFT))
