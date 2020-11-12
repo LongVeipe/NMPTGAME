@@ -1,7 +1,7 @@
 #include "Goomba.h"
 #include "Brick.h"
 #include "Mario.h"
-CGoomba::CGoomba()
+CGoomba::CGoomba(float start_x, float final_x, int type):CEnemy( start_x, final_x,type)
 {
 	SetState(GOOMBA_STATE_WALKING);
 	DeadTime = 0;
@@ -27,7 +27,7 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	
-	CGameObject::Update(dt, coObjects);
+	CEnemy::Update(dt, coObjects);
 
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!

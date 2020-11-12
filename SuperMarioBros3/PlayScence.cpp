@@ -177,7 +177,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
+	//case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
 	case OBJECT_TYPE_BRICK:
 	{
 		int Type = atoi(tokens[4].c_str());
@@ -215,7 +215,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		
 		break;
 	}
-	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
+	case OBJECT_TYPE_KOOPAS:
+	{
+		float typeKoopa = atof(tokens[4].c_str());
+		float start_x = atof(tokens[5].c_str());
+		float final_x = atof(tokens[6].c_str());
+		obj = new CKoopas(start_x, final_x, typeKoopa);
+		break;
+	}
 	case OBJECT_TYPE_COIN: 
 	{
 		int State = atoi(tokens[4].c_str());
@@ -371,10 +378,10 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_SPACE:
 		if (mario->IsTouchingGround == true)
 		{
-			mario->SetJumpNum(0);
+			mario->SetJumpStack(0);
 			mario->IsReadyJump = true;
 			mario->SetState(MARIO_STATE_JUMP);
-			mario->UpJumpNum();
+			mario->UpJumpStack();
 			mario->IsTouchingGround = false;
 		}
 		break;
@@ -405,10 +412,13 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->SetState(MARIO_STATE_IDLE);
 		break;
 	case DIK_SPACE:
-		mario->SetJumpNum(MAXRIO_MAX_JUMPIMG_STACKS);
+		mario->SetJumpStack(MAXRIO_MAX_JUMPIMG_STACKS);
 		mario->IsReadyJump = false;
 		break;
-		
+	case DIK_B:
+		mario->IsReadyHolding = false;
+		mario->IsHolding = false;
+		break;
 	}
 }
 
@@ -426,11 +436,11 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 		if (game->IsKeyDown(DIK_SPACE))
 		{
-			if (mario->IsReadyJump == true && mario->GetJumpNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+			if (mario->IsReadyJump == true && mario->GetJumpStack() < MAXRIO_MAX_JUMPIMG_STACKS)
 			{
 
 				mario->SetState(MARIO_STATE_JUMP);
-				mario->UpJumpNum();
+				mario->UpJumpStack();
 			}
 		}
 
@@ -440,21 +450,21 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
 		if (game->IsKeyDown(DIK_SPACE))
 		{
-			if (mario->IsReadyJump == true && mario->GetJumpNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+			if (mario->IsReadyJump == true && mario->GetJumpStack() < MAXRIO_MAX_JUMPIMG_STACKS)
 			{
 
 				mario->SetState(MARIO_STATE_JUMP);
-				mario->UpJumpNum();
+				mario->UpJumpStack();
 			}
 		}
 	}
 	else if(game->IsKeyDown(DIK_SPACE))
 	{ 
-		if (mario->IsReadyJump == true && mario->GetJumpNum() < MAXRIO_MAX_JUMPIMG_STACKS)
+		if (mario->IsReadyJump == true && mario->GetJumpStack() < MAXRIO_MAX_JUMPIMG_STACKS)
 		{
 
 			mario->SetState(MARIO_STATE_JUMP);
-			mario->UpJumpNum();
+			mario->UpJumpStack();
 
 			if(game->IsKeyDown(DIK_RIGHT))
 				mario->SetState(MARIO_STATE_WALKING_RIGHT);
@@ -467,6 +477,10 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{ 
 		if(mario->IsTouchingGround)
 			mario->SetState(MARIO_STATE_IDLE);
+	}
+	if (game->IsKeyDown(DIK_B))
+	{
+		mario->IsReadyHolding = true;
 	}
 		
 }

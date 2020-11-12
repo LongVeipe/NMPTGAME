@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Enemy.h"
 
 #define GOOMBA_WALKING_SPEED 0.05f;
 
@@ -18,14 +18,14 @@
 
 #define GOOMBA_TIME_TO_STOP_RENDERING 200
 
-class CGoomba : public CGameObject
+class CGoomba : public CEnemy
 {
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	virtual void Render();
 
 public: 	
-	CGoomba();
+	CGoomba(float start_x, float final_x, int type);
 	virtual void SetState(int state);
 	virtual ~CGoomba();
 	void SetDeadTime();

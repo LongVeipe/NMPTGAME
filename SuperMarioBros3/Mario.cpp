@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "Brick.h"
 #include "SuperLeaf.h"
+#include "Koopas.h"
 
 CMario::CMario(float x, float y) : CGameObject()
 {
@@ -20,6 +21,8 @@ CMario::CMario(float x, float y) : CGameObject()
 	start_y = y; 
 	this->x = x; 
 	this->y = y;
+	jumpStack = 0;
+	imminentStack = 0;
 	IsReadyJump = true;
 	IsTouchingGround = true;
 	IsJumping = false;
@@ -28,8 +31,9 @@ CMario::CMario(float x, float y) : CGameObject()
 
 	IsWalkingRight = false;
 	IsWalkingLeft = false;
-	IsSkiddingRight = false;
-	IsSkiddingLeft = false;
+
+	IsReadyHolding = false;
+	IsHolding = false;
 }
 
 void CMario::Calculate_vx(DWORD _dt)
@@ -215,6 +219,34 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
 				coin->SetState(COIN_STATE_HIDDEN);
 			}
+			else if (dynamic_cast<CKoopas*>(e->obj))
+			{
+				CKoopas* koopa = dynamic_cast<CKoopas*>(e->obj);
+				switch (koopa->GetType())
+				{
+				case KOOPA_TYPE_RED_SMALL_TURTOISESHELL:
+					if (e->nx != 0)
+					{
+						if (IsReadyHolding == true)
+						{
+							IsHolding = true;
+							koopa->IsBeingHeld = true;
+							IsReadyHolding = false;
+
+						}
+						else
+						{
+							
+						}
+
+					}
+					if (e->ny != 0)
+					{
+
+					}
+					break;
+				}
+			}
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
 				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0, oleft, otop, oright, obottom);
@@ -303,7 +335,18 @@ void CMario::Render()
 				else
 					ani = MARIO_ANI_BIG_IDLE_LEFT;
 		}
-		
+		if (IsHolding)
+		{
+			if (vx > 0)
+				ani = MARIO_ANI_BIG_HOLDING_RIGHT;
+			else if (vx < 0)
+				ani = MARIO_ANI_BIG_HOLDING_LEFT;
+			else
+				if (nx > 0)
+					ani = MARIO_ANI_BIG_HOLDING_IDLE_RIGHT;
+				else
+					ani = MARIO_ANI_BIG_HOLDING_IDLE_LEFT;
+		}
 	}
 	else if (level == MARIO_LEVEL_SMALL)
 	{
@@ -350,7 +393,6 @@ void CMario::SetState(int state)
 			vx += MARIO_WALKING_SPEED_START;
 			IsWalkingRight = true;
 			IsWalkingLeft = false;
-			IsSkiddingRight = true;
 		}
 		nx = 1;
 		break;
@@ -361,7 +403,6 @@ void CMario::SetState(int state)
 			vx += -MARIO_WALKING_SPEED_START;
 			IsWalkingLeft = true;
 			IsWalkingRight = false;
-			IsSkiddingLeft = true;
 		}
 
 		nx = -1;
@@ -379,9 +420,9 @@ void CMario::SetState(int state)
 				ax = MARIO_WALKING_FRICTION;
 			else ax = 0;
 		else
-			if (vx > 0)
+			if (vx > 0 && nx >0)
 				ax = -MARIO_WALKING_ACCELERATION;
-			else if (vx < 0)
+			else if (vx < 0 && nx <0)
 				ax = MARIO_WALKING_ACCELERATION;
 			else ax = 0;
 		IsWalkingLeft = IsWalkingRight = false;

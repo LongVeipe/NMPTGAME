@@ -3,7 +3,7 @@
 
 #define MARIO_WALKING_SPEED_START	0.08f 
 #define MARIO_WALKING_ACCELERATION	0.0001f
-#define MARIO_WALKING_FRICTION	0.0005f
+#define MARIO_WALKING_FRICTION	0.00025f
 #define MARIO_WALKING_SPEED_MAX		0.13
 //0.1f
 #define MARIO_JUMP_SPEED_Y		0.2f
@@ -42,13 +42,13 @@
 #define MARIO_ANI_BIG_SKIDDING_RIGHT		18
 #define MARIO_ANI_BIG_SKIDDING_LEFT			19
 
-#define MARIO_ANI_SMALL_IDLE_RIGHT		6
-#define MARIO_ANI_SMALL_IDLE_LEFT		7
-#define MARIO_ANI_SMALL_WALKING_RIGHT	8
-#define MARIO_ANI_SMALL_WALKING_LEFT	9
-#define MARIO_ANI_SMALL_JUMPING_RIGHT	10
-#define MARIO_ANI_SMALL_JUMPING_LEFT	11
-#define MARIO_ANI_DIE					12
+#define MARIO_ANI_SMALL_IDLE_RIGHT		20
+#define MARIO_ANI_SMALL_IDLE_LEFT		21
+#define MARIO_ANI_SMALL_WALKING_RIGHT	22
+#define MARIO_ANI_SMALL_WALKING_LEFT	23
+#define MARIO_ANI_SMALL_JUMPING_RIGHT	24
+#define MARIO_ANI_SMALL_JUMPING_LEFT	25
+#define MARIO_ANI_DIE					26
 
 #define MARIO_ANI_RACCOON_IDLE_RIGHT	13
 #define MARIO_ANI_RACCOON_IDLE_LEFT		14
@@ -88,6 +88,7 @@
 
 #define MARIO_UNTOUCHABLE_TIME 5000
 #define MAXRIO_MAX_JUMPIMG_STACKS 19
+#define MAXRIO_MAX_IMMINENT_STACKS 7
 
 class CMario : public CGameObject
 {
@@ -97,20 +98,22 @@ class CMario : public CGameObject
 
 	float start_x;			// initial position of Mario at scene
 	float start_y; 
-	int jumpNum;
+	int jumpStack;
+	int imminentStack;
 	void Calculate_vx(DWORD _dt);
 	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0, float oleft, float otop, float oright, float obottom);
 public: 
 	bool IsReadyJump;
+	bool IsReadyHolding;
 	bool IsTouchingGround;
 	bool IsJumping;
 	bool IsFalling;
 	bool IsFlying;
 	bool IsWalkingRight;
 	bool IsWalkingLeft;
-	bool IsSkiddingRight;
-	bool IsSkiddingLeft;
+	bool IsHolding;
 	bool IsIdle;
+	bool IsKicking;
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
@@ -118,14 +121,14 @@ public:
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-	void SetJumpNum(int _num) { jumpNum = _num; }
+	void SetJumpStack(int _num) { jumpStack = _num; }
 
 
 	void Reset();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-	int GetJumpNum() { return jumpNum; }
+	int GetJumpStack() { return jumpStack; }
 	int GetLevel() { return level; }
-	void UpJumpNum() { jumpNum += 1; }
+	void UpJumpStack() { jumpStack += 1; }
 	
 };
