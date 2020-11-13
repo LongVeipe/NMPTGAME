@@ -100,7 +100,7 @@ void CGoomba::Render()
 {
 	if (this->state == GOOMBA_STATE_DIE)
 	{
-		if (DeadTime != 0 && (GetTickCount() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
+		if (DeadTime != 0 && (GetTickCount64() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
 			return;
 	}
 	int ani = GOOMBA_ANI_WALKING;

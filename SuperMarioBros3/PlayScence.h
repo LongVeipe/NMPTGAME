@@ -35,6 +35,7 @@ public:
 	virtual void Unload();
 
 	CMario * GetPlayer() { return player; } 
+	vector<LPGAMEOBJECT> GetObjects() { return objects; }
 	//friend class CPlayScenceKeyHandler;
 };
 

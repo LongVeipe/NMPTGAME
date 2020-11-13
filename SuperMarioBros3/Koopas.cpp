@@ -109,23 +109,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
-void CKoopas:: BeHeld()
-{
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario->IsHolding)
-	{
-		float l, t, r, b;
-		mario->GetBoundingBox(l, t, r, b);
-		if (mario->nx > 0)
-			this->x = (r - 4);
-		else
-			this->x = l - 12;
-		this->y = ((t + b) / 2 - 9);
-		this->vx = this->vy = 0;
-	}
-	else
-		IsBeingHeld = false;
-}
 void CKoopas::Render()
 {
 	
@@ -152,6 +135,29 @@ void CKoopas::SetState(int state)
 		vx = KOOPAS_WALKING_SPEED;
 	}*/
 
+}
+void CKoopas::BeHeld()
+{
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario->IsHolding)
+	{
+		float l, t, r, b;
+		mario->GetBoundingBox(l, t, r, b);
+		if (mario->nx > 0)
+			this->x = (r - 4);
+		else
+			this->x = l - 12;
+		this->y = ((t + b) / 2 - 9);
+		this->vx = this->vy = 0;
+	}
+	else
+		IsBeingHeld = false;
+}
+
+void CKoopas::BeKicked(int mnx)
+{
+	this->nx = mnx;
+	vx = nx * KOOPA_SPEED_TURTOISESHELL_X;
 }
 
 CKoopas::~CKoopas()

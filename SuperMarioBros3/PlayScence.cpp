@@ -384,9 +384,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->UpJumpStack();
 			mario->IsTouchingGround = false;
 		}
+
 		break;
-	case DIK_A: 
+	case DIK_Q: 
 		mario->Reset();
+		break;
+	case DIK_C:
+		if(mario->GetLevel() == MARIO_LEVEL_FIRE)
+			mario->StartThrowFire();
 		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_BEND_DOWN);
@@ -434,6 +439,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if (game->IsKeyDown(DIK_RIGHT))
 	{
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
+
 		if (game->IsKeyDown(DIK_SPACE))
 		{
 			if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
@@ -442,8 +448,14 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->SetState(MARIO_STATE_JUMP);
 				mario->UpJumpStack();
 			}
+			mario->downImminent();
 		}
-
+		else if (game->IsKeyDown(DIK_D))
+		{
+			mario->changeImminent();
+		}
+		else
+			mario->downImminent();
 	}
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
@@ -456,6 +468,15 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->SetState(MARIO_STATE_JUMP);
 				mario->UpJumpStack();
 			}
+			mario->downImminent();
+		}
+		else if (game->IsKeyDown(DIK_D))
+		{
+			mario->changeImminent();
+		}
+		else
+		{
+			mario->downImminent();
 		}
 	}
 	else if(game->IsKeyDown(DIK_SPACE))
@@ -469,6 +490,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 				mario->SetState(MARIO_STATE_WALKING_RIGHT);
 			else if(game->IsKeyDown(DIK_LEFT))
 				mario->SetState(MARIO_STATE_WALKING_LEFT);
+			mario->downImminent();
 		}
 	}
 	
@@ -476,10 +498,12 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{ 
 		if(mario->IsTouchingGround)
 			mario->SetState(MARIO_STATE_IDLE);
+		mario->downImminent();
 	}
 	if (game->IsKeyDown(DIK_B))
 	{
 		mario->IsReadyHolding = true;
 	}
+	
 		
 }

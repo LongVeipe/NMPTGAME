@@ -3,6 +3,7 @@
 #include "Enemy.h"
 
 #define KOOPAS_WALKING_SPEED 0.03f;
+#define KOOPA_SPEED_TURTOISESHELL_X	0.1
 
 #define KOOPA_BBOX_RED_SMALL_WALK_WIDTH 16
 #define KOOPA_BBOX_RED_SMALL_WALK_HEIGHT 27
@@ -34,4 +35,5 @@ public:
 	virtual void SetState(int state);
 	virtual ~CKoopas();
 	void BeHeld();
+	void BeKicked(int _mvx);
 };
