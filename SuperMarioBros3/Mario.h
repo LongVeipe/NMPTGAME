@@ -100,33 +100,37 @@
 #define MARIO_ANI_RACCOON_KICKING_LEFT			72
 #define MARIO_ANI_RACCOON_SPINNING_RIGHT		73
 #define MARIO_ANI_RACCOON_SPINNING_LEFT			74
+#define MARIO_ANI_RACCOON_SWING_TAIL_1_RIGHT	75
+#define MARIO_ANI_RACCOON_SWING_TAIL_1_LEFT		76
+#define MARIO_ANI_RACCOON_SWING_TAIL_2_RIGHT	77
+#define MARIO_ANI_RACCOON_SWING_TAIL_2_LEFT		78
 
-#define MARIO_ANI_FIRE_IDLE_RIGHT				75
-#define MARIO_ANI_FIRE_IDLE_LEFT				76
-#define MARIO_ANI_FIRE_WALKING_RIGHT			77
-#define MARIO_ANI_FIRE_WALKING_LEFT				78
-#define MARIO_ANI_FIRE_DUCKING_RIGHT			79
-#define MARIO_ANI_FIRE_DUCKING_LEFT				80
-#define MARIO_ANI_FIRE_JUMPING_RIGHT			81
-#define MARIO_ANI_FIRE_JUMPING_LEFT				82
-#define MARIO_ANI_FIRE_RUNNING_RIGHT			83
-#define MARIO_ANI_FIRE_RUNNING_LEFT				84
-#define MARIO_ANI_FIRE_RUNNING_JUMP_RIGHT		85
-#define MARIO_ANI_FIRE_RUNNING_JUMP_LEFT		86
-#define MARIO_ANI_FIRE_THROWING_RIGHT			87
-#define MARIO_ANI_FIRE_THROWING_LEFT			88
-#define MARIO_ANI_FIRE_SKIDDING_RIGHT			89
-#define MARIO_ANI_FIRE_SKIDDING_LEFT			90
-#define MARIO_ANI_FIRE_HOLDING_IDLE_RIGHT		91
-#define MARIO_ANI_FIRE_HOLDING_IDLE_LEFT		92
-#define MARIO_ANI_FIRE_HOLDING_JUMP_RIGHT		93
-#define MARIO_ANI_FIRE_HOLDING_JUMP_LEFT		94
-#define MARIO_ANI_FIRE_HOLDING_RIGHT			95
-#define MARIO_ANI_FIRE_HOLDING_LEFT				96
-#define MARIO_ANI_FIRE_KICKING_RIGHT			97
-#define MARIO_ANI_FIRE_KICKING_LEFT				98
-#define MARIO_ANI_FIRE_SLIDING_RIGHT			99
-#define MARIO_ANI_FIRE_SLIDING_LEFT				100
+#define MARIO_ANI_FIRE_IDLE_RIGHT				79
+#define MARIO_ANI_FIRE_IDLE_LEFT				80
+#define MARIO_ANI_FIRE_WALKING_RIGHT			81
+#define MARIO_ANI_FIRE_WALKING_LEFT				82
+#define MARIO_ANI_FIRE_DUCKING_RIGHT			83
+#define MARIO_ANI_FIRE_DUCKING_LEFT				84
+#define MARIO_ANI_FIRE_JUMPING_RIGHT			85
+#define MARIO_ANI_FIRE_JUMPING_LEFT				86
+#define MARIO_ANI_FIRE_RUNNING_RIGHT			87
+#define MARIO_ANI_FIRE_RUNNING_LEFT				88
+#define MARIO_ANI_FIRE_RUNNING_JUMP_RIGHT		89
+#define MARIO_ANI_FIRE_RUNNING_JUMP_LEFT		90
+#define MARIO_ANI_FIRE_THROWING_RIGHT			91
+#define MARIO_ANI_FIRE_THROWING_LEFT			92
+#define MARIO_ANI_FIRE_SKIDDING_RIGHT			93
+#define MARIO_ANI_FIRE_SKIDDING_LEFT			94
+#define MARIO_ANI_FIRE_HOLDING_IDLE_RIGHT		95
+#define MARIO_ANI_FIRE_HOLDING_IDLE_LEFT		96
+#define MARIO_ANI_FIRE_HOLDING_JUMP_RIGHT		97
+#define MARIO_ANI_FIRE_HOLDING_JUMP_LEFT		98
+#define MARIO_ANI_FIRE_HOLDING_RIGHT			99
+#define MARIO_ANI_FIRE_HOLDING_LEFT				100
+#define MARIO_ANI_FIRE_KICKING_RIGHT			101
+#define MARIO_ANI_FIRE_KICKING_LEFT				102
+#define MARIO_ANI_FIRE_SLIDING_RIGHT			103
+#define MARIO_ANI_FIRE_SLIDING_LEFT				104
 
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
@@ -138,15 +142,18 @@
 #define MARIO_BIG_BBOX_HEIGHT 27
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 15
-#define MARIO_RACCOON_BBOX_WIDTH  21
+#define MARIO_RACCOON_BBOX_WIDTH  14
 #define MARIO_RACCOON_BBOX_HEIGHT 27
+#define MARIO_RACCOON_TAIL_BBOX_WIDTH  9
 #define MARIO_FIRE_BBOX_WIDTH  14
 #define MARIO_FIRE_BBOX_HEIGHT 27
 
 #define MARIO_UNTOUCHABLE_TIME 5000
-#define MARIO_CHANGE_IMMINENT_TIME	100
+#define MARIO_CHANGE_IMMINENT_TIME	200
 #define MARIO_PERFORM_THROW_TIME	210
 #define MARIO_THROWING_TIME			300
+#define MARIO_SWING_TAIL_TIME		300
+#define MARIO_PERFORM_SWING_TAIL_TIME		210
 #define MARIO_KICKING_TIME			300
 #define MARIO_MAX_JUMPIMG_STACKS 19
 #define MARIO_MAX_IMMINENT_STACKS 7
@@ -162,12 +169,14 @@ class CMario : public CGameObject
 	int untouchable;
 	DWORD untouchable_start;
 	DWORD throwFire_start;
+	DWORD swingTail_start;
 	DWORD kick_start;
 	DWORD changeImminent_start;
  
 	int jumpStack;
 	int imminentStack;
 	void Calculate_vx(DWORD _dt);
+	void Calculate_vy(DWORD _dt);
 	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0, float oleft, float otop, float oright, float obottom);
 public: 
 	bool IsReadyJump;
@@ -177,6 +186,7 @@ public:
 	bool IsTouchingGround;
 	bool IsJumping;
 	bool IsFalling;
+	bool IsLanding;
 	bool IsFlying;
 	bool IsWalkingRight;
 	bool IsWalkingLeft;
@@ -185,6 +195,7 @@ public:
 	bool IsKicking;
 	bool IsThrowing;
 	bool IsRunning;
+	bool IsSwingTail;
 
 
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -199,6 +210,7 @@ public:
 
 	void Reset();
 	void StartThrowFire();
+	void StartSwingTail();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	int GetJumpStack() { return jumpStack; }

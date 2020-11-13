@@ -66,6 +66,17 @@ void CMario::Calculate_vx(DWORD _dt)
 	}
 
 }
+void CMario::Calculate_vy(DWORD _dt)
+{
+	vy += MARIO_GRAVITY * dt;
+	if (level == MARIO_LEVEL_RACCOON)
+	{
+		if (IsLanding)
+		{
+			vy = MARIO_GRAVITY*dt;
+		}
+	}
+}
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	//Update Bullet
@@ -78,7 +89,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// Simple fall down
 
-	vy += MARIO_GRAVITY*dt;
+	Calculate_vy(dt);
 	Calculate_vx(dt);
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -99,6 +110,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (GetTickCount64() - throwFire_start > MARIO_PERFORM_THROW_TIME)
 	{
 		IsThrowing = false;
+	}
+	if (GetTickCount64() - swingTail_start > MARIO_PERFORM_SWING_TAIL_TIME)
+	{
+		IsSwingTail = false;
 	}
 	if (GetTickCount64() - kick_start > MARIO_KICKING_TIME)
 	{
@@ -625,6 +640,23 @@ void CMario::Render()
 			ani = MARIO_ANI_RACCOON_KICKING_RIGHT;
 		else ani = MARIO_ANI_RACCOON_KICKING_LEFT;
 	}
+	else if (IsSwingTail)
+	{
+		if (nx > 0)
+		{
+			if (IsTouchingGround)
+				ani = MARIO_ANI_RACCOON_SWING_TAIL_1_RIGHT;
+			else
+				ani = MARIO_ANI_RACCOON_SWING_TAIL_2_RIGHT;
+		}
+		else
+		{
+			if (IsTouchingGround)
+				ani = MARIO_ANI_RACCOON_SWING_TAIL_1_LEFT;
+			else
+				ani = MARIO_ANI_RACCOON_SWING_TAIL_2_LEFT;
+		}
+	}
 	}
 	else if (level == MARIO_LEVEL_FIRE)
 	{
@@ -771,10 +803,10 @@ void CMario::SetState(int state)
 	case MARIO_STATE_JUMP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
 		IsJumping = true;
-		if (imminentStack == MARIO_MAX_IMMINENT_STACKS)
-			IsFlying = true;
 		vy = -MARIO_JUMP_SPEED_Y;
 		ny = -1;
+		if (imminentStack == MARIO_MAX_IMMINENT_STACKS)
+			IsFlying = true;
 		break; 
 	case MARIO_STATE_IDLE:
 		if (IsTouchingGround == true )
@@ -814,7 +846,32 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	}
 	else if(level == MARIO_LEVEL_RACCOON)
 	{
-		right = left + MARIO_RACCOON_BBOX_WIDTH;
+		if (nx > 0)
+		{
+			if (IsSwingTail)
+			{
+				left = x;
+				right = left + MARIO_RACCOON_BBOX_WIDTH + 2*MARIO_RACCOON_TAIL_BBOX_WIDTH;
+			}
+			else
+			{
+				left = x + MARIO_RACCOON_TAIL_BBOX_WIDTH;
+				right = left + MARIO_RACCOON_BBOX_WIDTH;
+			}
+		}
+		else
+		{
+			if (IsSwingTail)
+			{
+				left = x - MARIO_RACCOON_TAIL_BBOX_WIDTH;
+				right = x + MARIO_RACCOON_BBOX_WIDTH + MARIO_RACCOON_TAIL_BBOX_WIDTH;
+			}
+			else
+			{
+				left = x ;
+				right = left + MARIO_RACCOON_BBOX_WIDTH;
+			}
+		}
 		bottom = top + MARIO_RACCOON_BBOX_HEIGHT;
 	}
 	else 
@@ -860,7 +917,7 @@ void CMario::changeImminent()
 {
 	if (IsTouchingGround)
 	{
-		if (abs(vx) >= MARIO_WALKING_SPEED_MAX - 0.0001)
+		if (abs(vx) >= MARIO_WALKING_SPEED_MAX - 0.001)
 		{
 			if (GetTickCount64() - changeImminent_start >= MARIO_CHANGE_IMMINENT_TIME)
 			{
@@ -870,7 +927,7 @@ void CMario::changeImminent()
 					imminentStack = MARIO_MAX_IMMINENT_STACKS;
 					IsRunning = true;
 				}
-				changeImminent_start = GetTickCount();
+				changeImminent_start = GetTickCount64();
 			}
 		}
 		else
@@ -881,12 +938,21 @@ void CMario::changeImminent()
 }
 void CMario::downImminent()
 {
-	if (GetTickCount() - changeImminent_start >= MARIO_CHANGE_IMMINENT_TIME)
+	if (GetTickCount64() - changeImminent_start >= MARIO_CHANGE_IMMINENT_TIME)
 	{
 		imminentStack--;
 		if (imminentStack < 0)
 			imminentStack = 0;
-		changeImminent_start = GetTickCount();
+		changeImminent_start = GetTickCount64();
 	}
 	IsRunning = false;
+}
+void CMario::StartSwingTail()
+{
+	if (GetTickCount64() - swingTail_start >= MARIO_SWING_TAIL_TIME)
+	{
+
+		IsSwingTail = true;
+		swingTail_start = GetTickCount64();
+	}
 }

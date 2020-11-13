@@ -14,6 +14,8 @@ using namespace std;
 CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 {
 	key_handler = new CPlayScenceKeyHandler(this);
+	map = nullptr;
+	player = nullptr;
 }
 
 /*
@@ -390,8 +392,10 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->Reset();
 		break;
 	case DIK_C:
-		if(mario->GetLevel() == MARIO_LEVEL_FIRE)
+		if (mario->GetLevel() == MARIO_LEVEL_FIRE)
 			mario->StartThrowFire();
+		else if (mario->GetLevel() == MARIO_LEVEL_RACCOON)
+			mario->StartSwingTail();
 		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_BEND_DOWN);
