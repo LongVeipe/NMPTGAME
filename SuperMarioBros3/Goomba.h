@@ -1,7 +1,7 @@
 #pragma once
 #include "Enemy.h"
 
-#define GOOMBA_WALKING_SPEED 0.05f;
+#define GOOMBA_WALKING_SPEED 0.02f;
 
 #define GOOMBA_BBOX_WIDTH 16
 #define GOOMBA_BBOX_HEIGHT 15
@@ -31,4 +31,5 @@ public:
 	void SetDeadTime();
 private:
 	DWORD DeadTime;
+	void CalculateBeSwingedTail();
 };

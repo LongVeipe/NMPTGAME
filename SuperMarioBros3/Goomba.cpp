@@ -1,6 +1,7 @@
 #include "Goomba.h"
 #include "Brick.h"
 #include "Mario.h"
+#include "PlayScence.h"
 CGoomba::CGoomba(float start_x, float final_x, int type):CEnemy( start_x, final_x,type)
 {
 	SetState(GOOMBA_STATE_WALKING);
@@ -91,7 +92,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		}
 
 	}
-
+	CalculateBeSwingedTail();
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
@@ -135,6 +136,33 @@ void CGoomba::SetDeadTime()
 	this->DeadTime = GetTickCount();
 }
 
+void CGoomba::CalculateBeSwingedTail()
+{
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	if (mario->IsSwingTail)
+	{
+		float ml, mt, mr, mb;
+		mario->GetBoundingBox(ml, mt, mr, mb);
+		float gl, gt, gr, gb;
+		this->GetBoundingBox(gl,gt,gr,gb);
+		if (gb<mt || gt>mb)
+			return;
+		else
+		{
+			if (ml>=gr || mr <= gl)
+			{
+				return;
+			}
+			else
+			{
+				if (gl<ml && gr>ml)
+				{
+					this->SetState(GOOMBA_STATE_DIE);
+				}
+			}
+		}
+	}
+}
 CGoomba::~CGoomba()
 {
 

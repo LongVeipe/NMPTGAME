@@ -16,7 +16,7 @@ using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
 {
-	level = MARIO_LEVEL_FIRE;
+	level = MARIO_LEVEL_SMALL;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	changeImminent_start = 0;
@@ -77,6 +77,27 @@ void CMario::Calculate_vy(DWORD _dt)
 		}
 	}
 }
+void CMario::UpdateFlagBaseOnTime()
+{
+	// reset untouchable timer if untouchable time has passed
+	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+	{
+		untouchable_start = 0;
+		untouchable = 0;
+	}
+	if (GetTickCount64() - throwFire_start > MARIO_PERFORM_THROW_TIME)
+	{
+		IsThrowing = false;
+	}
+	if (GetTickCount64() - swingTail_start > MARIO_PERFORM_SWING_TAIL_TIME)
+	{
+		IsSwingTail = false;
+	}
+	if (GetTickCount64() - kick_start > MARIO_KICKING_TIME)
+	{
+		IsKicking = false;
+	}
+}
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	//Update Bullet
@@ -101,25 +122,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (state!=MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
-	// reset untouchable timer if untouchable time has passed
-	if ( GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME) 
-	{
-		untouchable_start = 0;
-		untouchable = 0;
-	}
-	if (GetTickCount64() - throwFire_start > MARIO_PERFORM_THROW_TIME)
-	{
-		IsThrowing = false;
-	}
-	if (GetTickCount64() - swingTail_start > MARIO_PERFORM_SWING_TAIL_TIME)
-	{
-		IsSwingTail = false;
-	}
-	if (GetTickCount64() - kick_start > MARIO_KICKING_TIME)
-	{
-		IsKicking = false;
-	}
-
+	UpdateFlagBaseOnTime();
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
@@ -220,9 +223,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if(dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
 			{
-				
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
@@ -850,12 +851,12 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		{
 			if (IsSwingTail)
 			{
-				left = x;
+				left = x-4;
 				right = left + MARIO_RACCOON_BBOX_WIDTH + 2*MARIO_RACCOON_TAIL_BBOX_WIDTH;
 			}
 			else
 			{
-				left = x + MARIO_RACCOON_TAIL_BBOX_WIDTH;
+				left = x -4+ MARIO_RACCOON_TAIL_BBOX_WIDTH;
 				right = left + MARIO_RACCOON_BBOX_WIDTH;
 			}
 		}
@@ -863,7 +864,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		{
 			if (IsSwingTail)
 			{
-				left = x - MARIO_RACCOON_TAIL_BBOX_WIDTH;
+				left = x  - MARIO_RACCOON_TAIL_BBOX_WIDTH;
 				right = x + MARIO_RACCOON_BBOX_WIDTH + MARIO_RACCOON_TAIL_BBOX_WIDTH;
 			}
 			else

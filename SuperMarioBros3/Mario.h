@@ -144,7 +144,7 @@
 #define MARIO_SMALL_BBOX_HEIGHT 15
 #define MARIO_RACCOON_BBOX_WIDTH  14
 #define MARIO_RACCOON_BBOX_HEIGHT 27
-#define MARIO_RACCOON_TAIL_BBOX_WIDTH  9
+#define MARIO_RACCOON_TAIL_BBOX_WIDTH  13
 #define MARIO_FIRE_BBOX_WIDTH  14
 #define MARIO_FIRE_BBOX_HEIGHT 27
 
@@ -177,6 +177,7 @@ class CMario : public CGameObject
 	int imminentStack;
 	void Calculate_vx(DWORD _dt);
 	void Calculate_vy(DWORD _dt);
+	void UpdateFlagBaseOnTime();
 	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0, float oleft, float otop, float oright, float obottom);
 public: 
 	bool IsReadyJump;
@@ -204,7 +205,7 @@ public:
 
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
-	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	void SetJumpStack(int _num) { jumpStack = _num; }
 
 

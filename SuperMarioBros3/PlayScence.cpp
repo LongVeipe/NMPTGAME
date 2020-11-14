@@ -225,6 +225,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CKoopas(start_x, final_x, typeKoopa);
 		break;
 	}
+	case OBJECT_TYPE_GOOMBA:
+	{
+		float typeGoomba = atof(tokens[4].c_str());
+		float start_x = atof(tokens[5].c_str());
+		float final_x = atof(tokens[6].c_str());
+		obj = new CGoomba(start_x, final_x, typeGoomba);
+		break;
+	}
 	case OBJECT_TYPE_COIN: 
 	{
 		int State = atoi(tokens[4].c_str());
