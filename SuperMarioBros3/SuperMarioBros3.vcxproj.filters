@@ -43,9 +43,6 @@
     <ClCompile Include="SuperLeaf.cpp">
       <Filter>Source Files\Reward</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Source Files\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Koopas.cpp">
       <Filter>Source Files\Enemy</Filter>
     </ClCompile>
@@ -101,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="SuperLeaf.h">
       <Filter>Header Files\Reward</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Header Files\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Koopas.h">
       <Filter>Header Files\Enemy</Filter>

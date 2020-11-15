@@ -7,6 +7,9 @@
 #include "Game.h"
 #include "GameObject.h"
 #include "Sprites.h"
+#include "Koopas.h"
+#include "Goomba.h"
+#include "Mario.h"
 
 CGameObject::CGameObject()
 {
@@ -72,7 +75,11 @@ void CGameObject::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vecto
 		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
 
 		if (e->t > 0 && e->t <= 1.0f)
+		{
 			coEvents.push_back(e);
+			if(dynamic_cast<CMario*>(e->obj)  && e->nx!= 0)
+				DebugOut(L"[INFO] Koopa Collision \n");
+		}
 		else
 			delete e;
 	}
@@ -99,7 +106,7 @@ void CGameObject::FilterCollision(
 	for (UINT i = 0; i < coEvents.size(); i++)
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
-
+		
 		if (c->t < min_tx && c->nx != 0) {
 			min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
 		}

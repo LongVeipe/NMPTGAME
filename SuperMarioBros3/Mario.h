@@ -148,7 +148,7 @@
 #define MARIO_FIRE_BBOX_WIDTH  14
 #define MARIO_FIRE_BBOX_HEIGHT 27
 
-#define MARIO_UNTOUCHABLE_TIME 5000
+#define MARIO_UNTOUCHABLE_TIME 2000
 #define MARIO_CHANGE_IMMINENT_TIME	200
 #define MARIO_PERFORM_THROW_TIME	210
 #define MARIO_THROWING_TIME			300
@@ -177,6 +177,7 @@ class CMario : public CGameObject
 	int imminentStack;
 	void Calculate_vx(DWORD _dt);
 	void Calculate_vy(DWORD _dt);
+	void MarioCalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
 	void UpdateFlagBaseOnTime();
 	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0, float oleft, float otop, float oright, float obottom);
 public: 

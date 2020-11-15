@@ -4,9 +4,9 @@
 #include "Game.h"
 #include "PlayScence.h"
 
-CKoopas::CKoopas(float _start_x, float _final_x, int _type):CEnemy(_start_x,_final_x,_type)
+CKoopas::CKoopas(float _start_x, float _final_x, int _type):CGameObject()
 {
-
+	type = _type;
 	SetState(KOOPA_STATE_IDLE);
 }
 
@@ -20,7 +20,7 @@ void CKoopas::GetBoundingBox(float &left, float &top, float &right, float &botto
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	CEnemy::Update(dt, coObjects);
+	CGameObject::Update(dt, coObjects);
 
 	//
 	// TO-DO: make sure Koopas can interact with the world and to each of them too!
@@ -33,7 +33,8 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return;
 	}
 	else
-		vy += dt * KOOPA_GRAVITY;
+		//vy += dt * KOOPA_GRAVITY;
+		vy = 0;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -57,7 +58,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float x0 = x, y0 = y;
 		x = x0 + dx;
 		y = y0 + dy;
-		if (state == KOOPA_STATE_WALKING)
+		/*if (state == KOOPA_STATE_WALKING)
 		{
 			if (vx < 0 && x < final_x) {
 				x = final_x; vx = -vx;
@@ -66,7 +67,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			if (vx > 0 && x > start_x) {
 				x = start_x; vx = -vx;
 			}
-		}
+		}*/
 
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{

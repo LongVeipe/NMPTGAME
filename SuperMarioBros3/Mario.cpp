@@ -77,6 +77,36 @@ void CMario::Calculate_vy(DWORD _dt)
 		}
 	}
 }
+void CMario::MarioCalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
+{
+	for (UINT i = 0; i < coObjects->size(); i++)
+	{
+		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+
+		if (e->t > 0 && e->t <= 1.0f)
+		{
+			CGameObject* obj = e->obj;
+			float mleft, mtop, mright, mbottom;
+			GetBoundingBox(mleft, mtop, mright, mbottom);
+			float oleft, otop, obottom, oright;
+			obj->GetBoundingBox(oleft, otop, oright, obottom);
+			if (e->nx != 0)
+			{
+				if (ceil(mbottom) == otop)
+				{
+					continue;
+				}
+			}
+				coEvents.push_back(e);
+				if (dynamic_cast<CBrick*>(e->obj) && e->nx != 0)
+					DebugOut(L"[INFO] Koopa Collision \n");
+		}
+		else
+			delete e;
+	}
+
+	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
+}
 void CMario::UpdateFlagBaseOnTime()
 {
 	// reset untouchable timer if untouchable time has passed
@@ -120,7 +150,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// turn off collision when die 
 	if (state!=MARIO_STATE_DIE)
-		CalcPotentialCollisions(coObjects, coEvents);
+		MarioCalcPotentialCollisions(coObjects, coEvents);
 
 	UpdateFlagBaseOnTime();
 	// No collision occured, proceed normally

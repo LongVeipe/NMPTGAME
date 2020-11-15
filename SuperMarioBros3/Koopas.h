@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Enemy.h"
+#include "GameObject.h"
 
 #define KOOPAS_WALKING_SPEED 0.03f;
 #define KOOPA_SPEED_TURTOISESHELL_X	0.1
@@ -21,10 +21,13 @@
 #define KOOPA_ANI_RED_SMALL_TURTOISESHELL_IDLE 0
 #define KOOPAS_ANI_DIE 2
 
-#define KOOPA_GRAVITY 0.2F
+#define KOOPA_GRAVITY 0.2f
 
-class CKoopas : public CEnemy
+class CKoopas : public CGameObject
 {
+private:
+	int type;
+
 public:
 	bool IsBeingHeld;
 
@@ -33,6 +36,7 @@ public:
 	virtual void Render();
 	CKoopas(float _start_x, float _final_x, int _type);
 	virtual void SetState(int state);
+	int GetType() { return this->type; }
 	virtual ~CKoopas();
 	void BeHeld();
 	void BeKicked(int _mvx);

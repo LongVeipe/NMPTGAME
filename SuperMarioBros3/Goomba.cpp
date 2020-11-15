@@ -2,7 +2,7 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "PlayScence.h"
-CGoomba::CGoomba(float start_x, float final_x, int type):CEnemy( start_x, final_x,type)
+CGoomba::CGoomba(float start_x, float final_x, int type):CGameObject()
 {
 	SetState(GOOMBA_STATE_WALKING);
 	DeadTime = 0;
@@ -28,12 +28,13 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	
-	CEnemy::Update(dt, coObjects);
+	CGameObject::Update(dt, coObjects);
 
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
 	vy += dt*GOOMBA_GRAVITY;
+	x += dx;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -93,7 +94,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	}
 	CalculateBeSwingedTail();
-	// clean up collision events
+	 //clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
@@ -113,7 +114,7 @@ void CGoomba::Render()
 	animation_set->at(ani)->Render(x, y);
 
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -127,7 +128,9 @@ void CGoomba::SetState(int state)
 			vy = 0;
 			break;
 		case GOOMBA_STATE_WALKING: 
-			vx = -GOOMBA_WALKING_SPEED;
+			//vx = -GOOMBA_WALKING_SPEED;
+			vx = GOOMBA_WALKING_SPEED;
+			break;
 	}
 }
 
