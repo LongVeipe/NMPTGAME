@@ -33,8 +33,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	//
 	// TO-DO: make sure Goomba can interact with the world and to each of them too!
 	// 
-	vy += dt*GOOMBA_GRAVITY;
-	x += dx;
+	if(state != GOOMBA_STATE_DIE)
+		vy += dt*GOOMBA_GRAVITY;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -77,17 +77,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CMario*>(e->obj))
 			{
-				if (nx != 0)
+				/*if (nx != 0)
 				{
 					this->x = x0 + min_tx * this->dx + nx * 0.1f;
 					this->vx = -vx;
-				}
-				if (ny != 0)
-				{
-					this->vy = 0;
-					this->y = y0 + min_ty * this->dy + ny * 0.1f;
-
-				}
+				}*/
 			}
 
 		}
@@ -128,8 +122,8 @@ void CGoomba::SetState(int state)
 			vy = 0;
 			break;
 		case GOOMBA_STATE_WALKING: 
-			//vx = -GOOMBA_WALKING_SPEED;
-			vx = GOOMBA_WALKING_SPEED;
+			vx = -GOOMBA_WALKING_SPEED;
+			//vx = GOOMBA_WALKING_SPEED;
 			break;
 	}
 }

@@ -77,36 +77,6 @@ void CMario::Calculate_vy(DWORD _dt)
 		}
 	}
 }
-void CMario::MarioCalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents)
-{
-	for (UINT i = 0; i < coObjects->size(); i++)
-	{
-		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
-
-		if (e->t > 0 && e->t <= 1.0f)
-		{
-			CGameObject* obj = e->obj;
-			float mleft, mtop, mright, mbottom;
-			GetBoundingBox(mleft, mtop, mright, mbottom);
-			float oleft, otop, obottom, oright;
-			obj->GetBoundingBox(oleft, otop, oright, obottom);
-			if (e->nx != 0)
-			{
-				if (ceil(mbottom) == otop)
-				{
-					continue;
-				}
-			}
-				coEvents.push_back(e);
-				if (dynamic_cast<CBrick*>(e->obj) && e->nx != 0)
-					DebugOut(L"[INFO] Koopa Collision \n");
-		}
-		else
-			delete e;
-	}
-
-	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
-}
 void CMario::UpdateFlagBaseOnTime()
 {
 	// reset untouchable timer if untouchable time has passed
@@ -150,7 +120,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	// turn off collision when die 
 	if (state!=MARIO_STATE_DIE)
-		MarioCalcPotentialCollisions(coObjects, coEvents);
+		CalcPotentialCollisions(coObjects, coEvents);
 
 	UpdateFlagBaseOnTime();
 	// No collision occured, proceed normally
@@ -203,13 +173,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				switch (brick->GetType())
 				{
 				case BRICK_TYPE_NORMAL:
-					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0, oleft, otop, oright, obottom);
+					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					break;
 				case BRICK_TYPE_BIG_BLOCK:
 				{
 					if (e->ny == -1)
 					{
-						BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0, oleft, otop, oright, obottom);
+						BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					}
 					else
 					{
@@ -220,7 +190,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				case BRICK_TYPE_QUESTION:
 					
-					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0, oleft, otop, oright, obottom);
+					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					if (brick->GetDetailType() == BRICK_DETAIL_TYPE_QUESTION_INTACT  )
 					{
 						if (e->ny == 1)
@@ -257,7 +227,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				// jump on top >> kill Goomba and deflect a bit 
 				if (e->ny < 0)
 				{
-					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0, oleft, otop, oright, obottom);
+					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					if (goomba->GetState() != GOOMBA_STATE_DIE)
 					{
 						goomba->SetState(GOOMBA_STATE_DIE);
@@ -320,7 +290,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			}
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
-				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0, oleft, otop, oright, obottom);
+				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 
 				if (e->ny == -1)
 				{
@@ -350,13 +320,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	
 }
 
-void CMario::BasicCollision(float min_tx, float min_ty, float _nx, float _ny, float x0, float y0, float oleft, float otop, float oright, float obottom)
+void CMario::BasicCollision(float min_tx, float min_ty, float _nx, float _ny, float x0, float y0)
 {
-	float mleft, mtop, mright, mbottom;
-	GetBoundingBox(mleft, mtop, mright, mbottom);
 	if (_nx !=0 )
 	{
-		if (ceil(mbottom) -1  != otop)
+		//if (ceil(mbottom) -1  != otop)
 		{
 			this->vx = 0;
 			this->x = x0 + min_tx * this->dx + _nx * 0.1f;

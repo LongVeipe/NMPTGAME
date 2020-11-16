@@ -177,9 +177,8 @@ class CMario : public CGameObject
 	int imminentStack;
 	void Calculate_vx(DWORD _dt);
 	void Calculate_vy(DWORD _dt);
-	void MarioCalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
 	void UpdateFlagBaseOnTime();
-	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0, float oleft, float otop, float oright, float obottom);
+	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0);
 public: 
 	bool IsReadyJump;
 	bool IsReadyHolding;

@@ -33,8 +33,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return;
 	}
 	else
-		//vy += dt * KOOPA_GRAVITY;
-		vy = 0;
+		vy += dt * KOOPA_GRAVITY;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -125,16 +124,17 @@ void CKoopas::Render()
 void CKoopas::SetState(int state)
 {
 	CGameObject::SetState(state);
-	/*switch (state)
+	switch (state)
 	{
-	case KOOPAS_STATE_DIE:
-		y += KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT_DIE + 1;
+	/*case KOOPA_STATE_DIE:
+		y += KOOPA_BBOX_RED_SMALL_WALK_HEIGHT - KOOPAS_BBOX_HEIGHT_DIE + 1;
 		vx = 0;
 		vy = 0;
-		break;
-	case KOOPAS_STATE_WALKING:
+		break;*/
+	case KOOPA_STATE_WALKING:
 		vx = KOOPAS_WALKING_SPEED;
-	}*/
+		break;
+	}
 
 }
 void CKoopas::BeHeld()

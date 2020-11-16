@@ -76,9 +76,20 @@ void CGameObject::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vecto
 
 		if (e->t > 0 && e->t <= 1.0f)
 		{
-			coEvents.push_back(e);
-			if(dynamic_cast<CMario*>(e->obj)  && e->nx!= 0)
-				DebugOut(L"[INFO] Koopa Collision \n");
+			float mleft, mtop, mright, mbottom;
+			GetBoundingBox(mleft, mtop, mright, mbottom);
+			float oleft, otop, obottom, oright;
+			e->obj->GetBoundingBox(oleft, otop, oright, obottom);
+			if (e->nx != 0)
+			{
+				if (ceil(mbottom) == otop)
+				{
+					continue;
+				}
+			}
+			coEvents.push_back(e);/*
+			if (dynamic_cast<CBrick*>(e->obj) && e->nx != 0)
+				DebugOut(L"[INFO] Koopa Collision \n");*/
 		}
 		else
 			delete e;

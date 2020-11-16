@@ -21,7 +21,7 @@
 #define KOOPA_ANI_RED_SMALL_TURTOISESHELL_IDLE 0
 #define KOOPAS_ANI_DIE 2
 
-#define KOOPA_GRAVITY 0.2f
+#define KOOPA_GRAVITY 0.002f
 
 class CKoopas : public CGameObject
 {
