@@ -85,6 +85,23 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 				}
 			}
+			else if (dynamic_cast<CGoomba*>(e->obj))
+			{
+				
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+				if (type == KOOPA_TYPE_RED_SMALL_TURTOISESHELL)
+				{
+					if (e->nx != 0)
+					{
+						if (this->state != KOOPA_STATE_IDLE)
+						{
+							CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+							goomba->SetState(GOOMBA_STATE_DIE_X);
+							goomba->vx = this->nx * GOOMBA_DIE_X_SPEED_X;
+						}
+					}
+				}
+			}
 			else if (dynamic_cast<CMario*>(e->obj))
 			{
 				/*CMario* mario = dynamic_cast<CMario*>(e->obj);
@@ -131,8 +148,21 @@ void CKoopas::SetState(int state)
 		vx = 0;
 		vy = 0;
 		break;*/
-	case KOOPA_STATE_WALKING:
-		vx = KOOPAS_WALKING_SPEED;
+	case KOOPA_STATE_WALKING_RIGHT:
+		if (type == KOOPA_TYPE_RED_SMALL_TURTOISESHELL)
+			vx = KOOPA_SPEED_TURTOISESHELL_X;
+		else
+			vx = KOOPAS_WALKING_SPEED;
+		break;
+	case KOOPA_STATE_WALKING_LEFT:
+
+		if (type == KOOPA_TYPE_RED_SMALL_TURTOISESHELL)
+			vx = -KOOPA_SPEED_TURTOISESHELL_X;
+		else
+			vx = -KOOPAS_WALKING_SPEED;
+		break;
+	case KOOPA_STATE_IDLE:
+		vx = 0;
 		break;
 	}
 
@@ -152,13 +182,19 @@ void CKoopas::BeHeld()
 		this->vx = this->vy = 0;
 	}
 	else
+	{
 		IsBeingHeld = false;
+		this->vx = mario->nx * KOOPA_SPEED_TURTOISESHELL_X;
+	}
 }
 
 void CKoopas::BeKicked(int mnx)
 {
 	this->nx = mnx;
-	vx = nx * KOOPA_SPEED_TURTOISESHELL_X;
+	if (nx > 0)
+		SetState(KOOPA_STATE_WALKING_RIGHT);
+	else
+		SetState(KOOPA_STATE_WALKING_LEFT);
 }
 
 CKoopas::~CKoopas()

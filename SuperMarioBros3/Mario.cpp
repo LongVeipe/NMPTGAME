@@ -103,7 +103,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	//Update Bullet
 	for (int i = 0; unsigned(i) < Bullets.size(); i++)
 	{
-		Bullets[i]->Update(dt, coObjects);
+		CBullet* bullet = (CBullet*)Bullets[i];
+		if(bullet->GetState() != BULLET_STATE_EXPLODING)
+			bullet->Update(dt, coObjects);
+		else if(GetTickCount() - bullet->GetStartExplode_time() > BULLET_EXPLOSION_TIME)
+		{
+			//CGameObject* bul = Bullets[i];
+			Bullets.erase(Bullets.begin() + i);
+			delete bullet;
+		}
 	}
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
@@ -159,14 +167,12 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		float x0 = x, y0 = y;
 		x = x0 + dx;
 		y = y0 + dy;
-	
-		float oleft, otop, oright, obottom;
 
-		
+		float mleft, mtop, mright, mbottom;
+		GetBoundingBox(mleft, mtop, mright, mbottom);
 		for (UINT i = 0; i < coEventsResult.size(); i++)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
-			e->obj->GetBoundingBox(oleft, otop, oright, obottom);
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
 				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
@@ -228,9 +234,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (e->ny < 0)
 				{
 					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
-					if (goomba->GetState() != GOOMBA_STATE_DIE)
+					if (goomba->GetState() != GOOMBA_STATE_DIE_Y)
 					{
-						goomba->SetState(GOOMBA_STATE_DIE);
+						goomba->SetState(GOOMBA_STATE_DIE_Y);
 						goomba->SetDeadTime();
 						vy = -MARIO_JUMP_DEFLECT_SPEED;
 						ny = -1;
@@ -239,18 +245,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				else if (e->nx != 0)
 				{
 					if (untouchable == 0)
-					{
-						if (goomba->GetState() != GOOMBA_STATE_DIE)
-						{
-							if (level > MARIO_LEVEL_SMALL)
-							{
-								level = MARIO_LEVEL_SMALL;
-								StartUntouchable();
-							}
-							else
-								SetState(MARIO_STATE_DIE);
-						}
-					}
+							BeDamaged();
 				}
 			} // if Goomba
 			else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
@@ -266,24 +261,42 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				case KOOPA_TYPE_RED_SMALL_TURTOISESHELL:
 					if (e->nx != 0)
 					{
-						if (IsReadyHolding == true)
+						if (koopa->state == KOOPA_STATE_IDLE) //hold when turtoiseshell Idle
 						{
-							IsHolding = true;
-							koopa->IsBeingHeld = true;
-							IsReadyHolding = false;
+							if (IsReadyHolding == true )
+							{
+								IsHolding = true;
+								koopa->IsBeingHeld = true;
+								koopa->SetState(KOOPA_STATE_IDLE);
+								IsReadyHolding = false;
 
+							}
+							else
+							{
+								IsKicking = true;
+								kick_start = GetTickCount64();
+								koopa->BeKicked(this->nx);
+							}
 						}
-						else
+						else //die when turtoiseshell run
 						{
-							IsKicking = true;
-							kick_start = GetTickCount64();
-							koopa->BeKicked(this->nx);
+							if (untouchable == 0)
+								BeDamaged();
 						}
-
 					}
-					if (e->ny != 0)
+					if (e->ny < 0)
 					{
-
+						if (koopa->GetState() == KOOPA_STATE_IDLE)
+						{
+							float kleft, ktop, kright, kbottom;
+							koopa->GetBoundingBox(kleft, ktop, kright, kbottom);
+							if (mright < kright)
+								koopa->SetState(KOOPA_STATE_WALKING_RIGHT);
+							else
+								koopa->SetState(KOOPA_STATE_WALKING_LEFT);
+						}
+						else if (untouchable == 0)
+							BeDamaged();
 					}
 					break;
 				}
@@ -900,10 +913,8 @@ void CMario::StartThrowFire()
 		float l, t, r, b;
 		GetBoundingBox(l, t, r, b);
 		CBullet* bullet;
-		if (nx > 0)
-			bullet = new CBullet(r, t);
-		else
-			bullet = new CBullet(l, t);
+		
+			bullet = new CBullet((r+l)/2, t);
 		bullet->nx = this->nx;
 		bullet->vx =  this->nx * BULLET_SPEED_X;
 		bullet->vy = BULLET_FIRST_SPEED_Y;
@@ -954,4 +965,14 @@ void CMario::StartSwingTail()
 		IsSwingTail = true;
 		swingTail_start = GetTickCount64();
 	}
+}
+void CMario::BeDamaged()
+{
+	if (level > MARIO_LEVEL_SMALL)
+	{
+		level = MARIO_LEVEL_SMALL;
+		StartUntouchable();
+	}
+	else
+		SetState(MARIO_STATE_DIE);
 }

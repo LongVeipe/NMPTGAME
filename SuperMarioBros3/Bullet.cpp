@@ -11,6 +11,7 @@ CBullet::CBullet(float _x, float _y) :CGameObject()
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	LPANIMATION_SET ani_set = animation_sets->Get(BULLET_ANIMATION_SET_ID);
 	this->SetAnimationSet(ani_set);
+	state = BULLET_STATE_FLYING;
 }
 
 
@@ -21,8 +22,6 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += BULLET_GRAVITY * dt;
 	if (vy > BULLET_MAX_FALLING_SPEED)
 		vy = BULLET_MAX_FALLING_SPEED;
-	x += dx;
-	y += dy;
 
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -53,27 +52,48 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
+				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+				float bleft, btop, bright, bbottom;
+				GetBoundingBox(bleft, btop, bright, bbottom);
+				float oleft, otop, obottom, oright;
+				e->obj->GetBoundingBox(oleft, otop, oright, obottom);
 				if (e->nx != 0)
 				{
-					/*this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
-					this->vx = -vx;*/
-					float bleft, btop, bright, bbottom;
-					GetBoundingBox(bleft, btop, bright, bbottom);
-					float oleft, otop, obottom, oright;
-					e->obj->GetBoundingBox(oleft, otop, oright, obottom);
-					if (ceil(bbottom) == otop)
+					//if (ceil(bbottom) == otop) //== e->ny!= 0
+					//{
+					//	this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
+					//	this->vy = -BULLET_DEFLECT_SPEED;
+					//}
+					//else 
+					if(brick->GetType() != BRICK_TYPE_BIG_BLOCK)
 					{
-						this->vy = -BULLET_DEFLECT_SPEED;
-						this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
+						//this->vx = 0;
+						this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
+						SetState(BULLET_STATE_EXPLODING);
 					}
-				}
-				if (e->ny != 0)
-				{
-					this->vy = - BULLET_DEFLECT_SPEED;
-					this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
 
-						
 				}
+				else if (e->ny != 0)
+				{
+					//if ((ceil(bleft) == oright || ceil(bright) ==oleft) && brick->GetType() != BRICK_TYPE_BIG_BLOCK) // == e->nx!=0
+					//{
+					//	this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
+					//	SetState(BULLET_STATE_EXPLODING);
+					//}
+					//else
+					{
+						//this->vy = 0;
+						this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
+						this->vy = -BULLET_DEFLECT_SPEED;
+					}
+					
+				}
+			}
+			else if(dynamic_cast<CGoomba*>(e->obj))
+			{
+				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+				goomba->SetState(GOOMBA_STATE_DIE_X);
+				this->SetState(BULLET_STATE_EXPLODING);
 			}
 
 		}
@@ -88,20 +108,46 @@ void CBullet::Render()
 {
 	//CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	int ani = -1;
-	if (nx > 0)
-		ani = BULLET_ANI_RIGHT;
-	else
-		ani = BULLET_ANI_LEFT;
+	if (state == BULLET_STATE_FLYING)
+	{
+		if (nx > 0)
+			ani = BULLET_ANI_FLYING_RIGHT;
+		else
+			ani = BULLET_ANI_FLYING_LEFT;
+	}
+	if (state == BULLET_STATE_EXPLODING)
+	{
+		if (nx > 0)
+			ani = BULLET_ANI_EXPLODING_RIGHT;
+		else
+			ani = BULLET_ANI_EXPLODING_LEFT;
+	}
 	animation_set->at(ani)->Render(x, y);
 }
 
 void CBullet::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x;
-	top = y;
-	right = x + BULLET_BBOX_WIDTH;
+	if (state == BULLET_STATE_EXPLODING)
+		left = top = right = bottom = 0;
+	else
+	{
+		left = x;
+		top = y;
+		right = x + BULLET_BBOX_WIDTH;
 
-	bottom = y + BULLET_BBOX_HEIGHT;
+		bottom = y + BULLET_BBOX_HEIGHT;
+	}
+}
+void CBullet::SetState(int _state)
+{
+	CGameObject::SetState(_state);
+	switch (_state)
+	{
+	case BULLET_STATE_EXPLODING:
+		vx = vy = 0;
+		StartExplode_time = GetTickCount64();
+		break;
+	}
 }
 CBullet::~CBullet()
 {

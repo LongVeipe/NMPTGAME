@@ -219,4 +219,5 @@ public:
 	void UpJumpStack() { jumpStack += 1; }
 	void changeImminent();
 	void downImminent();
+	void BeDamaged();
 };
