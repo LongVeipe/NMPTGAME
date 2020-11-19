@@ -181,6 +181,7 @@
 #kick left
 10242	81	384	103	412	0
 
+
 #-FIRE MARIO-
 #idle right
 10301	507	265	521	292	1

@@ -143,11 +143,6 @@ void CKoopas::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
-	/*case KOOPA_STATE_DIE:
-		y += KOOPA_BBOX_RED_SMALL_WALK_HEIGHT - KOOPAS_BBOX_HEIGHT_DIE + 1;
-		vx = 0;
-		vy = 0;
-		break;*/
 	case KOOPA_STATE_WALKING_RIGHT:
 		if (type == KOOPA_TYPE_RED_SMALL_TURTOISESHELL)
 			vx = KOOPA_SPEED_TURTOISESHELL_X;
@@ -184,7 +179,10 @@ void CKoopas::BeHeld()
 	else
 	{
 		IsBeingHeld = false;
-		this->vx = mario->nx * KOOPA_SPEED_TURTOISESHELL_X;
+		if (mario->nx > 0)
+			SetState(KOOPA_STATE_WALKING_RIGHT);
+		else
+			SetState(KOOPA_STATE_WALKING_LEFT);
 	}
 }
 

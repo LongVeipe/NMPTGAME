@@ -495,7 +495,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{ 
 		if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
 		{
-
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->UpJumpStack();
 			if(game->IsKeyDown(DIK_RIGHT))
@@ -505,7 +504,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			mario->downImminent();
 		}
 	}
-	
 	else 
 	{ 
 		if(mario->IsTouchingGround)

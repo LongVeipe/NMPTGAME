@@ -87,11 +87,11 @@ void CGameObject::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vecto
 					continue;
 				}
 			}
-			else if (e->ny != 0)
+			/*else if (e->ny != 0)
 			{
 				if (ceil(mleft) == oright || ceil(mright) == oleft)
 					continue;
-			}
+			}*/
 			coEvents.push_back(e);/*
 			if (dynamic_cast<CBrick*>(e->obj) && e->nx != 0)
 				DebugOut(L"[INFO] Koopa Collision \n");*/

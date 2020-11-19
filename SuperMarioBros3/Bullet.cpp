@@ -59,12 +59,6 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				e->obj->GetBoundingBox(oleft, otop, oright, obottom);
 				if (e->nx != 0)
 				{
-					//if (ceil(bbottom) == otop) //== e->ny!= 0
-					//{
-					//	this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
-					//	this->vy = -BULLET_DEFLECT_SPEED;
-					//}
-					//else 
 					if(brick->GetType() != BRICK_TYPE_BIG_BLOCK)
 					{
 						//this->vx = 0;
@@ -75,18 +69,8 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 				else if (e->ny != 0)
 				{
-					//if ((ceil(bleft) == oright || ceil(bright) ==oleft) && brick->GetType() != BRICK_TYPE_BIG_BLOCK) // == e->nx!=0
-					//{
-					//	this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
-					//	SetState(BULLET_STATE_EXPLODING);
-					//}
-					//else
-					{
-						//this->vy = 0;
 						this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
 						this->vy = -BULLET_DEFLECT_SPEED;
-					}
-					
 				}
 			}
 			else if(dynamic_cast<CGoomba*>(e->obj))

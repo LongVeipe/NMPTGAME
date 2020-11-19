@@ -28,6 +28,7 @@ CMario::CMario(float x, float y) : CGameObject()
 
 	jumpStack = 0;
 	imminentStack = 0;
+	currentFrameOfSwingTail = -1;
 
 	IsReadyJump = true;
 	IsTouchingGround = true;
@@ -53,12 +54,15 @@ void CMario::Calculate_vx(DWORD _dt)
 		vx = float(nx * (MARIO_WALKING_SPEED_MAX + imminentStack * MARIO_IMMINANT_WALKING_SPEED));
 	}
 	//state == idle
-	if (state == MARIO_STATE_IDLE)
+	//if (state == MARIO_STATE_IDLE)
 	{
 		if (nx > 0)
 		{
 			if (vx < 0)
+			{
 				vx = 0;
+				//DebugOut(L"[INFO] Animation added: %d \n", spriteId);
+			}
 		}
 		else
 			if (vx > 0)
@@ -98,39 +102,87 @@ void CMario::UpdateFlagBaseOnTime()
 		IsKicking = false;
 	}
 }
-void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+void CMario::UpdateBullets(DWORD _dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	//Update Bullet
 	for (int i = 0; unsigned(i) < Bullets.size(); i++)
 	{
 		CBullet* bullet = (CBullet*)Bullets[i];
-		if(bullet->GetState() != BULLET_STATE_EXPLODING)
-			bullet->Update(dt, coObjects);
-		else if(GetTickCount() - bullet->GetStartExplode_time() > BULLET_EXPLOSION_TIME)
+		if (bullet->GetState() != BULLET_STATE_EXPLODING)
+			bullet->Update(_dt, coObjects);
+		else if (GetTickCount64() - bullet->GetStartExplode_time() > BULLET_EXPLOSION_TIME)
 		{
 			//CGameObject* bul = Bullets[i];
 			Bullets.erase(Bullets.begin() + i);
 			delete bullet;
 		}
 	}
-	// Calculate dx, dy 
+}
+void CMario::UpdateWhenSwingTail()
+{
+	if (IsSwingTail)
+	{
+		int frameNum = (GetTickCount() - swingTail_start)/MARIO_EACH_FRAME_IN_ANI_SWING_TAIL_TIME;
+		if(nx>0)
+			switch (frameNum)
+			{
+			case 0:
+				if (currentFrameOfSwingTail == 0)
+				{
+					x = x + MARIO_RACCOON_TAIL_BBOX_WIDTH - 2;
+					currentFrameOfSwingTail++;
+					DebugOut(L"[INFO] case 0, x = %d \n", x);
+				}
+				break;
+			case 1:
+				if (currentFrameOfSwingTail == 1)
+					currentFrameOfSwingTail++;
+				break;
+			case 2:
+				if (currentFrameOfSwingTail == 2)
+					currentFrameOfSwingTail++;
+				break;
+			case 3:
+				if (currentFrameOfSwingTail == 3)
+				{
+					x = x - MARIO_RACCOON_TAIL_BBOX_WIDTH + 2;
+					DebugOut(L"[INFO] case 3, x = %d \n", x);
+					currentFrameOfSwingTail = 0;
+				}
+				break;
+			}
+		else
+			switch (frameNum)
+			{
+			case 0:
+				break;
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				break;
+			}
+	}
+}
+
+
+void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+{
 	CGameObject::Update(dt);
-
-	// Simple fall down
-
+	UpdateBullets(dt, coObjects);
 	Calculate_vy(dt);
 	Calculate_vx(dt);
+	UpdateFlagBaseOnTime();
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
-
 	coEvents.clear();
 
 	// turn off collision when die 
 	if (state!=MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
 
-	UpdateFlagBaseOnTime();
+	
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
@@ -245,7 +297,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				else if (e->nx != 0)
 				{
 					if (untouchable == 0)
+						if (!IsSwingTail)
 							BeDamaged();
+						else
+							goomba->SetState(GOOMBA_STATE_DIE_X);
 				}
 			} // if Goomba
 			else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
@@ -319,6 +374,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		
 	}
 
+	UpdateWhenSwingTail();
 	if (vy > 0)
 	{
 		if (IsJumping == true)
@@ -821,18 +877,22 @@ void CMario::SetState(int state)
 			IsFlying = true;
 		break; 
 	case MARIO_STATE_IDLE:
-		if (IsTouchingGround == true )
+		if (IsTouchingGround == true)
+		{
 			if (vx > 0)
 				ax = -MARIO_WALKING_FRICTION;
 			else if (vx < 0)
 				ax = MARIO_WALKING_FRICTION;
 			else ax = 0;
+		}
 		else
-			if (vx > 0 && nx >0)
+		{
+			if (vx > 0 && nx > 0)
 				ax = -MARIO_WALKING_ACCELERATION;
-			else if (vx < 0 && nx <0)
+			else if (vx < 0 && nx < 0)
 				ax = MARIO_WALKING_ACCELERATION;
 			else ax = 0;
+		}
 		IsWalkingLeft = IsWalkingRight = false;
 		break;
 	case MARIO_STATE_DIE:
@@ -862,12 +922,12 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		{
 			if (IsSwingTail)
 			{
-				left = x-4;
-				right = left + MARIO_RACCOON_BBOX_WIDTH + 2*MARIO_RACCOON_TAIL_BBOX_WIDTH;
+				left = x;
+				right = left + MARIO_RACCOON_BBOX_WIDTH + MARIO_RACCOON_TAIL_BBOX_WIDTH;
 			}
 			else
 			{
-				left = x -4+ MARIO_RACCOON_TAIL_BBOX_WIDTH;
+				left = x + MARIO_RACCOON_TAIL_BBOX_WIDTH;
 				right = left + MARIO_RACCOON_BBOX_WIDTH;
 			}
 		}
@@ -964,6 +1024,7 @@ void CMario::StartSwingTail()
 
 		IsSwingTail = true;
 		swingTail_start = GetTickCount64();
+		currentFrameOfSwingTail = 0;
 	}
 }
 void CMario::BeDamaged()

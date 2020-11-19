@@ -143,22 +143,12 @@ void CGoomba::CalculateBeSwingedTail()
 		mario->GetBoundingBox(ml, mt, mr, mb);
 		float gl, gt, gr, gb;
 		this->GetBoundingBox(gl,gt,gr,gb);
-		if (gb<mt || gt>mb)
+		if (gb<mt || gt>mb || ml > gr || mr < gl)
 			return;
-		else
+		if ((gl<ml && gr>ml) ||(gl<mr &&mr<gr))
 		{
-			if (ml>=gr || mr <= gl)
-			{
-				return;
-			}
-			else
-			{
-				if (gl<ml && gr>ml)
-				{
-					this->SetState(GOOMBA_STATE_DIE_X);
-					vx = mario->nx*GOOMBA_DIE_X_SPEED_X;
-				}
-			}
+			this->SetState(GOOMBA_STATE_DIE_X);
+			vx = mario->nx * GOOMBA_DIE_X_SPEED_X;
 		}
 	}
 }

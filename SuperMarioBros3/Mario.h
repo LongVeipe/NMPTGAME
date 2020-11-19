@@ -144,7 +144,7 @@
 #define MARIO_SMALL_BBOX_HEIGHT 15
 #define MARIO_RACCOON_BBOX_WIDTH  14
 #define MARIO_RACCOON_BBOX_HEIGHT 27
-#define MARIO_RACCOON_TAIL_BBOX_WIDTH  13
+#define MARIO_RACCOON_TAIL_BBOX_WIDTH  9
 #define MARIO_FIRE_BBOX_WIDTH  14
 #define MARIO_FIRE_BBOX_HEIGHT 27
 
@@ -155,6 +155,9 @@
 #define MARIO_SWING_TAIL_TIME		300
 #define MARIO_PERFORM_SWING_TAIL_TIME		210
 #define MARIO_KICKING_TIME			300
+#define MARIO_EACH_FRAME_IN_ANI_SWING_TAIL_TIME	50
+
+
 #define MARIO_MAX_JUMPIMG_STACKS 19
 #define MARIO_MAX_IMMINENT_STACKS 7
 
@@ -175,10 +178,14 @@ class CMario : public CGameObject
  
 	int jumpStack;
 	int imminentStack;
+	int currentFrameOfSwingTail;
 	void Calculate_vx(DWORD _dt);
 	void Calculate_vy(DWORD _dt);
 	void UpdateFlagBaseOnTime();
+	void UpdateBullets(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void UpdateWhenSwingTail();
 	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0);
+
 public: 
 	bool IsReadyJump;
 	bool IsReadyHolding;

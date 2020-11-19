@@ -33,7 +33,7 @@ public:
 	virtual void SetState(int _state);
 	CBullet(float x, float y);
 	virtual ~CBullet();
-	bool IsCollision;
+	//bool IsCollision;
 	DWORD GetStartExplode_time() { return StartExplode_time; }
 };
 typedef CBullet* LPBULLET;
