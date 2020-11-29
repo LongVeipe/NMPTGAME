@@ -5,13 +5,14 @@
 #define MARIO_WALKING_SPEED_START	0.08f 
 #define MARIO_WALKING_ACCELERATION	0.0001f
 #define MARIO_WALKING_FRICTION	0.00025f
-#define MARIO_WALKING_SPEED_MAX		0.13
+#define MARIO_WALKING_SPEED_MAX		0.1
 #define MARIO_IMMINANT_WALKING_SPEED		0.02
-//0.1f
 #define MARIO_JUMP_SPEED_Y		0.2f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define MARIO_GRAVITY			0.002f
+#define MARIO_RACCOON_FLY_GRAVITY_COEFFICIENT 0.37
 #define MARIO_DIE_DEFLECT_SPEED	 0.5f
+#define MARIO_MAX_FALL_SPEED	0.3
 
 
 
@@ -153,9 +154,11 @@
 #define MARIO_PERFORM_THROW_TIME	210
 #define MARIO_THROWING_TIME			300
 #define MARIO_SWING_TAIL_TIME		300
-#define MARIO_PERFORM_SWING_TAIL_TIME		210
+#define MARIO_PERFORM_SWING_TAIL_TIME	210
+#define MARIO_EACH_STAGE_IN_SWING_TAIL_TIME	50
 #define MARIO_KICKING_TIME			300
-#define MARIO_EACH_FRAME_IN_ANI_SWING_TAIL_TIME	50
+#define MARIO_FALLING_SLOWLY_TIME	300
+#define MARIO_RACCOON_CAN_FLY_TIME	4500
 
 
 #define MARIO_MAX_JUMPIMG_STACKS 19
@@ -175,10 +178,12 @@ class CMario : public CGameObject
 	DWORD swingTail_start;
 	DWORD kick_start;
 	DWORD changeImminent_start;
+	DWORD fallSlowly_start;
+	DWORD canFlyHigh_start;
  
 	int jumpStack;
 	int imminentStack;
-	int currentFrameOfSwingTail;
+	int StageOfSwingTail;
 	void Calculate_vx(DWORD _dt);
 	void Calculate_vy(DWORD _dt);
 	void UpdateFlagBaseOnTime();
@@ -194,7 +199,6 @@ public:
 	bool IsTouchingGround;
 	bool IsJumping;
 	bool IsFalling;
-	bool IsLanding;
 	bool IsFlying;
 	bool IsWalkingRight;
 	bool IsWalkingLeft;
@@ -204,6 +208,8 @@ public:
 	bool IsThrowing;
 	bool IsRunning;
 	bool IsSwingTail;
+	bool IsFallingSlowly;
+	bool IsRaccoonCanFlyHigh;
 
 
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -222,9 +228,14 @@ public:
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	int GetJumpStack() { return jumpStack; }
+	int GetImminentStack() { return imminentStack; }
 	int GetLevel() { return level; }
 	void UpJumpStack() { jumpStack += 1; }
 	void changeImminent();
 	void downImminent();
+	void upImminent();
 	void BeDamaged();
+	void SlowFall();
+	void RaccoonStartFlyHigh();
+	bool IsRaccoonReadyFly();
 };

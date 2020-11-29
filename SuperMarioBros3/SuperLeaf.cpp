@@ -1,4 +1,5 @@
 #include "SuperLeaf.h"
+#include "Game.h"
 
 
 CSuperLeaf::CSuperLeaf(float _x, float _y, int _state)
@@ -21,6 +22,13 @@ void CSuperLeaf::Render()
 
 void CSuperLeaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	/*CGame* game = CGame::GetInstance();
+	float cx, cy;
+	game->GetCamPos(cx, cy);
+	float scrW = game->GetScreenWidth();
+	float scrH = game->GetScreenHeight();
+	if (this->x <cx - 50 || this->y<cy - 50 || this->x > cx + scrW + 50 || this->y >cy + scrH + 50)
+		return;*/
 
 	x += dx;
 	y += dy;

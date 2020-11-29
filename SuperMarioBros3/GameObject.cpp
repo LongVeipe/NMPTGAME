@@ -155,6 +155,17 @@ void CGameObject::RenderBoundingBox()
 	CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
 
+bool CGameObject::IsInCamera()
+{
+	CGame* game = CGame::GetInstance();
+	float cx, cy;
+	game->GetCamPos(cx, cy);
+	float scrW = game->GetScreenWidth();
+	float scrH = game->GetScreenHeight();
+	if (this->x <cx || this->y<cy || this->x > cx + scrW || this->y >cy + scrH)
+		return false;
+	return true;
+}
 
 CGameObject::~CGameObject()
 {

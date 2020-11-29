@@ -2,35 +2,106 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "PlayScence.h"
-CGoomba::CGoomba(float start_x, float final_x, int type):CGameObject()
+#include "Utils.h"
+CGoomba::CGoomba(float start_x, float final_x, int _type):CGameObject()
 {
+	type = _type;
 	SetState(GOOMBA_STATE_WALKING);
-	DeadTime = 0;
+	this->PARA_jumpStack = 0;
+	loop_start == GetTickCount64();
 }
+CGoomba::~CGoomba()
+{
 
+}
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
 	if (this->state == GOOMBA_STATE_DIE_X || this->state == GOOMBA_STATE_DIE_Y)
 			left = top = right = bottom = 0;
 	else
 	{
-		left = x;
-		top = y;
-		right = x + GOOMBA_BBOX_WIDTH;
-		bottom = y + GOOMBA_BBOX_HEIGHT;
+		if (type == GOOMBA_TYPE_SMALL)
+		{
+			left = x;
+			top = y;
+			right = x + GOOMBA_BBOX_WIDTH;
+			bottom = y + GOOMBA_BBOX_HEIGHT;
+		}
+		else
+		{
+			left = x + GOOMBA_BBOX_WING_WIDTH;
+			right = left + GOOMBA_BBOX_WIDTH;
+			/*if (IsTouchingGround)
+				top = y + GOOMBA_BBOX*/
+			top = y;
+			bottom = y + GOOMBA_BBOX_HEIGHT + GOOMBA_BBOX_FOLDING_WING_HEIGHT;
+		}
 	}
 }
 
+void CGoomba::Calculate_vy()
+{
+	if (state != GOOMBA_STATE_DIE_Y)
+	{
+		vy += dt * GOOMBA_GRAVITY;
+	}
+	if (vy > GOOMBA_MAX_FALL_SPEED)
+		vy = GOOMBA_MAX_FALL_SPEED;
+}
+void CGoomba::Calculate_vx()
+{
+
+}
+void CGoomba::Update_Para()
+{
+	//update vx to attack on mario 
+	if (IsTouchingGround)
+	{
+		if ((GetTickCount64() - loop_start) > GOOMBA_TIME_PARA_OPERATION_LOOP && PARA_jumpStack == 0)
+		{
+			CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+			float ml, mt, mr, mb;
+			mario->GetBoundingBox(ml, mt, mr, mb);
+			float gl, gt, gr, gb;
+			this->GetBoundingBox(gl, gt, gr, gb);
+			if (mr < gl)
+				vx = -GOOMBA_WALKING_SPEED;
+			else if(ml>gr)
+				vx = GOOMBA_WALKING_SPEED;
+		}
+	}
+	//update jumping
+	if (IsTouchingGround)
+	{
+		if ((GetTickCount64() - loop_start) > GOOMBA_TIME_PARA_OPERATION_LOOP && PARA_jumpStack == 0 )
+		{
+			SetState(GOOMBA_STATE_JUMPING);
+			loop_start = GetTickCount64();
+			PARA_jumpStack++;
+		}
+		else if (PARA_jumpStack == GOOMBA_PARA_MAX_JUMP_STACK)
+		{
+			SetState(GOOMBA_STATE_FLYING);
+			PARA_jumpStack = 0;
+		}
+		else if(PARA_jumpStack > 0 && PARA_jumpStack<GOOMBA_PARA_MAX_JUMP_STACK)
+		{
+			SetState(GOOMBA_STATE_JUMPING);
+			PARA_jumpStack++;
+		}
+	}
+
+}
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	
+	if (!IsInCamera())
+		return;
 	CGameObject::Update(dt, coObjects);
 
-	//
-	// TO-DO: make sure Goomba can interact with the world and to each of them too!
-	// 
-	if(state != GOOMBA_STATE_DIE_Y)
-		vy += dt*GOOMBA_GRAVITY;
+	Calculate_vy();
+	if (type == GOOMBA_TYPE_PARA)
+		Update_Para();
+	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -66,6 +137,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				if (ny != 0)
 				{
+					IsTouchingGround = true;
+					state = GOOMBA_STATE_WALKING;
 					this->vy = 0;
 					this->y = y0 + min_ty * this->dy + ny * 0.1f;
 					
@@ -90,21 +163,36 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CGoomba::Render()
 {
+	if (!IsInCamera())
+		return;
+
+
+	int ani = -1;
 	if (this->state == GOOMBA_STATE_DIE_Y)
 	{
+		ani = GOOMBA_ANI_DIE_Y;
 		if (DeadTime != 0 && (GetTickCount64() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
 			return;
 	}
-	int ani = GOOMBA_ANI_WALKING;
-	if (state == GOOMBA_STATE_DIE_Y)
-		ani = GOOMBA_ANI_DIE_Y;
 	else if (state == GOOMBA_STATE_DIE_X)
 		ani = GOOMBA_ANI_DIE_X;
+	else if (type == GOOMBA_TYPE_SMALL)
+		ani = GOOMBA_ANI_SMALL_WALKING;
+	else if (type == GOOMBA_TYPE_PARA)
+	{
+		if (state == GOOMBA_STATE_WALKING)
+			ani = GOOMBA_ANI_PARA_WALKING;
+		else if (state == GOOMBA_STATE_JUMPING)
+			ani = GOOMBA_ANI_PARA_JUMPING;
+		else if (state == GOOMBA_STATE_FLYING)
+			ani = GOOMBA_ANI_PARA_FLYING;
+	}
+	
 
 	animation_set->at(ani)->Render(x, y);
 
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)
@@ -121,10 +209,17 @@ void CGoomba::SetState(int state)
 			vy = -GOOMBA_DIE_X_SPEED_Y;
 			vx = 0;
 			break;
-
 		case GOOMBA_STATE_WALKING: 
 			vx = -GOOMBA_WALKING_SPEED;
 			//vx = GOOMBA_WALKING_SPEED;
+			break;
+		case GOOMBA_STATE_JUMPING:
+			IsTouchingGround = false;
+			vy = -GOOMBA_JUMP_SPEED_Y;
+			break;
+		case GOOMBA_STATE_FLYING:
+			IsTouchingGround = false;
+			vy = -GOOMBA_FLY_SPEED_Y;
 			break;
 	}
 }
@@ -152,7 +247,15 @@ void CGoomba::CalculateBeSwingedTail()
 		}
 	}
 }
-CGoomba::~CGoomba()
-{
 
+void CGoomba::BeDamaged_Y()
+{
+	if (type > GOOMBA_TYPE_SMALL)
+		type = GOOMBA_TYPE_SMALL;
+	else
+	{
+		SetState(GOOMBA_STATE_DIE_Y);
+		SetDeadTime();
+	}
 }
+

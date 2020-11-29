@@ -331,21 +331,22 @@ void CPlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 	CGame *game = CGame::GetInstance();
+	//cx
 	if (map != nullptr && (cx > map->GetMapWidth() - game->GetScreenWidth() / 2))
 		cx = map->GetMapWidth() - game->GetScreenWidth();
 	else if (cx < game->GetScreenWidth() / 2)
 		cx = 0;
 	else
 		cx -= game->GetScreenWidth() / 2;
-
+	//cy
 	if (map != nullptr && (cy > map->GetMapHeight() - game->GetScreenHeight() / 2))
 		cy = map->GetMapHeight() - game->GetScreenHeight();
 	else if (cy < game->GetScreenHeight() / 2)
 		cy = 0;
 	else
 		cy -= game->GetScreenHeight() / 2;
-
-	CGame::GetInstance()->SetCamPos(round(cx), round(cy));
+	if(!player->IsSwingTail)
+		CGame::GetInstance()->SetCamPos(round(cx), round(cy));
 }
 
 void CPlayScene::Render()
@@ -386,6 +387,24 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
+		if (mario->GetLevel() == MARIO_LEVEL_RACCOON)
+		{
+			if (mario->IsRaccoonReadyFly())
+			{
+				mario->RaccoonStartFlyHigh();
+			}
+			else if (mario->IsRaccoonCanFlyHigh)
+			{
+				mario->SetState(MARIO_STATE_JUMP);
+			}
+			else if (mario->IsFalling && !mario->IsRaccoonCanFlyHigh)
+			{
+ 				if (!mario->IsFlying)
+					mario->SlowFall();
+			}
+
+
+		}
 		if (mario->IsTouchingGround == true)
 		{
 			mario->SetJumpStack(0);
@@ -393,8 +412,8 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			mario->SetState(MARIO_STATE_JUMP);
 			mario->UpJumpStack();
 			mario->IsTouchingGround = false;
+			
 		}
-
 		break;
 	case DIK_Q: 
 		mario->Reset();
@@ -432,6 +451,12 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		mario->SetJumpStack(MARIO_MAX_JUMPIMG_STACKS);
 		mario->IsReadyJump = false;
 		break;
+	case DIK_RIGHT:
+		mario->SetState(MARIO_STATE_IDLE);
+		break;
+	case DIK_LEFT:
+		mario->SetState(MARIO_STATE_IDLE);
+		break;
 	case DIK_B:
 		mario->IsReadyHolding = false;
 		mario->IsHolding = false;
@@ -464,7 +489,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		}
 		else if (game->IsKeyDown(DIK_D))
 		{
-			mario->changeImminent();
+			mario->upImminent();
 		}
 		else
 			mario->downImminent();
@@ -484,7 +509,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		}
 		else if (game->IsKeyDown(DIK_D))
 		{
-			mario->changeImminent();
+			mario->upImminent();
 		}
 		else
 		{

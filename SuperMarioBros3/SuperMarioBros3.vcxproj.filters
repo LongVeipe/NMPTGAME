@@ -55,6 +55,9 @@
     <ClCompile Include="Mario.cpp">
       <Filter>Source Files\Mario</Filter>
     </ClCompile>
+    <ClCompile Include="StatusBoard.cpp">
+      <Filter>Source Files\HUD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h">
@@ -111,6 +114,9 @@
     <ClInclude Include="Bullet.h">
       <Filter>Header Files\Mario</Filter>
     </ClInclude>
+    <ClInclude Include="StatusBoard.h">
+      <Filter>Header Files\HUD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -136,6 +142,12 @@
     </Filter>
     <Filter Include="Header Files\Mario">
       <UniqueIdentifier>{ff37685b-8aa0-449e-860e-5cd10a14bedf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\HUD">
+      <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HUD">
+      <UniqueIdentifier>{dcae1267-7120-4bf0-a99a-45fb6f2cbf3a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

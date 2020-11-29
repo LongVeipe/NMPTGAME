@@ -6,6 +6,7 @@
 11	textures\enemies-2.png	156	219	239
 20	textures\misc.png	176	224	248
 30	map\map1\1-1_bank.png	255	255	255
+40	textures\HUD.png	0	224	142
 
 #ID	TileWidth	TileHeight	TRTileSet	TCTileSet	TRMap	TCMap	TotalTiles	Matrix_Path
 [MAP]
@@ -318,6 +319,12 @@
 #die x
 30004	2	20	18	36	10
 
+#para goomba
+30101	59	12	79	36	10
+30102	421	12	441	36	11
+30103	398	17	418	36	11
+30104	82	17	102	36	10
+
 #KOOPA
 #koopa small red
 #walk left
@@ -325,6 +332,24 @@
 #tortoiseshell
 #idle
 100001	293	63	309	79	11
+
+#HUD
+#main Board 
+999001	12	128	164	156	40
+#card
+#empty card
+999002	160	159	184	187	40
+#mushroom card
+999003	184	159	208	187	40
+#flower card 
+999004	208	159	232	187	40
+#star card
+999005	232	159	156	187	40
+#imminent
+#normal imminent
+#last imminent
+#font
+#points
 
 
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
@@ -443,9 +468,9 @@
 #fall left 
 10208	10211	100
 #wag right
-10209	10209	100	10204	100	10210	100
+10209	10209	70	10204	70	10210	70
 #wag left
-10210	10211	100	10206	100	10212	100
+10210	10211	70	10206	70	10212	70
 #run right
 10211	10213	100	10214	100	10215	100
 #run left
@@ -485,7 +510,7 @@
 #spin right
 10229	10237	100	10240	100	10239	100	10238	100	10237	100
 #spin left
-10230	10239	100	10340	100	10237	100	10238	100	10239	100
+10230	10239	100	10240	100	10237	100	10238	100	10239	100
 #tail swing 1 right
 10231	10240	50	10239	50	10238	50	10237	50
 #tail swing 1 left
@@ -566,12 +591,20 @@
 623	20013	100
 
 # ==== GOOMBA  =========
+#normal goomba
 # walk
 701	30001	100	30002	100
 # die y
 702	30003	100
 #die x
 703	30004	100
+#para goomba
+#fly
+711	30101	100	30102	100	30103	100	30104	100
+#walk
+712	30103	100	30104	100
+#jump
+713	30101	20	30102	20	30103	20	30104	20
 # ==== KOOPA  =========
 #--Type small red
 #level turtoiseshell
@@ -669,7 +702,8 @@
 
 
 # GOOMBA
-3	701	702	703
+#	0	1	2	3	4	5
+3	701	702	703	711	712	713
 # KOOPA
 5001	100001
 
@@ -1047,12 +1081,12 @@
 #typeOb	x	y	ani	type	start_x	final_x	level
 
 # GOOMBA
-#type 1: small, 2: ...
-#2	832	384	3	10	0	500
-#2	880	384	3	10	0	500
-2	224	400	3	10	0	500
-#2	528	400	3	10	0	500
-#1	192	398	85	0	0
+#type 1: small, 2: para, 3...
+2	832	384	3	1	0	500
+2	880	384	3	1	0	500
+2	224	400	3	1	0	500
+2	528	400	3	1	0	500
+2	960	381	3	2	672	1088
 
 # KOOPA
 #type 1: small red, 2: small green, 3: 
@@ -1060,7 +1094,7 @@
 3	144	398	5001	10	150	0
 
 #== MARIO ==
-0	100.0	300	1
+0	500.0	300	1
 
 
 # --- SCENE PORTAL ----
