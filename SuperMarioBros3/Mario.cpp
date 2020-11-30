@@ -76,8 +76,13 @@ void CMario::Calculate_vy(DWORD _dt)
 	{
 		vy = -1.5*MARIO_GRAVITY * _dt;
 	}
-	else */if (IsFallingSlowly)
-		vy = MARIO_GRAVITY * _dt;
+	else */
+	if (IsFallingSlowly)
+	{
+		vy += MARIO_GRAVITY * _dt;
+		if (vy > MARIO_MAX_FALL_SLOWLY_SPEED)
+			vy = MARIO_MAX_FALL_SLOWLY_SPEED;
+	}
 	else
 	{
 		if (level == MARIO_LEVEL_RACCOON && IsRaccoonCanFlyHigh)
@@ -315,7 +320,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						if (goomba->GetState() != GOOMBA_STATE_DIE_Y)
 						{
 							goomba->BeDamaged_Y();
-							vy = -MARIO_JUMP_DEFLECT_SPEED;
+ 							vy = -MARIO_JUMP_DEFLECT_SPEED;
+							IsJumping = true;
 							ny = -1;
 						}
 					}

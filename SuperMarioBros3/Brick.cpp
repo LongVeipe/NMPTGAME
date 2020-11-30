@@ -35,11 +35,6 @@ void CBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			CGameObject::Update(dt, coObjects);
 			
-			vector<LPCOLLISIONEVENT> coEvents;
-			vector<LPCOLLISIONEVENT> coEventsResult;
-
-			coEvents.clear();
-			CalcPotentialCollisions(coObjects, coEvents);
 			if (this->y < start_y -dy)
 			{
 				this->vy += BRICK_GRAVITY * dt;
