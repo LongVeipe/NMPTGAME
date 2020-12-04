@@ -6,13 +6,20 @@
 CGoomba::CGoomba(float start_x, float final_x, int _type):CGameObject()
 {
 	type = _type;
+	//if (type == GOOMBA_TYPE_FLYING_RED)
+	{
+		leftWing = new CWing(WING_TYPE_LEFT);
+		rightWing = new CWing(WING_TYPE_RIGHT);
+	}
 	SetState(GOOMBA_STATE_WALKING);
 	this->PARA_jumpStack = 0;
 	loop_start == GetTickCount64();
 }
 CGoomba::~CGoomba()
 {
-
+	delete rightWing;
+	delete leftWing;
+	rightWing = leftWing = nullptr;
 }
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
@@ -20,21 +27,17 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 			left = top = right = bottom = 0;
 	else
 	{
-		if (type == GOOMBA_TYPE_SMALL)
-		{
-			left = x;
-			top = y;
-			right = x + GOOMBA_BBOX_WIDTH;
-			bottom = y + GOOMBA_BBOX_HEIGHT;
+		left = x;
+		top = y;
+		if (type == GOOMBA_TYPE_NORMAL)
+		{ 
+			right = x + GOOMBA_BBOX_NORMAL_WIDTH;
+			bottom = y + GOOMBA_BBOX_NORMAL_HEIGHT;
 		}
 		else
 		{
-			left = x + GOOMBA_BBOX_WING_WIDTH;
-			right = left + GOOMBA_BBOX_WIDTH;
-			/*if (IsTouchingGround)
-				top = y + GOOMBA_BBOX*/
-			top = y;
-			bottom = y + GOOMBA_BBOX_HEIGHT + GOOMBA_BBOX_FOLDING_WING_HEIGHT;
+			right = left + GOOMBA_BBOX_RED_WIDTH;
+			bottom = y + GOOMBA_BBOX_RED_HEIGHT;
 		}
 	}
 }
@@ -52,7 +55,7 @@ void CGoomba::Calculate_vx()
 {
 
 }
-void CGoomba::Update_Para()
+void CGoomba::Update_FlyingRed()
 {
 	//update vx to attack on mario 
 	if (IsTouchingGround)
@@ -79,18 +82,34 @@ void CGoomba::Update_Para()
 			loop_start = GetTickCount64();
 			PARA_jumpStack++;
 		}
+		else if (PARA_jumpStack > 0 && PARA_jumpStack < GOOMBA_PARA_MAX_JUMP_STACK)
+		{
+			SetState(GOOMBA_STATE_JUMPING);
+			PARA_jumpStack++;
+		}
 		else if (PARA_jumpStack == GOOMBA_PARA_MAX_JUMP_STACK)
 		{
 			SetState(GOOMBA_STATE_FLYING);
 			PARA_jumpStack = 0;
 		}
-		else if(PARA_jumpStack > 0 && PARA_jumpStack<GOOMBA_PARA_MAX_JUMP_STACK)
-		{
-			SetState(GOOMBA_STATE_JUMPING);
-			PARA_jumpStack++;
-		}
+		
 	}
 
+}
+void CGoomba::Update_Wings()
+{
+	if (state != GOOMBA_STATE_WALKING)
+	{
+		leftWing->SetPosition(x - 2, y - 8);
+		rightWing->SetPosition(x + 10, y - 8);
+		leftWing->UpdateWhenFlying();
+		rightWing->UpdateWhenFlying();
+	}
+	else
+	{
+		leftWing->SetPosition(x - 2, y - 2);
+		rightWing->SetPosition(x + 10, y - 2);
+	}
 }
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -99,8 +118,9 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt, coObjects);
 
 	Calculate_vy();
-	if (type == GOOMBA_TYPE_PARA)
-		Update_Para();
+	//DebugOut(L"[INFO] jumpst: %d \n", PARA_jumpStack);
+	if (type == GOOMBA_TYPE_FLYING_RED)
+		Update_FlyingRed();
 	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -139,6 +159,11 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					IsTouchingGround = true;
 					state = GOOMBA_STATE_WALKING;
+					if (type == GOOMBA_TYPE_FLYING_RED)
+					{
+						leftWing->SetState(WING_STATE_IDLE);
+						rightWing->SetState(WING_STATE_IDLE);
+					}
 					this->vy = 0;
 					this->y = y0 + min_ty * this->dy + ny * 0.1f;
 					
@@ -159,6 +184,9 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CalculateBeSwingedTail();
 	 //clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	if (type == GOOMBA_TYPE_FLYING_RED)
+		Update_Wings();
+
 }
 
 void CGoomba::Render()
@@ -168,24 +196,37 @@ void CGoomba::Render()
 
 
 	int ani = -1;
-	if (this->state == GOOMBA_STATE_DIE_Y)
+	if (type == GOOMBA_TYPE_NORMAL)
 	{
-		ani = GOOMBA_ANI_DIE_Y;
-		if (DeadTime != 0 && (GetTickCount64() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
-			return;
+		if (this->state == GOOMBA_STATE_DIE_Y)
+		{
+			ani = GOOMBA_ANI_NORMAL_DIE_Y;
+			if (DeadTime != 0 && (GetTickCount64() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
+				return;
+		}
+		else if (state == GOOMBA_STATE_DIE_X)
+			ani = GOOMBA_ANI_NORMAL_DIE_X;
+		else
+			ani = GOOMBA_ANI_NORMAL_WALKING;
 	}
-	else if (state == GOOMBA_STATE_DIE_X)
-		ani = GOOMBA_ANI_DIE_X;
-	else if (type == GOOMBA_TYPE_SMALL)
-		ani = GOOMBA_ANI_SMALL_WALKING;
-	else if (type == GOOMBA_TYPE_PARA)
+	else if (type == GOOMBA_TYPE_WALKING_RED)
 	{
-		if (state == GOOMBA_STATE_WALKING)
-			ani = GOOMBA_ANI_PARA_WALKING;
-		else if (state == GOOMBA_STATE_JUMPING)
-			ani = GOOMBA_ANI_PARA_JUMPING;
-		else if (state == GOOMBA_STATE_FLYING)
-			ani = GOOMBA_ANI_PARA_FLYING;
+		if (this->state == GOOMBA_STATE_DIE_Y)
+		{
+			ani = GOOMBA_ANI_RED_DIE_Y;
+			if (DeadTime != 0 && (GetTickCount64() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
+				return;
+		}
+		else if (state == GOOMBA_STATE_DIE_X)
+			ani = GOOMBA_ANI_RED_DIE_X;
+		else
+			ani = GOOMBA_ANI_RED_WALKING;
+	}
+	else //type == FLYING_RED
+	{
+		ani = GOOMBA_ANI_RED_WALKING;
+		leftWing->Render();
+		rightWing->Render();
 	}
 	
 
@@ -201,7 +242,10 @@ void CGoomba::SetState(int state)
 	switch (state)
 	{
 		case GOOMBA_STATE_DIE_Y:
-			y += GOOMBA_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE + 1;
+			if(type == GOOMBA_TYPE_NORMAL)
+				y += GOOMBA_BBOX_NORMAL_HEIGHT - GOOMBA_BBOX_NORMAL_HEIGHT_DIE + 1;
+			else if(type == GOOMBA_TYPE_WALKING_RED)
+				y += GOOMBA_BBOX_RED_HEIGHT - GOOMBA_BBOX_RED_HEIGHT_DIE + 1;
 			vx = 0;
 			vy = 0;
 			break;
@@ -211,22 +255,36 @@ void CGoomba::SetState(int state)
 			break;
 		case GOOMBA_STATE_WALKING: 
 			vx = -GOOMBA_WALKING_SPEED;
-			//vx = GOOMBA_WALKING_SPEED;
+			if (type == GOOMBA_TYPE_FLYING_RED)
+			{
+				leftWing->SetState(WING_STATE_IDLE);
+				rightWing->SetState(WING_STATE_IDLE);
+			}
 			break;
 		case GOOMBA_STATE_JUMPING:
 			IsTouchingGround = false;
 			vy = -GOOMBA_JUMP_SPEED_Y;
+			if (type == GOOMBA_TYPE_FLYING_RED)
+			{
+				leftWing->SetState(WING_STATE_FLYING);
+				rightWing->SetState(WING_STATE_FLYING);
+			}
 			break;
 		case GOOMBA_STATE_FLYING:
 			IsTouchingGround = false;
 			vy = -GOOMBA_FLY_SPEED_Y;
+			if (type == GOOMBA_TYPE_FLYING_RED)
+			{
+				leftWing->SetState(WING_STATE_FLYING);
+				rightWing->SetState(WING_STATE_FLYING);
+			}
 			break;
 	}
 }
 
 void CGoomba::SetDeadTime()
 {
-	this->DeadTime = GetTickCount();
+	this->DeadTime = GetTickCount64();
 }
 
 void CGoomba::CalculateBeSwingedTail()
@@ -250,8 +308,13 @@ void CGoomba::CalculateBeSwingedTail()
 
 void CGoomba::BeDamaged_Y()
 {
-	if (type > GOOMBA_TYPE_SMALL)
-		type = GOOMBA_TYPE_SMALL;
+	if (type == GOOMBA_TYPE_FLYING_RED)
+	{
+		delete leftWing;
+		delete rightWing;
+		leftWing = rightWing = nullptr;
+		type = GOOMBA_TYPE_WALKING_RED;
+	}
 	else
 	{
 		SetState(GOOMBA_STATE_DIE_Y);

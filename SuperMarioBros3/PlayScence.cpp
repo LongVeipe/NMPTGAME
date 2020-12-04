@@ -7,6 +7,7 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
+#include "Bullet.h"
 #include "SuperLeaf.h"
 
 using namespace std;

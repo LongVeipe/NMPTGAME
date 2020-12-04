@@ -2,7 +2,7 @@
 [TEXTURES]
 0	textures\mario.png	68	145	190
 1	textures\mario2.png	68	145	190
-10	textures\enemies.png	156	219	239
+10	textures\enemies.png	64	144	192
 11	textures\enemies-2.png	156	219	239
 20	textures\misc.png	176	224	248
 30	map\map1\1-1_bank.png	255	255	255
@@ -309,21 +309,33 @@
 11015	453	21	465	33	0
 11016	471	22	483	32	0
 
+#WING
+#right
+35001	136	2	144	15	10
+35002	144	7	152	16	10
+#left 
+35003	296	2	304	15	10
+35004	288	7	296	16	10
+
 
 #GOOMBA
-#goomba normal
-30001	463	20	479	36	11
-30002	21	20	37	36	10
+#normal goomba 
+#walk
+30001	0	0	16	16	10
+30002	16	0	32	16	10
 #die y
-30003	40	27	56	36	10
+30003	32	7	48	16	10
 #die x
-30004	2	20	18	36	10
+30004	256	0	272	16	10
 
-#para goomba
-30101	59	12	79	36	10
-30102	421	12	441	36	11
-30103	398	17	418	36	11
-30104	82	17	102	36	10
+#red goomba
+#walk
+30101	88	0	104	16	10
+30102	104	0	120	16	10
+#die y
+30103	120	7	136	16	10
+#die x
+30104	272	0	288	16	10
 
 #KOOPA
 #koopa small red
@@ -598,13 +610,13 @@
 702	30003	100
 #die x
 703	30004	100
-#para goomba
-#fly
-711	30101	100	30102	100	30103	100	30104	100
-#walk
-712	30103	100	30104	100
-#jump
-713	30101	20	30102	20	30103	20	30104	20
+#red goomba
+#walk 
+711	30101	100	30102	100
+#die y
+712	30103	100
+#die x
+713	30104	100
 # ==== KOOPA  =========
 #--Type small red
 #level turtoiseshell
@@ -651,6 +663,16 @@
 11003	11009	30	11010	30	11011	30	11012	30
 #explode left
 11004	11013	30	11014	30	11015	30	11016	30
+
+#== Wing ==
+#fly right
+35001	35001	200	35002	200
+#fly left
+35002	35003	200	35004	200
+#idle right
+35003	35002	100
+#idle left
+35004	35004	100
 
 # id	ani1	ani2	ani3
 #
@@ -709,7 +731,8 @@
 
 # BULLET
 11000	11001	11002	11003	11004
-
+# WING
+35000	35001	35002	35003	35004
 
 [OBJECTS]
 # type	x	y	ani_set_id	detail_type	extra_settings per object type
@@ -1081,7 +1104,7 @@
 #typeOb	x	y	ani	type	start_x	final_x	level
 
 # GOOMBA
-#type 1: small, 2: para, 3...
+#type 1: small, 2: flyingRed, 3: walkingRed
 2	832	384	3	1	0	500
 2	880	384	3	1	0	500
 2	224	400	3	1	0	500

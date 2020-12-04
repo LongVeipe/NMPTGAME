@@ -18,8 +18,7 @@ private:
 
 
 public:
-	Map(int idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTileSet, int	_tRMap, int	_tCMap
-		, int	_totalTiles);
+	Map(int idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTileSet, int	_tRMap, int	_tCMap, int	_totalTiles);
 	~Map();
 	void CreateTilesFromTileSet();
 	void LoadMatrix(LPCWSTR path);

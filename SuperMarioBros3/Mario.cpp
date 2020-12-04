@@ -1038,7 +1038,7 @@ void CMario::StartThrowFire()
 		GetBoundingBox(l, t, r, b);
 		CBullet* bullet;
 		
-			bullet = new CBullet((r+l)/2, t);
+		bullet = new CBullet((r+l)/2, t);
 		bullet->nx = this->nx;
 		bullet->vx =  this->nx * BULLET_SPEED_X;
 		bullet->vy = BULLET_FIRST_SPEED_Y;

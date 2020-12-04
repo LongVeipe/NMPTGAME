@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Wing.h"
 
 #define GOOMBA_WALKING_SPEED 0.025f
 #define GOOMBA_DIE_X_SPEED_Y 0.3f
@@ -10,15 +11,16 @@
 #define GOOMBA_MAX_FALL_SPEED	0.15
 
 
-#define GOOMBA_BBOX_WIDTH 16
-#define GOOMBA_BBOX_HEIGHT 15
-#define GOOMBA_BBOX_WING_WIDTH 2
-#define GOOMBA_BBOX_SPREADING_WING_HEIGHT 8
-#define GOOMBA_BBOX_FOLDING_WING_HEIGHT 3
-#define GOOMBA_BBOX_HEIGHT_DIE 9
+#define GOOMBA_BBOX_NORMAL_WIDTH 16
+#define GOOMBA_BBOX_NORMAL_HEIGHT 15
+#define GOOMBA_BBOX_NORMAL_HEIGHT_DIE 9
+#define GOOMBA_BBOX_RED_WIDTH 16
+#define GOOMBA_BBOX_RED_HEIGHT 15
+#define GOOMBA_BBOX_RED_HEIGHT_DIE 9
 
-#define GOOMBA_TYPE_SMALL	1
-#define GOOMBA_TYPE_PARA	2
+#define GOOMBA_TYPE_NORMAL	1
+#define GOOMBA_TYPE_FLYING_RED	2
+#define GOOMBA_TYPE_WALKING_RED	3
 
 #define GOOMBA_STATE_WALKING 100
 #define GOOMBA_STATE_DIE_X 200
@@ -26,18 +28,23 @@
 #define GOOMBA_STATE_JUMPING	400
 #define GOOMBA_STATE_FLYING		500
 
-#define GOOMBA_ANI_SMALL_WALKING	0
-#define GOOMBA_ANI_DIE_Y	1
-#define GOOMBA_ANI_DIE_X	2
-#define GOOMBA_ANI_PARA_JUMPING	3
-#define GOOMBA_ANI_PARA_WALKING	4
-#define GOOMBA_ANI_PARA_FLYING	5
+#define GOOMBA_ANI_NORMAL_WALKING	0
+#define GOOMBA_ANI_NORMAL_DIE_Y	1
+#define GOOMBA_ANI_NORMAL_DIE_X	2
+
+#define GOOMBA_ANI_RED_WALKING	3
+#define GOOMBA_ANI_RED_DIE_Y	4
+#define GOOMBA_ANI_RED_DIE_X	5
 
 
 #define GOOMBA_TIME_TO_STOP_RENDERING 200
 #define GOOMBA_TIME_PARA_OPERATION_LOOP	2500
 
 #define GOOMBA_PARA_MAX_JUMP_STACK	2
+
+#define GOOMBA_LEFT_WING_ID		0
+#define GOOMBA_RIGHT_WING_ID	1
+
 class CGoomba : public CGameObject
 {
 private:
@@ -46,10 +53,14 @@ private:
 	DWORD DeadTime;
 	DWORD loop_start;
 
+	CWing* leftWing;
+	CWing* rightWing;
+
 	void CalculateBeSwingedTail();
 	void Calculate_vx();
 	void Calculate_vy();
-	void Update_Para();
+	void Update_FlyingRed();
+	void Update_Wings();
 
 public:
 

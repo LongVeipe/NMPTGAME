@@ -22,9 +22,9 @@ Map::~Map()
 	{
 		for (int i = 0; i < TotalRowsOfMap; i++)
 		{
-			delete Matrix[i];
+			delete [] Matrix[i];
 		}
-		delete Matrix;
+		delete [] Matrix;
 		Matrix = nullptr;
 	}
 }
