@@ -12,6 +12,7 @@
 #include "Koopas.h"
 #include "Bullet.h"
 #include "PlayScence.h"
+#include "Plant_4Leaf.h"
 using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
@@ -392,6 +393,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					break;
 				}
+			}
+			else if (dynamic_cast<CPlant_4Leaf*>(e->obj))
+			{
+				CPlant_4Leaf* Plant = dynamic_cast<CPlant_4Leaf*>(e->obj);
+				this->BeDamaged();
 			}
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
@@ -1038,7 +1044,7 @@ void CMario::StartThrowFire()
 		GetBoundingBox(l, t, r, b);
 		CBullet* bullet;
 		
-		bullet = new CBullet((r+l)/2, t);
+		bullet = new CBullet((r+l)/2, t, BULLET_TYPE_MARIO);
 		bullet->nx = this->nx;
 		bullet->vx =  this->nx * BULLET_SPEED_X;
 		bullet->vy = BULLET_FIRST_SPEED_Y;

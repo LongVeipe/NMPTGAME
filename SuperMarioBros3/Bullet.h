@@ -18,6 +18,9 @@
 #define BULLET_GRAVITY		0.002
 #define BULLET_DEFLECT_SPEED	 0.2f
 
+#define BULLET_TYPE_MARIO	1
+#define BULLET_TYPE_PLANT	2
+
 #define BULLET_ANIMATION_SET_ID		11000
 #define BULLET_EXPLOSION_TIME	120
 
@@ -26,12 +29,13 @@ class CBullet : public CGameObject
 {
 private:
 	DWORD StartExplode_time;
+	int type;
 public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 	virtual void SetState(int _state);
-	CBullet(float x, float y);
+	CBullet(float x, float y, int type);
 	virtual ~CBullet();
 	//bool IsCollision;
 	DWORD GetStartExplode_time() { return StartExplode_time; }

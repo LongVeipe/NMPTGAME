@@ -61,6 +61,12 @@
     <ClCompile Include="Wing.cpp">
       <Filter>Source Files\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Plant.cpp">
+      <Filter>Source Files\Enemy\Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant_4Leaf.cpp">
+      <Filter>Source Files\Enemy\Plant</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h">
@@ -123,6 +129,12 @@
     <ClInclude Include="Wing.h">
       <Filter>Header Files\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Plant.h">
+      <Filter>Header Files\Enemy\Plant</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant_4Leaf.h">
+      <Filter>Header Files\Enemy\Plant</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -154,6 +166,12 @@
     </Filter>
     <Filter Include="Source Files\HUD">
       <UniqueIdentifier>{dcae1267-7120-4bf0-a99a-45fb6f2cbf3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Enemy\Plant">
+      <UniqueIdentifier>{fc346bbb-c9cc-4133-998f-23059e1b5d48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Enemy\Plant">
+      <UniqueIdentifier>{69e4adce-fc78-4a7d-83e8-2da5b3b740b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

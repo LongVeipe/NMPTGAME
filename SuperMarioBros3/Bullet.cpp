@@ -4,10 +4,11 @@
 #include "PlayScence.h"
 #include "Utils.h"
 
-CBullet::CBullet(float _x, float _y) :CGameObject()
+CBullet::CBullet(float _x, float _y, int _type) :CGameObject()
 {
 	x = _x;
 	y = _y;
+	type = _type;
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	LPANIMATION_SET ani_set = animation_sets->Get(BULLET_ANIMATION_SET_ID);
 	this->SetAnimationSet(ani_set);
@@ -52,32 +53,45 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
-				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
-				float bleft, btop, bright, bbottom;
-				GetBoundingBox(bleft, btop, bright, bbottom);
-				float oleft, otop, obottom, oright;
-				e->obj->GetBoundingBox(oleft, otop, oright, obottom);
-				if (e->nx != 0)
+				if (type == BULLET_TYPE_MARIO)
 				{
-					if(brick->GetType() != BRICK_TYPE_BIG_BLOCK)
+					CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+					float bleft, btop, bright, bbottom;
+					GetBoundingBox(bleft, btop, bright, bbottom);
+					float oleft, otop, obottom, oright;
+					e->obj->GetBoundingBox(oleft, otop, oright, obottom);
+					if (e->nx != 0)
 					{
-						//this->vx = 0;
-						this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
-						SetState(BULLET_STATE_EXPLODING);
-					}
+						if (brick->GetType() != BRICK_TYPE_BIG_BLOCK)
+						{
+							//this->vx = 0;
+							this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
+							SetState(BULLET_STATE_EXPLODING);
+						}
 
-				}
-				else if (e->ny != 0)
-				{
+					}
+					else if (e->ny != 0)
+					{
 						this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
 						this->vy = -BULLET_DEFLECT_SPEED;
+					}
 				}
 			}
 			else if(dynamic_cast<CGoomba*>(e->obj))
 			{
-				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-				goomba->SetState(GOOMBA_STATE_DIE_X);
-				this->SetState(BULLET_STATE_EXPLODING);
+				if (type == BULLET_TYPE_MARIO)
+				{
+					CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+					goomba->SetState(GOOMBA_STATE_DIE_X);
+					this->SetState(BULLET_STATE_EXPLODING);
+				}
+			}
+			else if(dynamic_cast<CMario*>(e->obj))
+			{
+				if (type == BULLET_TYPE_PLANT)
+				{
+
+				}
 			}
 
 		}
@@ -89,6 +103,7 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 }
 
 void CBullet::Render()
+
 {
 	//CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	int ani = -1;

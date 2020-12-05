@@ -9,6 +9,7 @@
 #include "Coin.h"
 #include "Bullet.h"
 #include "SuperLeaf.h"
+#include "Plant_4Leaf.h"
 
 using namespace std;
 
@@ -37,6 +38,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define OBJECT_TYPE_GOOMBA	2
 #define OBJECT_TYPE_KOOPAS	3
 #define OBJECT_TYPE_COIN	5
+#define OBJECT_TYPE_PLANT_4LEAF	6
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -232,6 +234,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float start_x = atof(tokens[5].c_str());
 		float final_x = atof(tokens[6].c_str());
 		obj = new CGoomba(start_x, final_x, typeGoomba);
+		break;
+	}
+	case OBJECT_TYPE_PLANT_4LEAF:
+	{
+		float limit_y = atof(tokens[4].c_str());
+		int type = atoi(tokens[5].c_str());
+		obj = new CPlant_4Leaf(x, y, limit_y, type);
 		break;
 	}
 	case OBJECT_TYPE_COIN: 
