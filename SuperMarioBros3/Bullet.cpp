@@ -90,7 +90,8 @@ void CBullet::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				if (type == BULLET_TYPE_PLANT)
 				{
-
+					CMario * mario = dynamic_cast<CMario*>(e->obj);
+					mario->BeDamaged();
 				}
 			}
 

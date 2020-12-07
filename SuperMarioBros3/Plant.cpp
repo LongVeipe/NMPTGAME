@@ -7,6 +7,7 @@ CPlant::CPlant(float _x, float _y, float _limit_y, int _type)
 	start_y = _y;
 	limit_y = _limit_y;
 	type = _type;
+	IsSleeping = true;
 }
 
 CPlant::~CPlant()

@@ -11,6 +11,10 @@ protected:
 	int type;
 	float start_y;
 	float limit_y;
+	bool IsSleeping;
+	bool IsMoving;
+
+	DWORD sleep_start;
 public:
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) = 0;
