@@ -186,6 +186,9 @@ void CPlant_4Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		CalculateAngle();
 	x += dx;
 	y += dy;
+
+
+
 }
 
 void CPlant_4Leaf::SetState(int _state)
@@ -195,6 +198,7 @@ void CPlant_4Leaf::SetState(int _state)
 	{
 	case PLANT_4LEAF_STATE_MOVING_UP:
 		vy = -PLANT_4LEAF_MOVING_SPEED_Y;
+		CalculateAngle();
 		break;
 	case PLANT_4LEAF_STATE_MOVING_DOWN:
 		vy = PLANT_4LEAF_MOVING_SPEED_Y;

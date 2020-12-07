@@ -10,7 +10,7 @@
 #include "Brick.h"
 #include "SuperLeaf.h"
 #include "Koopas.h"
-#include "Bullet.h"
+#include "Bullet_Mario.h"
 #include "PlayScence.h"
 #include "Plant_4Leaf.h"
 using namespace  std;
@@ -122,7 +122,7 @@ void CMario::UpdateBullets(DWORD _dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	for (int i = 0; unsigned(i) < Bullets.size(); i++)
 	{
-		CBullet* bullet = (CBullet*)Bullets[i];
+		CBullet_Mario* bullet = (CBullet_Mario*)Bullets[i];
 		if (bullet->GetState() != BULLET_STATE_EXPLODING)
 			bullet->Update(_dt, coObjects);
 		else if (GetTickCount64() - bullet->GetStartExplode_time() > BULLET_EXPLOSION_TIME)
@@ -1042,9 +1042,9 @@ void CMario::StartThrowFire()
 		IsThrowing = true;
 		float l, t, r, b;
 		GetBoundingBox(l, t, r, b);
-		CBullet* bullet;
+		CBullet_Mario* bullet;
 		
-		bullet = new CBullet((r+l)/2, t, BULLET_TYPE_MARIO);
+		bullet = new CBullet_Mario((r+l)/2, t);
 		bullet->nx = this->nx;
 		bullet->vx =  this->nx * BULLET_SPEED_X;
 		bullet->vy = BULLET_FIRST_SPEED_Y;
