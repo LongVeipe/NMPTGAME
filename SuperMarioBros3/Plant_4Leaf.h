@@ -1,6 +1,6 @@
 #pragma once
 #include "Plant.h"
-#include "Bullet.h"
+#include "Bullet_Plant.h"
 
 #define PLANT_4LEAF_BBOX_HEIGHT	32
 #define PLANT_4LEAF_BBOX_WIDTH		16
@@ -40,7 +40,8 @@
 #define PLANT_4LEAF_IS_ON_MARIOS_LEFT						3
 #define PLANT_4LEAF_IS_ON_MARIOS_RIGHT						4
 
-#define PLANT_4LEAF_SHOOTING_BULLET_TIME	1500
+#define PLANT_4LEAF_SHOOTING_BULLET_TIME	500
+#define PLANT_4LEAF_SIGHTING_TIME	1000
 #define PLANT_4LEAF_SLEEPING_TIME	1500
 
 #define PLANT_4LEAF_MOVING_SPEED_Y	0.035
@@ -49,19 +50,21 @@
 #define PLANT_4LEAF_STATE_MOVING_DOWN	2
 #define PLANT_4LEAF_STATE_SHOOTING		3
 #define PLANT_4LEAF_STATE_SLEEPING		4
+#define PLANT_4LEAF_STATE_SIGHTING		5
 
 class CPlant_4Leaf: public CPlant
 {
 private:
-	CBullet* bullet;
+	vector<CBullet_Plant*> bullets;
 	int	angle;
 	bool IsShooting;
 	DWORD shoot_start;
+	DWORD sight_start;
 
 	void CalculateAngle();
 	int CalculatePositionInComparisonToMario();
-	void UpdateFlagBaseOnTime();
 	void UpdateInLoop();
+	void ShootBullet_Plant();
 
 public:
 	CPlant_4Leaf(float _x, float _y, float _limit_y, int _type);

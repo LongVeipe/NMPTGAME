@@ -125,7 +125,7 @@ void CMario::UpdateBullets(DWORD _dt, vector<LPGAMEOBJECT>* coObjects)
 		CBullet_Mario* bullet = (CBullet_Mario*)Bullets[i];
 		if (bullet->GetState() != BULLET_STATE_EXPLODING)
 			bullet->Update(_dt, coObjects);
-		else if (GetTickCount64() - bullet->GetStartExplode_time() > BULLET_EXPLOSION_TIME)
+		else if (GetTickCount64() - bullet->GetStartExplode_time() > BULLET_MARIO_EXPLOSION_TIME)
 		{
 			//CGameObject* bul = Bullets[i];
 			Bullets.erase(Bullets.begin() + i);
@@ -1046,8 +1046,8 @@ void CMario::StartThrowFire()
 		
 		bullet = new CBullet_Mario((r+l)/2, t);
 		bullet->nx = this->nx;
-		bullet->vx =  this->nx * BULLET_SPEED_X;
-		bullet->vy = BULLET_FIRST_SPEED_Y;
+		bullet->vx =  this->nx * BULLET_MARIO_SPEED_X;
+		bullet->vy = BULLET_MARIO_FIRST_SPEED_Y;
 		Bullets.push_back(bullet);
 		throwFire_start = GetTickCount64();
 	}

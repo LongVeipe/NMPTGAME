@@ -14,9 +14,9 @@ CBullet_Mario::CBullet_Mario(float _x, float _y) :CBullet(_x,_y)
 void CBullet_Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
-	vy += BULLET_GRAVITY * dt;
-	if (vy > BULLET_MAX_FALLING_SPEED)
-		vy = BULLET_MAX_FALLING_SPEED;
+	vy += BULLET_MARIO_GRAVITY * dt;
+	if (vy > BULLET_MARIO_MAX_FALLING_SPEED)
+		vy = BULLET_MARIO_MAX_FALLING_SPEED;
 
 
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -65,7 +65,7 @@ void CBullet_Mario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				else if (e->ny != 0)
 				{
 					this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
-					this->vy = -BULLET_DEFLECT_SPEED;
+					this->vy = -BULLET_MARIO_DEFLECT_SPEED;
 				}
 			}
 			else if(dynamic_cast<CGoomba*>(e->obj))
