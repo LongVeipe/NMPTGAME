@@ -96,6 +96,7 @@ public:
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
 
+	virtual bool IsUpdatable() { return true; };
 	bool IsInCamera();
 	virtual ~CGameObject();
 };

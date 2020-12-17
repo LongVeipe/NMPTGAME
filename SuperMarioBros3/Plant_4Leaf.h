@@ -52,6 +52,8 @@
 #define PLANT_4LEAF_STATE_SLEEPING		4
 #define PLANT_4LEAF_STATE_SIGHTING		5
 
+#define PLANT_4LEAF_MIN_DISTANCE_FROM_MARIO 16
+
 class CPlant_4Leaf: public CPlant
 {
 private:
@@ -75,5 +77,6 @@ public:
 	virtual void SetState(int _state);
 	void SetAngle(int _angle) { angle = _angle; }
 	int GetAngle() { return angle; }
+	virtual bool IsUpdatable();
 };
 

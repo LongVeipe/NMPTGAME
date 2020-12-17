@@ -99,10 +99,13 @@ void CMario::Calculate_vy(DWORD _dt)
 void CMario::UpdateFlagBaseOnTime()
 {
 	// reset untouchable timer if untouchable time has passed
-	if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+	if (state != MARIO_STATE_DIE)
 	{
-		untouchable_start = 0;
-		untouchable = 0;
+		if (GetTickCount64() - untouchable_start > MARIO_UNTOUCHABLE_TIME)
+		{
+			untouchable_start = 0;
+			untouchable = 0;
+		}
 	}
 	if (GetTickCount64() - throwFire_start > MARIO_PERFORM_THROW_TIME)
 		IsThrowing = false;
@@ -397,7 +400,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CPlant_4Leaf*>(e->obj))
 			{
 				CPlant_4Leaf* Plant = dynamic_cast<CPlant_4Leaf*>(e->obj);
-				this->BeDamaged();
+				if (untouchable == 0)
+					BeDamaged();
 			}
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
@@ -900,7 +904,7 @@ void CMario::Render()
 	}
 
 	int alpha = 255;
-	if (untouchable) alpha = 128;
+	if (untouchable && state!= MARIO_STATE_DIE) alpha = 128;
 
 	animation_set->at(ani)->Render(x, y, alpha);
 	//Render Bullet
@@ -914,6 +918,8 @@ void CMario::Render()
 
 void CMario::SetState(int state)
 {
+	if (this->state == MARIO_STATE_DIE)
+		return;
 	CGameObject::SetState(state);
 
 	switch (state)
@@ -1029,6 +1035,7 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 */
 void CMario::Reset()
 {
+	this->state = MARIO_STATE_IDLE;
 	SetState(MARIO_STATE_IDLE);
 	SetLevel(MARIO_LEVEL_BIG);
 	SetPosition(start_x, start_y);
@@ -1126,13 +1133,23 @@ void CMario::StartSwingTail()
 }
 void CMario::BeDamaged()
 {
-	if (level > MARIO_LEVEL_SMALL)
+	switch (level)
 	{
+	case MARIO_LEVEL_SMALL:
+		SetState(MARIO_STATE_DIE);
+		untouchable = 1;
+		break;
+	case MARIO_LEVEL_BIG:
 		level = MARIO_LEVEL_SMALL;
 		StartUntouchable();
+		break;
+	case MARIO_LEVEL_RACCOON:
+		level = MARIO_LEVEL_BIG;
+		StartUntouchable();
+		break;
+	case MARIO_LEVEL_FIRE:
+		break;
 	}
-	else
-		SetState(MARIO_STATE_DIE);
 }
 void CMario::SlowFall()
 {

@@ -24,7 +24,13 @@ void CBullet_Plant::CalcPotentialCollisionWithMario()
 
 	if (e->t > 0 && e->t <= 1.0f)
 	{
-		mario->BeDamaged();
+		if (!mario->IsUntouchable() )
+		{ 
+			DebugOut(L"[INFO] mario state: %d \n", mario->state);
+			mario->BeDamaged();
+
+		}
+			
 	}
 }
 

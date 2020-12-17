@@ -182,6 +182,34 @@ void CPlant_4Leaf::UpdateInLoop()
 	}
 }
 
+bool CPlant_4Leaf::IsUpdatable()
+{
+	if (!IsInCamera())
+		return false;
+	else
+	{
+		if (state == PLANT_4LEAF_STATE_SLEEPING)
+		{
+			CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+			float ml, mt, mr, mb;
+			float pl, pt, pr, pb;
+			mario->GetBoundingBox(ml, mt, mr, mb);
+			GetBoundingBox(pl, pt, pr, pb);
+			if (CalculatePositionInComparisonToMario() == PLANT_4LEAF_IS_ON_MARIOS_LEFT)
+			{
+				if (ml - pr < PLANT_4LEAF_MIN_DISTANCE_FROM_MARIO)
+					return false;
+			}
+			else if (CalculatePositionInComparisonToMario() == PLANT_4LEAF_IS_ON_MARIOS_RIGHT)
+			{
+				if (pl - mr < PLANT_4LEAF_MIN_DISTANCE_FROM_MARIO)
+					return false;
+			}
+		}
+	}
+	return true;
+}
+
 void CPlant_4Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	//Update Bullet
@@ -190,7 +218,7 @@ void CPlant_4Leaf::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		bullets[i]->Update(dt, coObjects);
 	}
 	//update
-	if (IsInCamera() == false)
+	if (!IsUpdatable())
 	{
 		if (state != PLANT_4LEAF_STATE_SLEEPING)
 		{
