@@ -13,6 +13,7 @@
 #include "Bullet_Mario.h"
 #include "PlayScence.h"
 #include "Plant_4Leaf.h"
+#include "Koopa_Small.h"
 using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
@@ -349,52 +350,39 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
 				coin->SetState(COIN_STATE_HIDDEN);
 			}
-			else if (dynamic_cast<CKoopas*>(e->obj))
+			else if (dynamic_cast<CKoopa_Small*>(e->obj))
 			{
-				CKoopas* koopa = dynamic_cast<CKoopas*>(e->obj);
-				switch (koopa->GetType())
+				CKoopa_Small* koopa = dynamic_cast<CKoopa_Small*>(e->obj);
+				if (e->nx != 0)
 				{
-				case KOOPA_TYPE_RED_SMALL_TURTOISESHELL:
-					if (e->nx != 0)
+					if (koopa->state == KOOPA_SMALL_STATE_IDLE) //holdable when turtoiseshell Idle
 					{
-						if (koopa->state == KOOPA_STATE_IDLE) //hold when turtoiseshell Idle
+						if (IsReadyHolding == true)
 						{
-							if (IsReadyHolding == true )
-							{
-								IsHolding = true;
-								koopa->IsBeingHeld = true;
-								koopa->SetState(KOOPA_STATE_IDLE);
-								IsReadyHolding = false;
-
-							}
-							else
-							{
-								IsKicking = true;
-								kick_start = GetTickCount64();
-								koopa->BeKicked(this->nx);
-							}
+							IsHolding = true;
+							koopa->IsBeingHeld = true;
+							koopa->SetState(KOOPA_SMALL_STATE_IDLE);
+							IsReadyHolding = false;
 						}
-						else //die when turtoiseshell run
+						else
 						{
-							if (untouchable == 0)
-								BeDamaged();
+							IsKicking = true;
+							kick_start = GetTickCount64();
+							koopa->BeKicked(this->nx);
 						}
 					}
-					if (e->ny < 0)
+					else //die when turtoiseshell run
 					{
-						if (koopa->GetState() == KOOPA_STATE_IDLE)
-						{
-							float kleft, ktop, kright, kbottom;
-							koopa->GetBoundingBox(kleft, ktop, kright, kbottom);
-							if (mright < kright)
-								koopa->SetState(KOOPA_STATE_WALKING_RIGHT);
-							else
-								koopa->SetState(KOOPA_STATE_WALKING_LEFT);
-						}
-						else if (untouchable == 0)
+						if (untouchable == 0)
 							BeDamaged();
 					}
-					break;
+				}
+				if (e->ny != 0)
+				{
+					if(e->ny < 0)
+						koopa->BeDamaged_Y();
+					else if (untouchable == 0)
+						this->BeDamaged();
 				}
 			}
 			else if (dynamic_cast<CPlant_4Leaf*>(e->obj))

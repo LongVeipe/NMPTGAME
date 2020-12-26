@@ -1,185 +1,186 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Animations.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Map.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayScence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Scence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Textures.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Coin.cpp">
-      <Filter>Source Files\Reward</Filter>
-    </ClCompile>
-    <ClCompile Include="SuperLeaf.cpp">
-      <Filter>Source Files\Reward</Filter>
-    </ClCompile>
-    <ClCompile Include="Koopas.cpp">
-      <Filter>Source Files\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Goomba.cpp">
-      <Filter>Source Files\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Mario.cpp">
-      <Filter>Source Files\Mario</Filter>
-    </ClCompile>
-    <ClCompile Include="StatusBoard.cpp">
-      <Filter>Source Files\HUD</Filter>
-    </ClCompile>
-    <ClCompile Include="Wing.cpp">
-      <Filter>Source Files\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Plant.cpp">
-      <Filter>Source Files\Enemy\Plant</Filter>
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClCompile>
     <ClCompile Include="Plant_4Leaf.cpp">
-      <Filter>Source Files\Enemy\Plant</Filter>
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet_Mario.cpp">
-      <Filter>Source Files\Mario</Filter>
+    <ClCompile Include="Goomba.cpp">
+      <Filter>HeaderAndSource\Enemy\Goomba</Filter>
+    </ClCompile>
+    <ClCompile Include="Koopas.cpp">
+      <Filter>HeaderAndSource\Enemy\Koopa</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>HeaderAndSource\LittleObject</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet_Plant.cpp" />
+    <ClCompile Include="Wing.cpp">
+      <Filter>HeaderAndSource\LittleObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Mario.cpp">
+      <Filter>HeaderAndSource\Mario</Filter>
+    </ClCompile>
+    <ClCompile Include="Animations.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScence.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Scence.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusBoard.cpp">
+      <Filter>HeaderAndSource\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperLeaf.cpp">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet_Mario.cpp">
+      <Filter>HeaderAndSource\LittleObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet_Plant.cpp">
+      <Filter>HeaderAndSource\LittleObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animations.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyEventHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Map.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Portal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayScence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprites.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Textures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Coin.h">
-      <Filter>Header Files\Reward</Filter>
+      <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
     <ClInclude Include="SuperLeaf.h">
-      <Filter>Header Files\Reward</Filter>
-    </ClInclude>
-    <ClInclude Include="Koopas.h">
-      <Filter>Header Files\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Goomba.h">
-      <Filter>Header Files\Enemy</Filter>
+      <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
     <ClInclude Include="Mario.h">
-      <Filter>Header Files\Mario</Filter>
+      <Filter>HeaderAndSource\Mario</Filter>
     </ClInclude>
     <ClInclude Include="StatusBoard.h">
-      <Filter>Header Files\HUD</Filter>
-    </ClInclude>
-    <ClInclude Include="Wing.h">
-      <Filter>Header Files\Enemy</Filter>
+      <Filter>HeaderAndSource\HUD</Filter>
     </ClInclude>
     <ClInclude Include="Plant.h">
-      <Filter>Header Files\Enemy\Plant</Filter>
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClInclude>
     <ClInclude Include="Plant_4Leaf.h">
-      <Filter>Header Files\Enemy\Plant</Filter>
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet_Mario.h">
-      <Filter>Header Files\Mario</Filter>
+    <ClInclude Include="Goomba.h">
+      <Filter>HeaderAndSource\Enemy\Goomba</Filter>
+    </ClInclude>
+    <ClInclude Include="Koopas.h">
+      <Filter>HeaderAndSource\Enemy\Koopa</Filter>
+    </ClInclude>
+    <ClInclude Include="Wing.h">
+      <Filter>HeaderAndSource\LittleObject</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>Header Files</Filter>
+      <Filter>HeaderAndSource\LittleObject</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet_Plant.h" />
+    <ClInclude Include="Animations.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyEventHandler.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScence.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Scence.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Textures.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprites.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet_Mario.h">
+      <Filter>HeaderAndSource\LittleObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet_Plant.h">
+      <Filter>HeaderAndSource\LittleObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Header Files">
+    <Filter Include="HeaderAndSource">
       <UniqueIdentifier>{beaf6ec9-4c6a-4ed0-9fbf-a38004358176}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{ee4b2f66-a236-4ae8-9b19-d8c39dba8f40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Reward">
+    <Filter Include="HeaderAndSource\Reward">
       <UniqueIdentifier>{a37a4d34-5558-46ec-928f-5a0b627d1baa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Reward">
-      <UniqueIdentifier>{847c4ee5-1fac-46ac-901c-6ce888fa2aac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Enemy">
-      <UniqueIdentifier>{0d1f86b7-b5a4-4969-897d-1e67802626d4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Enemy">
+    <Filter Include="HeaderAndSource\Enemy">
       <UniqueIdentifier>{ac6d0a0d-733c-411f-848f-185b81e40ec6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Mario">
-      <UniqueIdentifier>{fab6d611-41c4-40c9-8006-544448fd99b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Mario">
-      <UniqueIdentifier>{ff37685b-8aa0-449e-860e-5cd10a14bedf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\HUD">
-      <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\HUD">
-      <UniqueIdentifier>{dcae1267-7120-4bf0-a99a-45fb6f2cbf3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Enemy\Plant">
+    <Filter Include="HeaderAndSource\Enemy\Plant">
       <UniqueIdentifier>{fc346bbb-c9cc-4133-998f-23059e1b5d48}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Enemy\Plant">
-      <UniqueIdentifier>{69e4adce-fc78-4a7d-83e8-2da5b3b740b7}</UniqueIdentifier>
+    <Filter Include="HeaderAndSource\Enemy\Goomba">
+      <UniqueIdentifier>{7ae72c81-f5fa-46e5-9d8a-245536ac73cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\Enemy\Koopa">
+      <UniqueIdentifier>{ad5ee412-c2bb-455c-8eb9-5ac7c00d9d93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\Mario">
+      <UniqueIdentifier>{ff37685b-8aa0-449e-860e-5cd10a14bedf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\HUD">
+      <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\LittleObject">
+      <UniqueIdentifier>{607617ae-1129-479e-82cb-617f7d9740f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\Platform">
+      <UniqueIdentifier>{4fdef4e2-a364-4deb-9c84-b190a537d943}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\PlatformObject">
+      <UniqueIdentifier>{af93004e-9b6d-4a1e-97c9-cdc900dca52e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

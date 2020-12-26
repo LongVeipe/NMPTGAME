@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -131,6 +131,7 @@
     <ClCompile Include="Bullet_Mario.cpp" />
     <ClCompile Include="Bullet_Plant.cpp" />
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="Koopa_Small.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Plant_4Leaf.cpp" />
     <ClCompile Include="StatusBoard.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Bullet_Mario.h" />
     <ClInclude Include="Bullet_Plant.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Koopa_Small.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="Plant_4Leaf.h" />
     <ClInclude Include="StatusBoard.h" />

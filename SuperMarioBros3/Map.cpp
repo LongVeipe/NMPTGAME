@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Map.h"
 #include "Textures.h"
+#include "PlayScence.h"
 
 
 Map::Map(int _idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTileSet, int	_tRMap, int	_tCMap, int	_totalTiles)
@@ -66,8 +67,17 @@ void Map::LoadMatrix(LPCWSTR path)
 
 void Map::Render()
 {
+	float cx, cy;
+	CGame* game = CGame::GetInstance();
+	game->GetCamPos(cx, cy);
+	int startRow, startCol, limitRow, limitCol;
+	startCol = cx / TileWidth;
+	limitCol = startCol + (game->GetScreenWidth() / TileWidth)+1;
+
+	if (limitCol >= TotalColsOfMap) limitCol = TotalColsOfMap - 1;
+
 	for(int r = 0; r<TotalRowsOfMap; r++)
-		for (int c = 0; c < TotalColsOfMap; c++)
+		for (int c = startCol; c < limitCol; c++)
 		{
 			Tiles[Matrix[r][c] - 1]->Draw(c * TileWidth,r * TileHeight, 255);
 		}

@@ -10,6 +10,7 @@
 #include "Bullet.h"
 #include "SuperLeaf.h"
 #include "Plant_4Leaf.h"
+#include "Koopa_Small.h"
 
 using namespace std;
 
@@ -33,11 +34,11 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define SCENE_SECTION_OBJECTS	6
 #define SCENE_SECTION_MAP	7
 
-#define OBJECT_TYPE_MARIO	0
-#define OBJECT_TYPE_BRICK	1
-#define OBJECT_TYPE_GOOMBA	2
-#define OBJECT_TYPE_KOOPAS	3
-#define OBJECT_TYPE_COIN	5
+#define OBJECT_TYPE_MARIO		0
+#define OBJECT_TYPE_BRICK		1
+#define OBJECT_TYPE_GOOMBA		2
+#define OBJECT_TYPE_KOOPA_SMALL	3
+#define OBJECT_TYPE_COIN		5
 #define OBJECT_TYPE_PLANT_4LEAF	6
 
 #define OBJECT_TYPE_PORTAL	50
@@ -220,12 +221,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		
 		break;
 	}
-	case OBJECT_TYPE_KOOPAS:
+	case OBJECT_TYPE_KOOPA_SMALL:
 	{
 		float typeKoopa = atof(tokens[4].c_str());
-		float start_x = atof(tokens[5].c_str());
-		float final_x = atof(tokens[6].c_str());
-		obj = new CKoopas(start_x, final_x, typeKoopa);
+		float final_x = atof(tokens[5].c_str());
+		obj = new CKoopa_Small(x, y, typeKoopa, final_x);
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA:
