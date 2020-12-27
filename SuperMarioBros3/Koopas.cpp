@@ -9,6 +9,7 @@ CKoopas::CKoopas(float _x, float _y, int _type, float _limit_x):CGameObject()
 	x = _x;
 	y = _y;
 	type = _type;
+	start_x = x;
 	limit_x = _limit_x;
 }
 

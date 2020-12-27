@@ -42,8 +42,6 @@
 
 #define GOOMBA_PARA_MAX_JUMP_STACK	2
 
-#define GOOMBA_LEFT_WING_ID		0
-#define GOOMBA_RIGHT_WING_ID	1
 
 class CGoomba : public CGameObject
 {

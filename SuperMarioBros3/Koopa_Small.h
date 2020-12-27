@@ -1,5 +1,6 @@
 #pragma once
 #include "Koopas.h"
+#include "Wing.h"
 
 #define KOOPA_BE_KNOCKED_DOWN_SPEED_Y 0.3f
 #define KOOPA_BE_KNOCKED_DOWN_SPEED_X 0.04f
@@ -52,6 +53,9 @@
 
 class CKoopa_Small: public CKoopas
 {
+private:
+	CWing* leftWing;
+	CWing* rightWing;
 public:
 	bool IsBeingHeld;
 	bool IsWaggling;
@@ -60,8 +64,8 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
-	void Calculate_Vx();
-
+	void UpdaetState();
+	void Update_Wings();
 	CKoopa_Small(float _x, float _y, int _type, float _limit_x);
 	virtual ~CKoopa_Small();
 	virtual void SetState(int state);

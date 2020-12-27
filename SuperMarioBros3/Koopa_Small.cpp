@@ -4,11 +4,28 @@
 #include "Mario.h"
 #include "Game.h"
 #include "PlayScence.h"
+#include "Utils.h"
 
 CKoopa_Small::CKoopa_Small(float _x, float _y, int _type, float _limit_x) :CKoopas(_x, _y, _type, _limit_x)
 {
-	
+	if (_type == KOOPA_SMALL_TYPE_RED_WALKING || _type == KOOPA_SMALL_TYPE_GREEN_WALKING)
+		SetState(KOOPA_SMALL_STATE_WALKING_LEFT);
+	else if (_type == KOOPA_SMALL_TYPE_RED_FLYING || _type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+	{
+		SetState(KOOPA_SMALL_STATE_JUMPING_LEFT);
+		leftWing = new CWing(WING_TYPE_LEFT);
+		rightWing = new CWing(WING_TYPE_RIGHT);
+	}
+	else //type == turtoiseshell
+		SetState(KOOPA_SMALL_STATE_IDLE);
+
 }
+
+CKoopa_Small::~CKoopa_Small()
+{
+}
+
+
 
 void CKoopa_Small::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -26,37 +43,53 @@ void CKoopa_Small::GetBoundingBox(float& left, float& top, float& right, float& 
 	}
 }
 
-void CKoopa_Small::Calculate_Vx()
+void CKoopa_Small::UpdaetState()
 {
-	if (state == KOOPA_SMALL_STATE_WALKING_LEFT)
+	if (type == KOOPA_SMALL_TYPE_RED_WALKING || type == KOOPA_SMALL_TYPE_GREEN_WALKING)
 	{
-		if (x < limit_x)
+		if (x <= limit_x)
 		{
 			x = limit_x;
-			vx = -vx;
+			SetState(KOOPA_SMALL_STATE_WALKING_RIGHT);
 		}
-	}
-	else if (state == KOOPA_SMALL_STATE_WALKING_RIGHT)
-	{
-		if (x > start_x)
+		else if (x >= start_x)
 		{
 			x = start_x;
-			vx = -vx;
+			SetState(KOOPA_SMALL_STATE_WALKING_LEFT);
 		}
 	}
+	else if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+	{
+		if (x <= limit_x)
+		{
+			x = limit_x;
+			SetState(KOOPA_SMALL_STATE_JUMPING_RIGHT);
+		}
+		else if (x >= start_x)
+		{
+			x = start_x;
+			SetState(KOOPA_SMALL_STATE_JUMPING_LEFT);
+		}
+	}
+}
+
+void CKoopa_Small::Update_Wings()
+{
+	if (state == KOOPA_SMALL_STATE_JUMPING_LEFT)
+		rightWing->SetPosition(x + 8, y - 1);
+	else if(state == KOOPA_SMALL_STATE_JUMPING_RIGHT)
+		leftWing->SetPosition(x, y - 1);
 }
 
 void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt, coObjects);
-
 	if (IsBeingHeld)
 	{
 		BeHeld();
 		return;
 	}
 	vy += dt * KOOPA_GRAVITY;
-	Calculate_Vx();
 	
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -87,16 +120,32 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			LPCOLLISIONEVENT e = coEventsResult[i];
 			if (dynamic_cast<CBrick*>(e->obj))
 			{
-				if (e->nx != 0)
+				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
+				if (brick->GetType() == BRICK_TYPE_BIG_BLOCK)
 				{
-					this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
-					this->vx = -vx;
+					if (e->ny == -1)
+					{
+						this->vy = 0;
+						this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
+					}
+					else
+					{
+						x = x0 + dx;
+						y = y0 + dy;
+					}
 				}
-				if (e->ny != 0)
+				else
 				{
-					this->vy = 0;
-					this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
-
+					if (e->nx != 0)
+					{
+						this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
+						this->vx = -vx;
+					}
+					if (e->ny != 0)
+					{
+						this->vy = 0;
+						this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
+					}
 				}
 			}
 			else if (dynamic_cast<CGoomba*>(e->obj))
@@ -116,29 +165,15 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 					}
 				}
 			}
-			else if (dynamic_cast<CMario*>(e->obj))
-			{
-				/*CMario* mario = dynamic_cast<CMario*>(e->obj);
-				if (e->nx != 0)
-				{
-					if()
-					this->x = x0 + min_tx * this->dx + nx * 0.1f;
-					this->vx = -vx;
-				}
-				if (e->ny != 0)
-				{
-					this->vy = 0;
-					this->y = y0 + min_ty * this->dy + ny * 0.1f;
-
-				}*/
-			}
-
 		}
 
 	}
+	UpdaetState();
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
+	if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+		Update_Wings();
 }
 void CKoopa_Small::Render()
 {
@@ -148,19 +183,45 @@ void CKoopa_Small::Render()
 
 
 	int ani = -1;
-	if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_RED_WALKING)
+	if ( type == KOOPA_SMALL_TYPE_RED_WALKING)
 	{
-		if (state == KOOPA_SMALL_STATE_JUMPING_LEFT || state == KOOPA_SMALL_STATE_WALKING_LEFT)
+		if (state == KOOPA_SMALL_STATE_WALKING_LEFT)
 			ani = KOOPA_SMALL_ANI_RED_WALKING_LEFT;
 		else
 			ani = KOOPA_SMALL_ANI_RED_WALKING_RIGHT;
 	}
-	else if (type == KOOPA_SMALL_TYPE_GREEN_FLYING || type == KOOPA_SMALL_TYPE_GREEN_WALKING)
+	else if (type == KOOPA_SMALL_TYPE_RED_FLYING)
 	{
-		if (state == KOOPA_SMALL_STATE_JUMPING_LEFT || state == KOOPA_SMALL_STATE_WALKING_LEFT)
+		if (state == KOOPA_SMALL_STATE_JUMPING_LEFT)
+		{
+			ani = KOOPA_SMALL_ANI_RED_WALKING_LEFT;
+			rightWing->Render();
+		}
+		else
+		{
+			ani = KOOPA_SMALL_ANI_RED_WALKING_RIGHT;
+			leftWing->Render();
+		}
+	}
+	else if (type == KOOPA_SMALL_TYPE_GREEN_WALKING)
+	{
+		if ( state == KOOPA_SMALL_STATE_WALKING_LEFT)
 			ani = KOOPA_SMALL_ANI_GREEN_WALKING_LEFT;
 		else
 			ani = KOOPA_SMALL_ANI_GREEN_WALKING_RIGHT;
+	}
+	else if (type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+	{
+		if (state == KOOPA_SMALL_STATE_JUMPING_LEFT)
+		{
+			ani = KOOPA_SMALL_ANI_GREEN_WALKING_LEFT;
+			rightWing->Render();
+		}
+		else
+		{
+			ani = KOOPA_SMALL_ANI_GREEN_WALKING_RIGHT;
+			leftWing->Render();
+		}
 	}
 	else if (type == KOOPA_SMALL_TYPE_RED_TURTOISESHELL)
 	{
@@ -190,21 +251,10 @@ void CKoopa_Small::SetState(int state)
 	switch (state)
 	{
 	case KOOPA_SMALL_STATE_WALKING_RIGHT:
-		
-		if (type == KOOPA_SMALL_TYPE_RED_WALKING || type == KOOPA_SMALL_TYPE_GREEN_WALKING)
-		{
-			vx = KOOPA_WALKING_SPEED;
-		}
-		else //TURTOISESHELL
-			vx = KOOPA_SPEED_TURTOISESHELL_X;
+		vx = KOOPA_WALKING_SPEED;
 		break;
 	case KOOPA_SMALL_STATE_WALKING_LEFT:
-		if (type == KOOPA_SMALL_TYPE_RED_WALKING || type == KOOPA_SMALL_TYPE_GREEN_WALKING)
-		{
-			vx = -KOOPA_WALKING_SPEED;
-		}
-		else //TURTOISESHELL
-			vx = -KOOPA_SPEED_TURTOISESHELL_X;
+		vx = -KOOPA_WALKING_SPEED;
 		break;
 	case KOOPA_SMALL_STATE_JUMPING_LEFT:
 		vy = -KOOPA_JUMP_SPEED_Y;
@@ -216,6 +266,12 @@ void CKoopa_Small::SetState(int state)
 		break;
 	case KOOPA_SMALL_STATE_BE_KNOCKED_DOWN:
 		vy = -KOOPA_BE_KNOCKED_DOWN_SPEED_Y;
+		break;
+	case KOOPA_SMALL_STATE_RUNNING_LEFT:
+		vx = -KOOPA_SPEED_TURTOISESHELL_X;
+		break;
+	case KOOPA_SMALL_STATE_RUNNING_RIGHT:
+		vx = KOOPA_SPEED_TURTOISESHELL_X;
 		break;
 	case KOOPA_SMALL_STATE_IDLE:
 		vx = 0;
@@ -241,9 +297,9 @@ void CKoopa_Small::BeHeld()
 	{
 		IsBeingHeld = false;
 		if (mario->nx > 0)
-			SetState(KOOPA_SMALL_STATE_WALKING_RIGHT);
+			SetState(KOOPA_SMALL_STATE_RUNNING_RIGHT);
 		else
-			SetState(KOOPA_SMALL_STATE_WALKING_LEFT);
+			SetState(KOOPA_SMALL_STATE_RUNNING_LEFT);
 	}
 }
 
@@ -251,9 +307,9 @@ void CKoopa_Small::BeKicked(int mnx)
 {
 	this->nx = mnx;
 	if (nx > 0)
-		SetState(KOOPA_SMALL_STATE_WALKING_RIGHT);
+		SetState(KOOPA_SMALL_STATE_RUNNING_RIGHT);
 	else
-		SetState(KOOPA_SMALL_STATE_WALKING_LEFT);
+		SetState(KOOPA_SMALL_STATE_RUNNING_LEFT);
 }
 
 void CKoopa_Small:: BeDamaged_Y()
@@ -289,9 +345,9 @@ void CKoopa_Small:: BeDamaged_Y()
 			float mleft, mtop, mright, mbottom;
 			((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer()->GetBoundingBox(mleft, mtop, mright, mbottom);
 			if (mright < kright)
-				this->SetState(KOOPA_SMALL_STATE_WALKING_RIGHT);
+				this->SetState(KOOPA_SMALL_STATE_RUNNING_RIGHT);
 			else
-				this->SetState(KOOPA_SMALL_STATE_WALKING_LEFT);
+				this->SetState(KOOPA_SMALL_STATE_RUNNING_LEFT);
 		}
 		else
 		{
@@ -319,9 +375,4 @@ void CKoopa_Small::CalculateBeSwingedTail()
 			
 		}
 	}
-}
-
-CKoopa_Small::~CKoopa_Small()
-{
-
 }

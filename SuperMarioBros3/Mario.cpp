@@ -379,8 +379,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				if (e->ny != 0)
 				{
-					if(e->ny < 0)
+					if (e->ny < 0)
+					{
 						koopa->BeDamaged_Y();
+						vy = -MARIO_JUMP_DEFLECT_SPEED;
+						IsJumping = true;
+						ny = -1;
+					}
 					else if (untouchable == 0)
 						this->BeDamaged();
 				}

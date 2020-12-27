@@ -4,6 +4,7 @@
 CWing::CWing(int _type)
 {
 	type = _type;
+	SetState(WING_STATE_FLYING);
 	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 	LPANIMATION_SET ani_set = animation_sets->Get(WING_ANI_SET_ID);
 	this->SetAnimationSet(ani_set);
