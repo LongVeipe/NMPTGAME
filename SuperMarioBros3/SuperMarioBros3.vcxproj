@@ -131,6 +131,7 @@
     <ClCompile Include="Bullet_Mario.cpp" />
     <ClCompile Include="Bullet_Plant.cpp" />
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Koopa_Small.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Plant_4Leaf.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="Bullet_Mario.h" />
     <ClInclude Include="Bullet_Plant.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Koopa_Small.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="Plant_4Leaf.h" />

@@ -75,4 +75,6 @@ public:
 	bool IsTouchingGround;
 	bool IsSpreadingWing;
 
+	void Reset();
+
 };

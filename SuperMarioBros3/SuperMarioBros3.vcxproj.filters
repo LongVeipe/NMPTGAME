@@ -73,6 +73,10 @@
     <ClCompile Include="Brick.cpp">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClCompile>
+    <ClCompile Include="Koopa_Small.cpp">
+      <Filter>HeaderAndSource\Enemy\Koopa</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -147,6 +151,10 @@
     <ClInclude Include="Brick.h">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClInclude>
+    <ClInclude Include="Koopa_Small.h">
+      <Filter>HeaderAndSource\Enemy\Koopa</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HeaderAndSource">

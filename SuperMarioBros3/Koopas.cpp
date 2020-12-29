@@ -4,13 +4,10 @@
 #include "Game.h"
 #include "PlayScence.h"
 
-CKoopas::CKoopas(float _x, float _y, int _type, float _limit_x):CGameObject()
+CKoopas::CKoopas(float _x, float _y, int _type):CEnemy(_x, _y,_type)
 {
-	x = _x;
-	y = _y;
-	type = _type;
-	start_x = x;
-	limit_x = _limit_x;
+	isTouchingGround = true;
+
 }
 
 CKoopas::~CKoopas()

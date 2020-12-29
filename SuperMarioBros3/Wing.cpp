@@ -18,7 +18,6 @@ CWing::~CWing()
 void CWing::UpdateWhenFlying()
 {
 	int stage = ((GetTickCount64() - fly_start) / WING_EACH_STAGE_IN_FLYING_TIME)%2;
-	DebugOut(L"[INFO] stage: %d \n", (GetTickCount64() - fly_start) / WING_EACH_STAGE_IN_FLYING_TIME);
 	switch (stage)
 	{
 	case 0:
@@ -26,7 +25,6 @@ void CWing::UpdateWhenFlying()
 		{
 			StageOfFlying=1;
 			y -= 5;
-			DebugOut(L"[INFO] StageOfFlying: %d \n", StageOfFlying);
 		}
 		break;
 	case 1:
@@ -34,7 +32,6 @@ void CWing::UpdateWhenFlying()
 		{
 			StageOfFlying = 0;
 			y += 5;
-			DebugOut(L"[INFO] StageOfFlying: %d \n", StageOfFlying);
 		}
 		break;
 	}

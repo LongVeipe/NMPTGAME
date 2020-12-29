@@ -4,10 +4,10 @@
 
 #define KOOPA_BE_KNOCKED_DOWN_SPEED_Y 0.3f
 #define KOOPA_BE_KNOCKED_DOWN_SPEED_X 0.04f
-#define KOOPA_JUMP_SPEED_Y		0.3f
+#define KOOPA_JUMP_SPEED_Y		0.28f
 #define KOOPA_GRAVITY			0.001f
-#define KOOPA_MAX_FALL_SPEED	0.15
-#define KOOPA_WALKING_SPEED 0.03f;
+#define KOOPA_MAX_FALL_SPEED	0.12
+#define KOOPA_WALKING_SPEED 0.033f;
 #define KOOPA_SPEED_TURTOISESHELL_X	0.2
 
 #define KOOPA_SMALL_BBOX_WIDTH 16
@@ -56,18 +56,28 @@ class CKoopa_Small: public CKoopas
 private:
 	CWing* leftWing;
 	CWing* rightWing;
+
+	bool isEnable;
+	bool isReadyToEnable;
 public:
 	bool IsBeingHeld;
 	bool IsWaggling;
+
+
+	CKoopa_Small(float _x, float _y, int _type);
+	virtual ~CKoopa_Small();
 
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
-	void UpdaetState();
+
+	void Update_vy();
+	bool CalculateTurningAround(vector<LPGAMEOBJECT>* coObjects);
+	void TurnAround();
 	void Update_Wings();
-	CKoopa_Small(float _x, float _y, int _type, float _limit_x);
-	virtual ~CKoopa_Small();
+	void UpdateFlyingType();
+
 	virtual void SetState(int state);
 	int GetType() { return this->type; }
 
@@ -76,5 +86,6 @@ public:
 	void CalculateBeSwingedTail();
 	void BeDamaged_Y();
 
+	virtual void Reset();
 };
 

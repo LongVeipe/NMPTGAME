@@ -118,7 +118,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	CGameObject::Update(dt, coObjects);
 
 	Calculate_vy();
-	//DebugOut(L"[INFO] jumpst: %d \n", PARA_jumpStack);
 	if (type == GOOMBA_TYPE_FLYING_RED)
 		Update_FlyingRed();
 	
@@ -322,3 +321,7 @@ void CGoomba::BeDamaged_Y()
 	}
 }
 
+void CGoomba::Reset()
+{
+
+}

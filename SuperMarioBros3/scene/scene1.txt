@@ -1203,7 +1203,8 @@
 
 # KOOPA
 #type 1: small red, 2: small green, 3: 
-3	592	352	100000	13	512
+#3	592	352	100000	12
+3	1424	288	100000	23
 
 # PLANT_4LEAF
 #typeobj x	y	ani	limit_y	type
@@ -1260,7 +1261,7 @@
 
 
 #== MARIO ==
-0	500.0	300	1
+0	1200.0	300	1
 
 
 # --- SCENE PORTAL ----

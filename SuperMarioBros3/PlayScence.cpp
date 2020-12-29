@@ -224,8 +224,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_KOOPA_SMALL:
 	{
 		float typeKoopa = atof(tokens[4].c_str());
-		float final_x = atof(tokens[5].c_str());
-		obj = new CKoopa_Small(x, y, typeKoopa, final_x);
+		obj = new CKoopa_Small(x, y, typeKoopa);
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA:

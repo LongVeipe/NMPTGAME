@@ -1,22 +1,17 @@
 #pragma once
 
-#include "GameObject.h"
+#include "Enemy.h"
 
 
-class CKoopas : public CGameObject
+class CKoopas : public CEnemy
 {
-protected:
-	int type;
-	float start_x;
-	float limit_x;
 public:
-	bool isTouchGround;
+	bool isTouchingGround;
+
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) = 0;
 	virtual void Render() = 0;
 
-	CKoopas(float _x, float _y, int _type, float _limit_x);
+	CKoopas(float _x, float _y, int _type);
 	virtual ~CKoopas();
-
-	int GetType() { return this->type; }
-	void SetType(int _type) { type = _type; }
+	virtual void Reset() = 0;
 };

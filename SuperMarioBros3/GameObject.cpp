@@ -72,7 +72,12 @@ void CGameObject::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vecto
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-		LPCOLLISIONEVENT e = SweptAABBEx(coObjects->at(i));
+		LPGAMEOBJECT object = coObjects->at(i);
+		if (!IsInCamera())
+			continue;
+
+
+		LPCOLLISIONEVENT e = SweptAABBEx(object);
 
 		if (e->t > 0 && e->t <= 1.0f)
 		{
@@ -162,6 +167,7 @@ bool CGameObject::IsInCamera()
 	game->GetCamPos(cx, cy);
 	float scrW = game->GetScreenWidth();
 	float scrH = game->GetScreenHeight();
+	game = nullptr;
 	if (this->x <cx || this->y<cy || this->x > cx + scrW || this->y >cy + scrH)
 		return false;
 	return true;
