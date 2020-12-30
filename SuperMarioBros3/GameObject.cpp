@@ -10,6 +10,7 @@
 #include "Koopas.h"
 #include "Goomba.h"
 #include "Mario.h"
+#include "PlayScence.h"
 
 CGameObject::CGameObject()
 {
@@ -167,8 +168,9 @@ bool CGameObject::IsInCamera()
 	game->GetCamPos(cx, cy);
 	float scrW = game->GetScreenWidth();
 	float scrH = game->GetScreenHeight();
-	game = nullptr;
-	if (this->x <cx || this->y<cy || this->x > cx + scrW || this->y >cy + scrH)
+	int tH = ((CPlayScene*)(game->GetCurrentScene()))->GetMap()->GetTileHeight();
+	int tW = ((CPlayScene*)(game->GetCurrentScene()))->GetMap()->GetTileWidth();
+	if (this->x <cx - 2 * tW || this->y<cy - 2 * tH || this->x > cx + scrW + 2 * tW || this->y >cy + scrH + 2 * tH)
 		return false;
 	return true;
 }

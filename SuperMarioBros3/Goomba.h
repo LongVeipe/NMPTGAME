@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "Enemy.h"
 #include "Wing.h"
 
 #define GOOMBA_WALKING_SPEED 0.025f
@@ -43,10 +43,9 @@
 #define GOOMBA_PARA_MAX_JUMP_STACK	2
 
 
-class CGoomba : public CGameObject
+class CGoomba : public CEnemy
 {
 private:
-	int type;
 	int PARA_jumpStack;
 	DWORD DeadTime;
 	DWORD loop_start;
@@ -62,7 +61,7 @@ private:
 
 public:
 
-	CGoomba(float start_x, float final_x, int type);
+	CGoomba(float _x, float _y, int type);
 	virtual void SetState(int state);
 	virtual ~CGoomba();
 	void SetDeadTime();

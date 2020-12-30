@@ -57,8 +57,6 @@ private:
 	CWing* leftWing;
 	CWing* rightWing;
 
-	bool isEnable;
-	bool isReadyToEnable;
 public:
 	bool IsBeingHeld;
 	bool IsWaggling;

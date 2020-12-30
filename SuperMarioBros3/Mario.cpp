@@ -344,7 +344,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						else
 							goomba->SetState(GOOMBA_STATE_DIE_X);
 				}
-			} // if Goomba
+			}
 			else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
 			{
 				CCoin* coin = dynamic_cast<CCoin*>(e->obj);

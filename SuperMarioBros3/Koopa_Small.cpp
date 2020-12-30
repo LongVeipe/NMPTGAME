@@ -31,20 +31,24 @@ CKoopa_Small::~CKoopa_Small()
 
 void CKoopa_Small::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	left = x;
-	top = y;
-	if (type == KOOPA_SMALL_TYPE_RED_TURTOISESHELL || type == KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL)
+	if (isEnable)
 	{
-		right = x + KOOPA_SMALL_TURTOISESHELL_BBOX_WIDTH;
-		bottom = y + KOOPA_SMALL_TURTOISESHELL_BBOX_HEIGHT;
+		left = x;
+		top = y;
+		if (type == KOOPA_SMALL_TYPE_RED_TURTOISESHELL || type == KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL)
+		{
+			right = x + KOOPA_SMALL_TURTOISESHELL_BBOX_WIDTH;
+			bottom = y + KOOPA_SMALL_TURTOISESHELL_BBOX_HEIGHT;
+		}
+		else
+		{
+			right = x + KOOPA_SMALL_BBOX_WIDTH;
+			bottom = y + KOOPA_SMALL_BBOX_HEIGHT;
+		}
 	}
 	else
-	{
-		right = x + KOOPA_SMALL_BBOX_WIDTH;
-		bottom = y + KOOPA_SMALL_BBOX_HEIGHT;
-	}
+		left = top = right = bottom = 0;
 }
-
 
 void CKoopa_Small::Update_Wings()
 {
@@ -125,7 +129,6 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (!IsInCamera())
 	{
-		//if(!IsStart_xyInCamera())
 		if (isEnable)
 			Reset();
 		else if(!isReadyToEnable)
@@ -252,6 +255,7 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	//DebugOut(L"[INFO] isTouchingGround: %d \n", isTouchingGround);
 }
+
 void CKoopa_Small::Render()
 {
 	if (!isEnable)
@@ -357,6 +361,7 @@ void CKoopa_Small::SetState(int state)
 	}
 
 }
+
 void CKoopa_Small::BeHeld()
 {
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();

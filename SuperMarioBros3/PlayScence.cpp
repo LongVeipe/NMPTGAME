@@ -230,9 +230,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_GOOMBA:
 	{
 		float typeGoomba = atof(tokens[4].c_str());
-		float start_x = atof(tokens[5].c_str());
-		float final_x = atof(tokens[6].c_str());
-		obj = new CGoomba(start_x, final_x, typeGoomba);
+		obj = new CGoomba(x, y, typeGoomba);
 		break;
 	}
 	case OBJECT_TYPE_PLANT_4LEAF:
@@ -329,7 +327,21 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt, &coObjects);
+		/*if (dynamic_cast<CGoomba*>(objects[i]))
+		{
+			CGoomba* goomba = dynamic_cast<CGoomba*>(objects[i]);
+			if ((goomba->GetState() == GOOMBA_STATE_DIE_X || goomba->GetState() == GOOMBA_STATE_DIE_Y ) && !goomba->IsInCamera())
+			{
+				objects.erase(objects.begin() + i);
+				coObjects.erase(coObjects.begin() + i);
+				delete goomba;
+				goomba = nullptr;
+			}
+			else
+				goomba->Update(dt, &coObjects);
+		}
+		else*/
+			objects[i]->Update(dt, &coObjects);
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)

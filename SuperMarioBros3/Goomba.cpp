@@ -3,10 +3,9 @@
 #include "Mario.h"
 #include "PlayScence.h"
 #include "Utils.h"
-CGoomba::CGoomba(float start_x, float final_x, int _type):CGameObject()
+CGoomba::CGoomba(float _x, float _y, int _type):CEnemy(_x, _y, _type)
 {
-	type = _type;
-	//if (type == GOOMBA_TYPE_FLYING_RED)
+	if (type == GOOMBA_TYPE_FLYING_RED)
 	{
 		leftWing = new CWing(WING_TYPE_LEFT);
 		rightWing = new CWing(WING_TYPE_RIGHT);
@@ -23,25 +22,29 @@ CGoomba::~CGoomba()
 }
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (this->state == GOOMBA_STATE_DIE_X || this->state == GOOMBA_STATE_DIE_Y)
-			left = top = right = bottom = 0;
-	else
+	if (isEnable)
 	{
-		left = x;
-		top = y;
-		if (type == GOOMBA_TYPE_NORMAL)
-		{ 
-			right = x + GOOMBA_BBOX_NORMAL_WIDTH;
-			bottom = y + GOOMBA_BBOX_NORMAL_HEIGHT;
-		}
+		if (this->state == GOOMBA_STATE_DIE_X || this->state == GOOMBA_STATE_DIE_Y)
+			left = top = right = bottom = 0;
 		else
 		{
-			right = left + GOOMBA_BBOX_RED_WIDTH;
-			bottom = y + GOOMBA_BBOX_RED_HEIGHT;
+			left = x;
+			top = y;
+			if (type == GOOMBA_TYPE_NORMAL)
+			{
+				right = x + GOOMBA_BBOX_NORMAL_WIDTH;
+				bottom = y + GOOMBA_BBOX_NORMAL_HEIGHT;
+			}
+			else
+			{
+				right = left + GOOMBA_BBOX_RED_WIDTH;
+				bottom = y + GOOMBA_BBOX_RED_HEIGHT;
+			}
 		}
 	}
+	else
+		left = top = right = bottom = 0;
 }
-
 void CGoomba::Calculate_vy()
 {
 	if (state != GOOMBA_STATE_DIE_Y)
@@ -114,7 +117,28 @@ void CGoomba::Update_Wings()
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	if (!IsInCamera())
+	{
+		if (isEnable)
+			Reset();
+		else if (!isReadyToEnable)
+		{
+			isReadyToEnable = true;
+		}
 		return;
+	}
+	else
+	{
+		if (!isEnable)
+		{
+			if (isReadyToEnable)
+			{
+				isEnable = true;
+				isReadyToEnable = false;
+			}
+			return;
+		}
+
+	}
 	CGameObject::Update(dt, coObjects);
 
 	Calculate_vy();
@@ -187,12 +211,10 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		Update_Wings();
 
 }
-
 void CGoomba::Render()
 {
-	if (!IsInCamera())
+	if (!isEnable)
 		return;
-
 
 	int ani = -1;
 	if (type == GOOMBA_TYPE_NORMAL)
@@ -234,7 +256,6 @@ void CGoomba::Render()
 
 	//RenderBoundingBox();
 }
-
 void CGoomba::SetState(int state)
 {
 	CGameObject::SetState(state);
@@ -280,12 +301,10 @@ void CGoomba::SetState(int state)
 			break;
 	}
 }
-
 void CGoomba::SetDeadTime()
 {
 	this->DeadTime = GetTickCount64();
 }
-
 void CGoomba::CalculateBeSwingedTail()
 {
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
@@ -304,7 +323,6 @@ void CGoomba::CalculateBeSwingedTail()
 		}
 	}
 }
-
 void CGoomba::BeDamaged_Y()
 {
 	if (type == GOOMBA_TYPE_FLYING_RED)
@@ -320,8 +338,19 @@ void CGoomba::BeDamaged_Y()
 		SetDeadTime();
 	}
 }
-
 void CGoomba::Reset()
 {
+	type = start_type;
+	SetPosition(start_x, start_y);
+	SetType(start_type);
 
+	if (type == GOOMBA_TYPE_FLYING_RED)
+	{
+		leftWing = new CWing(WING_TYPE_LEFT);
+		rightWing = new CWing(WING_TYPE_RIGHT);
+	}
+	SetState(GOOMBA_STATE_WALKING);
+	this->PARA_jumpStack = 0;
+	loop_start == GetTickCount64();
+	isEnable = false;
 }
