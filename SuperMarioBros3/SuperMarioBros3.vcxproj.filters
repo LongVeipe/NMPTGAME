@@ -4,9 +4,6 @@
     <ClCompile Include="Plant.cpp">
       <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClCompile>
-    <ClCompile Include="Plant_4Leaf.cpp">
-      <Filter>HeaderAndSource\Enemy\Plant</Filter>
-    </ClCompile>
     <ClCompile Include="Goomba.cpp">
       <Filter>HeaderAndSource\Enemy\Goomba</Filter>
     </ClCompile>
@@ -58,9 +55,6 @@
     <ClCompile Include="Coin.cpp">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClCompile>
-    <ClCompile Include="SuperLeaf.cpp">
-      <Filter>HeaderAndSource\Reward</Filter>
-    </ClCompile>
     <ClCompile Include="Bullet_Mario.cpp">
       <Filter>HeaderAndSource\LittleObject</Filter>
     </ClCompile>
@@ -70,19 +64,28 @@
     <ClCompile Include="Portal.cpp">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>HeaderAndSource\PlatformObject</Filter>
-    </ClCompile>
     <ClCompile Include="Koopa_Small.cpp">
       <Filter>HeaderAndSource\Enemy\Koopa</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Plant_Fire.cpp">
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>HeaderAndSource\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Reward_LevelUp.cpp">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="QuestionBox.cpp">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
-      <Filter>HeaderAndSource\Reward</Filter>
-    </ClInclude>
-    <ClInclude Include="SuperLeaf.h">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
     <ClInclude Include="Mario.h">
@@ -92,9 +95,6 @@
       <Filter>HeaderAndSource\HUD</Filter>
     </ClInclude>
     <ClInclude Include="Plant.h">
-      <Filter>HeaderAndSource\Enemy\Plant</Filter>
-    </ClInclude>
-    <ClInclude Include="Plant_4Leaf.h">
       <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClInclude>
     <ClInclude Include="Goomba.h">
@@ -148,13 +148,25 @@
     <ClInclude Include="Portal.h">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>HeaderAndSource\PlatformObject</Filter>
-    </ClInclude>
     <ClInclude Include="Koopa_Small.h">
       <Filter>HeaderAndSource\Enemy\Koopa</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Plant_Fire.h">
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>HeaderAndSource\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Reward_LevelUp.h">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="QuestionBox.h">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HeaderAndSource">

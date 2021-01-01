@@ -26,7 +26,6 @@ void CBullet_Plant::CalcPotentialCollisionWithMario()
 	{
 		if (!mario->IsUntouchable() )
 		{ 
-			DebugOut(L"[INFO] mario state: %d \n", mario->state);
 			mario->BeDamaged();
 
 		}

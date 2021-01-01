@@ -8,12 +8,13 @@
 #include "Goomba.h"
 #include "Portal.h"
 #include "Brick.h"
-#include "SuperLeaf.h"
+#include "Reward_LevelUp.h"
 #include "Koopas.h"
 #include "Bullet_Mario.h"
 #include "PlayScence.h"
-#include "Plant_4Leaf.h"
+#include "Plant_Fire.h"
 #include "Koopa_Small.h"
+#include "QuestionBox.h"
 using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
@@ -264,7 +265,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				CBrick* brick = dynamic_cast<CBrick*>(e->obj);
 				switch (brick->GetType())
 				{
-				case BRICK_TYPE_NORMAL:
+				case BRICK_TYPE_PLATFORM:
 					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					break;
 				case BRICK_TYPE_BIG_BLOCK:
@@ -280,40 +281,35 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					}
 					break;
 				}
-				case BRICK_TYPE_QUESTION:
-					
-					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
-					if (brick->GetDetailType() == BRICK_DETAIL_TYPE_QUESTION_INTACT  )
-					{
-						if (e->ny == 1)
-							//this->ny = 1;
-						{
-							if (dynamic_cast<CCoin*>(brick->GetReward()))
-							{
-								CCoin* coin = (CCoin*)brick->GetReward();
-								coin->SetState(COIN_STATE_SHOW_JUMP);
-							}
-							else if (dynamic_cast<CSuperLeaf*>(brick->GetReward()))
-							{
-								CSuperLeaf* leaf = (CSuperLeaf*)brick->GetReward();
-								leaf->SetState(SUPER_LEAF_STATE_JUMP);
-								
-							}
-							brick->SetState(BRICK_STATE_JUMP);
-							brick->SetDetailType(BRICK_DETAIL_TYPE_QUESTION_EMPTY);
-							
-						}
-						else if (e->nx == 1 || e->nx == -1)
-						{
-
-						}
-					}
-
-					break;
 				}
 				
 			}
-			else if(dynamic_cast<CGoomba*>(e->obj)) // if e->obj is Goomba 
+			else if(dynamic_cast<CQuestionBox*>(e->obj))
+			{
+				CQuestionBox* box = dynamic_cast<CQuestionBox*>(e->obj);
+				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+				if (e->ny == 1)
+				{
+					if (!box->isEmpty)
+					{
+						box->CreateReward();
+						if (box->GetType() == QUESTION_BOX_TYPE_COIN)
+						{
+							CCoin* coin = (CCoin*)box->GetReward();
+							coin->SetAnimationSet(CAnimationSets::GetInstance()->Get(COIN_ANI_SET_ID));
+							coin->SetState(COIN_STATE_JUMPING);
+						}
+						else if (box->GetType() == QUESTION_BOX_TYPE_LEVEL_UP)
+						{
+							CReward_LevelUp* lvUp = (CReward_LevelUp*)box->GetReward();
+							lvUp->SetState(REWARD_LEVEL_UP_STATE_JUMPING);
+						}
+						box->SetState(QUESTION_BOX_STATE_JUMPING);
+						box->isEmpty = true;
+					}
+				}
+			}
+			else if(dynamic_cast<CGoomba*>(e->obj))
 			{
 				CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 				// jump on top >> kill Goomba and deflect a bit 
@@ -348,7 +344,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
 			{
 				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
-				coin->SetState(COIN_STATE_HIDDEN);
+				coin->isEnable = false;
 			}
 			else if (dynamic_cast<CKoopa_Small*>(e->obj))
 			{
@@ -390,9 +386,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->BeDamaged();
 				}
 			}
-			else if (dynamic_cast<CPlant_4Leaf*>(e->obj))
+			else if (dynamic_cast<CPlant_Fire*>(e->obj))
 			{
-				CPlant_4Leaf* Plant = dynamic_cast<CPlant_4Leaf*>(e->obj);
+				CPlant_Fire* Plant = dynamic_cast<CPlant_Fire*>(e->obj);
 				if (untouchable == 0)
 					BeDamaged();
 			}

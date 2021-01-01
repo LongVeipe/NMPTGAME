@@ -8,9 +8,10 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Bullet.h"
-#include "SuperLeaf.h"
-#include "Plant_4Leaf.h"
+#include "Reward_LevelUp.h"
+#include "Plant_Fire.h"
 #include "Koopa_Small.h"
+#include "QuestionBox.h"
 
 using namespace std;
 
@@ -34,12 +35,13 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define SCENE_SECTION_OBJECTS	6
 #define SCENE_SECTION_MAP	7
 
-#define OBJECT_TYPE_MARIO		0
-#define OBJECT_TYPE_BRICK		1
-#define OBJECT_TYPE_GOOMBA		2
-#define OBJECT_TYPE_KOOPA_SMALL	3
-#define OBJECT_TYPE_COIN		5
-#define OBJECT_TYPE_PLANT_4LEAF	6
+#define OBJECT_TYPE_MARIO			0
+#define OBJECT_TYPE_BRICK			1
+#define OBJECT_TYPE_QUESTION_BOX	2
+#define OBJECT_TYPE_GOOMBA			3
+#define OBJECT_TYPE_KOOPA_SMALL		4
+#define OBJECT_TYPE_COIN			5
+#define OBJECT_TYPE_PLANT_4LEAF		6
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -186,39 +188,14 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	//case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
 	case OBJECT_TYPE_BRICK:
 	{
-		int Type = atoi(tokens[4].c_str());
-		obj = new CBrick(x, y, Type);
-		//CBrick* brick = dynamic_cast<CBrick*>(obj);
-		CBrick* brick = (CBrick*)obj;
-
-		//Create Reward
-		int TypeReward = atoi(tokens[5].c_str());
-		CGameObject* rew = nullptr;
-		switch (TypeReward)
-		{
-		case TYPE_REWARD_COIN:
-		{
-			rew = new CCoin(x, y - 24, COIN_STATE_HIDDEN);
-			LPANIMATION_SET coin_ani_set = animation_sets->Get(1000);
-			rew->SetAnimationSet(coin_ani_set);
-			objects.push_back(rew);
-			brick->SetReward(rew);
-			break;
-		
-		}
-
-		case TYPE_REWARD_SUPER_LEAF:
-		{
-			rew = new CSuperLeaf(x, y, SUPER_LEAF_STATE_HIDDEN);
-			LPANIMATION_SET leaf_ani_set = animation_sets->Get(SUPER_LEAF_ANI_SET);
-			rew->SetAnimationSet(leaf_ani_set);
-			objects.push_back(rew);
-			brick->SetReward(rew);
-			break;
-		}
-		
-		}
-		
+		int type = atoi(tokens[4].c_str());
+		obj = new CBrick(x, y, type);
+		break;
+	}
+	case OBJECT_TYPE_QUESTION_BOX:
+	{
+		int type = atoi(tokens[4].c_str());
+		obj = new CQuestionBox(x, y, type);
 		break;
 	}
 	case OBJECT_TYPE_KOOPA_SMALL:
@@ -237,13 +214,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		float limit_y = atof(tokens[4].c_str());
 		int type = atoi(tokens[5].c_str());
-		obj = new CPlant_4Leaf(x, y, limit_y, type);
+		obj = new CPlant_Fire(x, y, limit_y, type);
 		break;
 	}
 	case OBJECT_TYPE_COIN: 
 	{
-		int State = atoi(tokens[4].c_str());
-		obj = new CCoin(x, y, State);
+		obj = new CCoin(x, y);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:

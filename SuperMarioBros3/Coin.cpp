@@ -1,54 +1,42 @@
 #include "Coin.h"
 
 
-CCoin::CCoin(float _x, float _y, int _state)
+CCoin::CCoin(float _x, float _y)
 {
 	this->x = _x;
 	this->y = _y;
 	this->start_y = _y;
-	this->state = _state;
+	isEnable = true;
 }
-
 void CCoin::Render()
 {
-	if (this->state != COIN_STATE_HIDDEN)
+	if (!IsInCamera())
+		return;
+	if (isEnable)
 	{
 		animation_set->at(0)->Render(x, y);
 	}
-	
-	//RenderBoundingBox();
 }
 
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (this->state == COIN_STATE_SHOW_JUMP)
+	if (!IsInCamera() || !isEnable || state != COIN_STATE_JUMPING)
+		return;
+	CGameObject::Update(dt, coObjects);
+
+	this->vy += COIN_GRAVITY * dt;
+	y += dy;
+	if(y > start_y)
 	{
-		CGameObject::Update(dt, coObjects);
-
-		vector<LPCOLLISIONEVENT> coEvents;
-		vector<LPCOLLISIONEVENT> coEventsResult;
-
-		coEvents.clear();
-		CalcPotentialCollisions(coObjects, coEvents);
-		if (this->y < start_y - dy)
-		{
-			this->vy += COIN_GRAVITY * dt;
-			y += dy;
-		}
-		else
-		{
-			y = start_y;
-			ny = 0;
-			this->vy = 0;
-			this->state = COIN_STATE_HIDDEN;
-		}
+		y = start_y;
+		this->vy = 0;
+		isEnable = false;
 	}
-
 }
 
 void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	if (this->state == COIN_STATE_HIDDEN)
+	if (!isEnable)
 		l = t = r = b = 0;
 	else
 	{
@@ -64,15 +52,12 @@ void CCoin::SetState(int _state)
 	CGameObject::SetState(_state);
 	switch (state)
 	{
-	case COIN_STATE_HIDDEN:
-		vy = 0;
-		ny = 0;
-		break;
-	case COIN_STATE_SHOW_JUMP:
+	case COIN_STATE_JUMPING:
 		vy = -COIN_JUMP_SPEED_Y;
-		ny = -1;
 		break;
-
+	/*case COIN_STATE_IDLE:
+		vy = 0;
+		break;*/
 	}
 }
 
