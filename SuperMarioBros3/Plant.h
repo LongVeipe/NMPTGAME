@@ -5,6 +5,8 @@
 #define PLANT_TYPE_RED_2_LEAF		3
 #define PLANT_TYPE_GREEN_2_LEAF		4
 
+const double PI = 3.141592653589793;
+
 class CPlant: public CGameObject
 {
 protected:

@@ -4,7 +4,6 @@
 #include <math.h>
 #include "Utils.h"
 
-const double PI = 3.141592653589793;
 
 CPlant_Fire::CPlant_Fire(float _x, float _y, float _limit_y, int _type): CPlant(_x,_y,_limit_y,_type)
 {
@@ -87,7 +86,46 @@ void CPlant_Fire::Render()
 	}
 	else if(type == PLANT_FIRE_TYPE_GREEN)
 	{
-
+		if (state == PLANT_FIRE_STATE_MOVING_DOWN || state == PLANT_FIRE_STATE_MOVING_UP)
+		{
+			switch (angle)
+			{
+			case PLANT_FIRE_ANGLE_135:
+			case PLANT_FIRE_ANGLE_225:
+			case PLANT_FIRE_ANGLE_150:
+			case PLANT_FIRE_ANGLE_210:
+				ani = PLANT_FIRE_ANI_GREEN_MOVING_225_DEGREES;
+				break;
+			case PLANT_FIRE_ANGLE_30:
+			case PLANT_FIRE_ANGLE_45:
+			case PLANT_FIRE_ANGLE_330:
+			case PLANT_FIRE_ANGLE_315:
+				ani = PLANT_FIRE_ANI_GREEN_MOVING_315_DEGREES;
+				break;
+			}
+		}
+		else
+		{
+			switch (angle)
+			{
+			case PLANT_FIRE_ANGLE_45:
+			case PLANT_FIRE_ANGLE_30:
+				ani = PLANT_FIRE_ANI_GREEN_KEEPING_STILL_45_DEGREES;
+				break;
+			case PLANT_FIRE_ANGLE_135:
+			case PLANT_FIRE_ANGLE_150:
+				ani = PLANT_FIRE_ANI_GREEN_KEEPING_STILL_135_DEGREES;
+				break;
+			case PLANT_FIRE_ANGLE_225:
+			case PLANT_FIRE_ANGLE_210:
+				ani = PLANT_FIRE_ANI_GREEN_KEEPING_STILL_225_DEGREES;
+				break;
+			case PLANT_FIRE_ANGLE_315:
+			case PLANT_FIRE_ANGLE_330:
+				ani = PLANT_FIRE_ANI_GREEN_KEEPING_STILL_315_DEGREES;
+				break;
+			}
+		}
 	}
 	animation_set->at(ani)->Render(x, y);
 }

@@ -79,9 +79,11 @@
     <ClCompile Include="Brick.cpp">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp" />
     <ClCompile Include="QuestionBox.cpp">
       <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant_Normal.cpp">
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,9 +165,11 @@
     <ClInclude Include="Brick.h">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h" />
     <ClInclude Include="QuestionBox.h">
       <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant_Normal.h">
+      <Filter>HeaderAndSource\Enemy\Plant</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

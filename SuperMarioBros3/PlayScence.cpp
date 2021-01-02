@@ -10,6 +10,7 @@
 #include "Bullet.h"
 #include "Reward_LevelUp.h"
 #include "Plant_Fire.h"
+#include "Plant_Normal.h"
 #include "Koopa_Small.h"
 #include "QuestionBox.h"
 
@@ -41,7 +42,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define OBJECT_TYPE_GOOMBA			3
 #define OBJECT_TYPE_KOOPA_SMALL		4
 #define OBJECT_TYPE_COIN			5
-#define OBJECT_TYPE_PLANT_4LEAF		6
+#define OBJECT_TYPE_PLANT_FIRE		6
+#define OBJECT_TYPE_PLANT_NORMAL	7
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -210,11 +212,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CGoomba(x, y, typeGoomba);
 		break;
 	}
-	case OBJECT_TYPE_PLANT_4LEAF:
+	case OBJECT_TYPE_PLANT_FIRE:
 	{
 		float limit_y = atof(tokens[4].c_str());
 		int type = atoi(tokens[5].c_str());
 		obj = new CPlant_Fire(x, y, limit_y, type);
+		break;
+	}
+	case OBJECT_TYPE_PLANT_NORMAL:
+	{
+		float limit_y = atof(tokens[4].c_str());
+		int type = atoi(tokens[5].c_str());
+		obj = new CPlant_Normal(x, y, limit_y, type);
 		break;
 	}
 	case OBJECT_TYPE_COIN: 

@@ -27,13 +27,26 @@ void CQuestionBox::Render()
 		ani = QUESTION_BOX_ANI_EMPTY;
 	else
 		ani = QUESTION_BOX_ANI_INTACT;
-	animation_set->at(ani)->Render(x, y);
 
-	//render reward
 	if (reward != nullptr)
 	{
-		reward->Render();
+		if (dynamic_cast<CReward_LevelUp*>(reward))
+		{
+			CReward_LevelUp* rew = (CReward_LevelUp*)reward;
+			if (rew->GetType() == REWARD_LEVEL_UP_TYPE_SUPER_LEAF)
+			{
+				animation_set->at(ani)->Render(x, y);
+				reward->Render();
+				return;
+			}
+			else
+				reward->Render();
+		}
+		else
+			reward->Render();
 	}
+	
+	animation_set->at(ani)->Render(x, y);
 }
 
 void CQuestionBox::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

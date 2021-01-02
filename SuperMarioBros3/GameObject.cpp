@@ -129,17 +129,41 @@ void CGameObject::FilterCollision(
 	{
 		LPCOLLISIONEVENT c = coEvents[i];
 		
-		if (c->t < min_tx && c->nx != 0) {
+		if (c->t < min_tx && c->nx > 0) {
 			min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
 		}
 
-		if (c->t < min_ty  && c->ny != 0) {
+		if (c->t < min_ty  && c->ny > 0) {
 			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
 		}
 	}
 
 	if (min_ix>=0) coEventsResult.push_back(coEvents[min_ix]);
 	if (min_iy>=0) coEventsResult.push_back(coEvents[min_iy]);
+
+
+	min_tx = 1.0f;
+	min_ty = 1.0f;
+	min_ix = -1;
+	min_iy = -1;
+	nx = 0.0f;
+	ny = 0.0f;
+
+	for (UINT i = 0; i < coEvents.size(); i++)
+	{
+		LPCOLLISIONEVENT c = coEvents[i];
+
+		if (c->t < min_tx && c->nx < 0) {
+			min_tx = c->t; nx = c->nx; min_ix = i; rdx = c->dx;
+		}
+
+		if (c->t < min_ty && c->ny < 0) {
+			min_ty = c->t; ny = c->ny; min_iy = i; rdy = c->dy;
+		}
+	}
+
+	if (min_ix >= 0) coEventsResult.push_back(coEvents[min_ix]);
+	if (min_iy >= 0) coEventsResult.push_back(coEvents[min_iy]);
 }
 
 

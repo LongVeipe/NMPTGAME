@@ -46,6 +46,7 @@ public:
 	virtual void Render();
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+
 	void SetState(int _state);
 	bool IsFalling();
 
@@ -54,5 +55,8 @@ public:
 
 	bool IsOnTheLeftOfMario();
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, vector<LPCOLLISIONEVENT>& coEvents);
+
+	int GetType() { return type; }
+	void SetType(int _type) { type = _type; }
 };
 

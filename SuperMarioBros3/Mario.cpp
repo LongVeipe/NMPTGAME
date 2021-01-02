@@ -15,6 +15,7 @@
 #include "Plant_Fire.h"
 #include "Koopa_Small.h"
 #include "QuestionBox.h"
+#include "Plant_Normal.h"
 using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
@@ -386,9 +387,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						this->BeDamaged();
 				}
 			}
-			else if (dynamic_cast<CPlant_Fire*>(e->obj))
+			else if (dynamic_cast<CPlant*>(e->obj))
 			{
-				CPlant_Fire* Plant = dynamic_cast<CPlant_Fire*>(e->obj);
 				if (untouchable == 0)
 					BeDamaged();
 			}
