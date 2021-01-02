@@ -4,6 +4,7 @@
 #include "PlayScence.h"
 #include <algorithm>
 #include "QuestionBox.h"
+#include "Utils.h"
 
 
 CReward_LevelUp::CReward_LevelUp(float _x, float _y)
@@ -79,6 +80,7 @@ void CReward_LevelUp::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		
 	CGameObject::Update(dt, coObjects);
 
+	CalcPotentialCollisionWithMario();
 	if (type == REWARD_LEVEL_UP_TYPE_SUPER_LEAF)
 	{
 		Update_Leaf();
@@ -118,17 +120,20 @@ void CReward_LevelUp::Update_Leaf()
 
 void CReward_LevelUp::Update_MushRoom(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (y + REWARD_LEVEL_UP_SUPER_MUSHROOM_BBOX_HEIGHT >= start_y)
+	
+	if (state == REWARD_LEVEL_UP_STATE_JUMPING)
 	{
-		y += dy;
-		return;
-	}
-	else if (state == REWARD_LEVEL_UP_STATE_JUMPING)
-	{
-		if (IsOnTheLeftOfMario())
-			SetState(REWARD_LEVEL_UP_STATE_WALKING_LEFT);
+		if (y + REWARD_LEVEL_UP_SUPER_MUSHROOM_BBOX_HEIGHT >= start_y)
+		{
+			y += dy;
+		}
 		else
-			SetState(REWARD_LEVEL_UP_STATE_WALKING_RIGHT);
+		{
+			if (IsOnTheLeftOfMario())
+				SetState(REWARD_LEVEL_UP_STATE_WALKING_LEFT);
+			else
+				SetState(REWARD_LEVEL_UP_STATE_WALKING_RIGHT);
+		}
 		return;
 	}
 	vy += REWARD_LEVEL_UP_GRAVITY * dt;
@@ -139,7 +144,8 @@ void CReward_LevelUp::Update_MushRoom(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-	CalcPotentialCollisions(coObjects, coEvents);
+	this->CalcPotentialCollisions(coObjects, coEvents);
+
 	if (coEvents.size() == 0)
 	{
 		x += dx;
@@ -147,22 +153,26 @@ void CReward_LevelUp::Update_MushRoom(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	else
 	{
+
 		float min_tx, min_ty, nx = 0, ny;
 		float rdx = 0;
 		float rdy = 0;
 
-		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
 
+		float x0 = x;
+		float y0 = y;
+		x += dx;
+		y += dy;
 		if (nx != 0)
 		{
-			this->x = x+ min_tx * this->dx + nx * 0.1f;
+			this->x = x0+ min_tx * this->dx + nx * 0.1f;
 			this->vx = -vx;
 		}
 		if (ny != 0)
 		{
 			this->vy = 0;
-			this->y = y + min_ty * this->dy + ny * 0.1f;
+			this->y = y0 + min_ty * this->dy + ny * 0.1f;
 
 		}
 
@@ -179,7 +189,7 @@ void CReward_LevelUp::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, v
 		if (!IsInCamera())
 			continue;
 		LPGAMEOBJECT object = coObjects->at(i);
-		if (!dynamic_cast<CBrick*>(object) || !dynamic_cast<CQuestionBox*>(object))
+		if (!dynamic_cast<CBrick*>(object) && !dynamic_cast<CQuestionBox*>(object))
 			continue;
 
 
@@ -207,6 +217,17 @@ void CReward_LevelUp::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, v
 	std::sort(coEvents.begin(), coEvents.end(), CCollisionEvent::compare);
 }
 
+void CReward_LevelUp::CalcPotentialCollisionWithMario()
+{
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	LPCOLLISIONEVENT e = SweptAABBEx(mario);
+
+	if (e->t > 0 && e->t <= 1.0f)
+	{
+		mario->UpLevel();
+		isEnable = false;
+	}
+}
 void CReward_LevelUp::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	if (!isEnable)

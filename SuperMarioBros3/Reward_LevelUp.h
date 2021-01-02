@@ -11,7 +11,7 @@
 #define REWARD_LEVEL_UP_SHAKING_SPEED_X	0.06f
 #define REWARD_LEVEL_UP_GRAVITY			0.002f
 #define REWARD_LEVEL_UP_JET				0.00005f
-#define REWARD_LEVEL_UP_WALKING_SPEED	0.15f
+#define REWARD_LEVEL_UP_WALKING_SPEED	0.07f
 #define REWARD_LEVEL_UP_MAX_FALLING_SPEED	0.5f
 
 
@@ -38,6 +38,8 @@ private:
 
 	int type;
 	float start_y;
+
+	void CalcPotentialCollisionWithMario();
 public:
 	bool isEnable;
 	CReward_LevelUp(float _x, float _y);

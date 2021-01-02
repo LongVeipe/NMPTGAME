@@ -239,4 +239,5 @@ public:
 	void RaccoonStartFlyHigh();
 	bool IsRaccoonReadyFly();
 	bool IsUntouchable() { if (untouchable == 1) return true; return false; }
+	void UpLevel();
 };

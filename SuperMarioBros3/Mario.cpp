@@ -1156,3 +1156,20 @@ bool CMario::IsRaccoonReadyFly()
 		return true;
 	return false;
 }
+
+void CMario::UpLevel()
+{
+	switch (level)
+	{
+	case MARIO_LEVEL_SMALL:
+		SetLevel(MARIO_LEVEL_BIG);
+		y = y + MARIO_SMALL_BBOX_HEIGHT - MARIO_BIG_BBOX_HEIGHT;
+		break;
+	case MARIO_LEVEL_BIG:
+	case MARIO_LEVEL_FIRE:
+		SetLevel(MARIO_LEVEL_RACCOON);
+		break;
+	case MARIO_LEVEL_RACCOON:
+		break;
+	}
+}
