@@ -12,7 +12,7 @@
 #include "Plant_Fire.h"
 #include "Plant_Normal.h"
 #include "Koopa_Small.h"
-#include "QuestionBox.h"
+#include "RewardBox.h"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 
 #define OBJECT_TYPE_MARIO			0
 #define OBJECT_TYPE_BRICK			1
-#define OBJECT_TYPE_QUESTION_BOX	2
+#define OBJECT_TYPE_REWARD_BOX	2
 #define OBJECT_TYPE_GOOMBA			3
 #define OBJECT_TYPE_KOOPA_SMALL		4
 #define OBJECT_TYPE_COIN			5
@@ -194,10 +194,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBrick(x, y, type);
 		break;
 	}
-	case OBJECT_TYPE_QUESTION_BOX:
+	case OBJECT_TYPE_REWARD_BOX:
 	{
 		int type = atoi(tokens[4].c_str());
-		obj = new CQuestionBox(x, y, type);
+		int rewardType = atoi(tokens[5].c_str());
+		obj = new CRewardBox(x, y, type, rewardType);
 		break;
 	}
 	case OBJECT_TYPE_KOOPA_SMALL:

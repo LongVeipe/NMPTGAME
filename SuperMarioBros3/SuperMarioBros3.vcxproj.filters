@@ -79,11 +79,11 @@
     <ClCompile Include="Brick.cpp">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClCompile>
-    <ClCompile Include="QuestionBox.cpp">
-      <Filter>HeaderAndSource\PlatformObject</Filter>
-    </ClCompile>
     <ClCompile Include="Plant_Normal.cpp">
       <Filter>HeaderAndSource\Enemy\Plant</Filter>
+    </ClCompile>
+    <ClCompile Include="RewardBox.cpp">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -165,11 +165,11 @@
     <ClInclude Include="Brick.h">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClInclude>
-    <ClInclude Include="QuestionBox.h">
-      <Filter>HeaderAndSource\PlatformObject</Filter>
-    </ClInclude>
     <ClInclude Include="Plant_Normal.h">
       <Filter>HeaderAndSource\Enemy\Plant</Filter>
+    </ClInclude>
+    <ClInclude Include="RewardBox.h">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

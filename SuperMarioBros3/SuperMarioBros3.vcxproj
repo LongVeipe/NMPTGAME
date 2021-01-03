@@ -128,7 +128,7 @@
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Plant_Normal.cpp" />
-    <ClCompile Include="QuestionBox.cpp" />
+    <ClCompile Include="RewardBox.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Bullet_Mario.cpp" />
     <ClCompile Include="Bullet_Plant.cpp" />
@@ -158,7 +158,7 @@
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Plant_Normal.h" />
-    <ClInclude Include="QuestionBox.h" />
+    <ClInclude Include="RewardBox.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Bullet_Mario.h" />
     <ClInclude Include="Bullet_Plant.h" />

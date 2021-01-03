@@ -14,7 +14,7 @@
 #include "PlayScence.h"
 #include "Plant_Fire.h"
 #include "Koopa_Small.h"
-#include "QuestionBox.h"
+#include "RewardBox.h"
 #include "Plant_Normal.h"
 using namespace  std;
 
@@ -285,29 +285,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				}
 				
 			}
-			else if(dynamic_cast<CQuestionBox*>(e->obj))
+			else if(dynamic_cast<CRewardBox*>(e->obj))
 			{
-				CQuestionBox* box = dynamic_cast<CQuestionBox*>(e->obj);
+				CRewardBox* box = dynamic_cast<CRewardBox*>(e->obj);
 				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 				if (e->ny == 1)
 				{
-					if (!box->isEmpty)
-					{
-						box->CreateReward();
-						if (box->GetType() == QUESTION_BOX_TYPE_COIN)
-						{
-							CCoin* coin = (CCoin*)box->GetReward();
-							coin->SetAnimationSet(CAnimationSets::GetInstance()->Get(COIN_ANI_SET_ID));
-							coin->SetState(COIN_STATE_JUMPING);
-						}
-						else if (box->GetType() == QUESTION_BOX_TYPE_LEVEL_UP)
-						{
-							CReward_LevelUp* lvUp = (CReward_LevelUp*)box->GetReward();
-							lvUp->SetState(REWARD_LEVEL_UP_STATE_JUMPING);
-						}
-						box->SetState(QUESTION_BOX_STATE_JUMPING);
-						box->isEmpty = true;
-					}
+					box->BeCollidedOnTheBottom();
 				}
 			}
 			else if(dynamic_cast<CGoomba*>(e->obj))
