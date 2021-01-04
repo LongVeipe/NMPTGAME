@@ -101,18 +101,8 @@ void CGoomba::Update_FlyingRed()
 }
 void CGoomba::Update_Wings()
 {
-	if (state != GOOMBA_STATE_WALKING)
-	{
-		leftWing->SetPosition(x - 2, y - 8);
-		rightWing->SetPosition(x + 10, y - 8);
-		leftWing->UpdateWhenFlying();
-		rightWing->UpdateWhenFlying();
-	}
-	else
-	{
-		leftWing->SetPosition(x - 2, y - 2);
-		rightWing->SetPosition(x + 10, y - 2);
-	}
+	leftWing->SetPosition(x - 2, y - 8);
+	rightWing->SetPosition(x + 10, y - 8);
 }
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -314,6 +304,8 @@ void CGoomba::CalculateBeSwingedTail()
 		mario->GetBoundingBox(ml, mt, mr, mb);
 		float gl, gt, gr, gb;
 		this->GetBoundingBox(gl,gt,gr,gb);
+		ml -= MARIO_RACCOON_TAIL_BBOX_WIDTH;
+		mr += MARIO_RACCOON_TAIL_BBOX_WIDTH;
 		if (gb<mt || gt>mb || ml > gr || mr < gl)
 			return;
 		if ((gl<ml && gr>ml) ||(gl<mr &&mr<gr))

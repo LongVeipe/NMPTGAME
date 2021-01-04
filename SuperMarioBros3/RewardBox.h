@@ -4,6 +4,7 @@
 #define REWARD_BOX_TYPE_REWARD_COIN		1
 #define REWARD_BOX_TYPE_REWARD_LEVEL_UP	2
 #define REWARD_BOX_TYPE_REWARD_LIFE_UP	3
+#define REWARD_BOX_TYPE_REWARD_SWITCH	4
 
 #define REWARD_BOX_TYPE_QUESTION	1
 #define REWARD_BOX_TYPE_GOLD		2
@@ -31,9 +32,10 @@ private:
 	float start_y;
 	CGameObject* reward;
 
-	void CreateReward();
+	void CalculateBeSwingedTail();
 public:
 	bool isEnable;
+	bool isHiding;
 	bool isEmpty;
 	bool isBeingBroken;
 	CRewardBox(float _x, float _y, int _type, int _rewardType);
@@ -43,9 +45,10 @@ public:
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);
 
 
-	void Update_GoldBox();
+	void Update_GoldBox(vector<LPGAMEOBJECT>* coObjects);
 	void BeCollidedOnTheBottom();
 	void BeBroken();
+	void CreateReward();
 
 	int GetType() { return this->type; }
 	void SetState(int _state);

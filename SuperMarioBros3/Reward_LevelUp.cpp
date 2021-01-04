@@ -3,7 +3,7 @@
 #include "Mario.h"
 #include "PlayScence.h"
 #include <algorithm>
-#include "QuestionBox.h"
+#include "RewardBox.h"
 #include "Utils.h"
 
 
@@ -189,7 +189,7 @@ void CReward_LevelUp::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, v
 		if (!IsInCamera())
 			continue;
 		LPGAMEOBJECT object = coObjects->at(i);
-		if (!dynamic_cast<CBrick*>(object) && !dynamic_cast<CQuestionBox*>(object))
+		if (!dynamic_cast<CBrick*>(object) && !dynamic_cast<CRewardBox*>(object))
 			continue;
 
 

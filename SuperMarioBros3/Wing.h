@@ -29,6 +29,6 @@ public:
 	virtual void Render();
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	virtual void SetState(int _State);
-	void UpdateWhenFlying();
+	//void UpdateWhenFlying();
 };
 

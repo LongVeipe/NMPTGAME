@@ -85,6 +85,9 @@
     <ClCompile Include="RewardBox.cpp">
       <Filter>HeaderAndSource\PlatformObject</Filter>
     </ClCompile>
+    <ClCompile Include="SwitchBlock.cpp">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -170,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="RewardBox.h">
       <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SwitchBlock.h">
+      <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

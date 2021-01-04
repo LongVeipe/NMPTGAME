@@ -146,6 +146,7 @@
 #define MARIO_RACCOON_BBOX_WIDTH  14
 #define MARIO_RACCOON_BBOX_HEIGHT 27
 #define MARIO_RACCOON_TAIL_BBOX_WIDTH  9
+#define MARIO_RACCOON_HEAD_BBOX_HEIGHT  15
 #define MARIO_FIRE_BBOX_WIDTH  14
 #define MARIO_FIRE_BBOX_HEIGHT 27
 
@@ -188,8 +189,6 @@ class CMario : public CGameObject
 	void Calculate_vy(DWORD _dt);
 	void UpdateFlagBaseOnTime();
 	void UpdateBullets(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	void UpdateWhenSwingTail();
-	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0);
 
 public: 
 	bool IsReadyJump;
@@ -227,11 +226,12 @@ public:
 	void StartSwingTail();
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+
+	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0);
 	int GetJumpStack() { return jumpStack; }
 	int GetImminentStack() { return imminentStack; }
 	int GetLevel() { return level; }
 	void UpJumpStack() { jumpStack += 1; }
-	void changeImminent();
 	void downImminent();
 	void upImminent();
 	void BeDamaged();

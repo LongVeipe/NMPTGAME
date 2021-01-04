@@ -1,4 +1,6 @@
 #include "Coin.h"
+#include "Mario.h"
+#include "PlayScence.h"
 
 
 CCoin::CCoin(float _x, float _y)
@@ -16,20 +18,37 @@ void CCoin::Render()
 	{
 		animation_set->at(0)->Render(x, y);
 	}
+	else
+		isEnable = false;
 }
 
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!IsInCamera() || !isEnable || state != COIN_STATE_JUMPING)
+	if (!IsInCamera() || !isEnable)
 		return;
 	CGameObject::Update(dt, coObjects);
-
+	if (state != COIN_STATE_JUMPING)
+	{
+		CalcPotentialCollisionWithMario();
+		return;
+	}
 	this->vy += COIN_GRAVITY * dt;
 	y += dy;
 	if(y > start_y)
 	{
 		y = start_y;
 		this->vy = 0;
+		isEnable = false;
+	}
+	CalcPotentialCollisionWithMario();
+}
+void CCoin::CalcPotentialCollisionWithMario()
+{
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	LPCOLLISIONEVENT e = SweptAABBEx(mario);
+
+	if (e->t > 0 && e->t <= 1.0f)
+	{
 		isEnable = false;
 	}
 }

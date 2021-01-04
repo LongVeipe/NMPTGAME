@@ -48,7 +48,6 @@ CMario::CMario(float x, float y) : CGameObject()
 
 	throwFire_start = 0;
 }
-
 void CMario::Calculate_vx(DWORD _dt)
 {
 	vx += ax * _dt;
@@ -113,8 +112,14 @@ void CMario::UpdateFlagBaseOnTime()
 	if (GetTickCount64() - throwFire_start > MARIO_PERFORM_THROW_TIME)
 		IsThrowing = false;
 
-	if (GetTickCount64() - swingTail_start > MARIO_PERFORM_SWING_TAIL_TIME)
+	if (GetTickCount64() - swingTail_start > MARIO_PERFORM_SWING_TAIL_TIME && IsSwingTail)
+	{
 		IsSwingTail = false;
+		if (nx > 0)
+			x += 2;
+		else
+			x += 7;
+	}
 
 	if (GetTickCount64() - kick_start > MARIO_KICKING_TIME)
 		IsKicking = false;
@@ -139,69 +144,6 @@ void CMario::UpdateBullets(DWORD _dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 	}
 }
-void CMario::UpdateWhenSwingTail()
-{
-	if (IsSwingTail)
-	{
-		int stage = (GetTickCount64() - swingTail_start)/MARIO_EACH_STAGE_IN_SWING_TAIL_TIME;
-		if(nx>0)
-			switch (stage)
-			{
-			case 0:
-				if (StageOfSwingTail == 0)
-				{
-					x = x + MARIO_RACCOON_TAIL_BBOX_WIDTH - 2;
-					StageOfSwingTail++;
-					//DebugOut(L"[INFO] case 0, x = %d \n", x);
-				}
-				break;
-			case 1:
-				if (StageOfSwingTail == 1)
-					StageOfSwingTail++;
-				break;
-			case 2:
-				if (StageOfSwingTail == 2)
-					StageOfSwingTail++;
-				break;
-			case 3:
-				if (StageOfSwingTail == 3)
-				{
-					x = x - MARIO_RACCOON_TAIL_BBOX_WIDTH + 2;
-					//DebugOut(L"[INFO] case 3, x = %d \n", x);
-					StageOfSwingTail = 0;
-				}
-				break;
-			}
-		else
-			switch (stage)
-			{
-			case 0:
-				if (StageOfSwingTail == 0)
-					StageOfSwingTail++;
-				break;
-			case 1:
-				if (StageOfSwingTail == 1)
-				{
-					x = x - MARIO_RACCOON_TAIL_BBOX_WIDTH + 2;
-					StageOfSwingTail++;
-				}
-				break;
-			case 2:
-				if (StageOfSwingTail == 2)
-				{
-					x = x + MARIO_RACCOON_TAIL_BBOX_WIDTH - 2;
-					StageOfSwingTail++;
-				}
-				break;
-			case 3:
-				if (StageOfSwingTail == 3)
-					StageOfSwingTail = 0;
-				break;
-			}
-	}
-}
-
-
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	CGameObject::Update(dt);
@@ -242,6 +184,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 		// TODO: This is a very ugly designed function!!!!
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny, rdx, rdy);
+
+		//DebugOut(L"[INFO] coE size: %d \n", coEvents.size());
 
 		// how to push back Mario if collides with a moving objects, what if Mario is pushed this way into another object?
 		//if (rdx != 0 && rdx!=dx)
@@ -326,11 +270,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							goomba->SetState(GOOMBA_STATE_DIE_X);
 				}
 			}
-			else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
-			{
-				CCoin* coin = dynamic_cast<CCoin*>(e->obj);
-				coin->isEnable = false;
-			}
+			//else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
+			//{
+			//	CCoin* coin = dynamic_cast<CCoin*>(e->obj);
+			//	coin->isEnable = false;
+			//}
 			else if (dynamic_cast<CKoopa_Small*>(e->obj))
 			{
 				CKoopa_Small* koopa = dynamic_cast<CKoopa_Small*>(e->obj);
@@ -394,7 +338,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		
 	}
 
-	UpdateWhenSwingTail();
+	//UpdateWhenSwingTail();
 	if (vy > 0)
 	{
 		if (IsJumping == true)
@@ -408,7 +352,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		delete coEvents[i];
 	
 }
-
 void CMario::BasicCollision(float min_tx, float min_ty, float _nx, float _ny, float x0, float y0)
 {
 	if (_nx !=0 )
@@ -444,7 +387,6 @@ void CMario::BasicCollision(float min_tx, float min_ty, float _nx, float _ny, fl
 		IsTouchingGround = false;
 	}
 }
-
 void CMario::Render()
 {
 	int ani = -1;
@@ -885,10 +827,7 @@ void CMario::Render()
 	{
 		Bullets[i]->Render();
 	}
-
-	//RenderBoundingBox();
 }
-
 void CMario::SetState(int state)
 {
 	if (this->state == MARIO_STATE_DIE)
@@ -898,25 +837,30 @@ void CMario::SetState(int state)
 	switch (state)
 	{
 	case MARIO_STATE_WALKING_RIGHT:
-		ax = MARIO_WALKING_ACCELERATION;
-		if (IsWalkingRight == false)
+		if (!IsSwingTail)
 		{
-			vx += MARIO_WALKING_SPEED_START;
-			IsWalkingRight = true;
-			IsWalkingLeft = false;
+			ax = MARIO_WALKING_ACCELERATION;
+			if (IsWalkingRight == false)
+			{
+				vx += MARIO_WALKING_SPEED_START;
+				IsWalkingRight = true;
+				IsWalkingLeft = false;
+			}
+			nx = 1;
 		}
-		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT: 
-		ax = -MARIO_WALKING_ACCELERATION;
-		if (IsWalkingLeft == false)
+		if (!IsSwingTail)
 		{
-			vx += -MARIO_WALKING_SPEED_START;
-			IsWalkingLeft = true;
-			IsWalkingRight = false;
+			ax = -MARIO_WALKING_ACCELERATION;
+			if (IsWalkingLeft == false)
+			{
+				vx += -MARIO_WALKING_SPEED_START;
+				IsWalkingLeft = true;
+				IsWalkingRight = false;
+			}
+			nx = -1;
 		}
-
-		nx = -1;
 		break;
 	case MARIO_STATE_JUMP:
 		// TODO: need to check if Mario is *current* on a platform before allowing to jump again
@@ -950,7 +894,6 @@ void CMario::SetState(int state)
 		break;
 	}
 }
-
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
 	left = x-1;
@@ -969,31 +912,16 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	else if(level == MARIO_LEVEL_RACCOON)
 	{
 		if (nx > 0)
-		{
-			if (IsSwingTail)
-			{
-				left = x;
-				right = left + MARIO_RACCOON_BBOX_WIDTH + MARIO_RACCOON_TAIL_BBOX_WIDTH;
-			}
-			else
-			{
-				left = x + MARIO_RACCOON_TAIL_BBOX_WIDTH;
-				right = left + MARIO_RACCOON_BBOX_WIDTH;
-			}
-		}
+			left = x + MARIO_RACCOON_TAIL_BBOX_WIDTH;
 		else
 		{
 			if (IsSwingTail)
-			{
-				left = x  - MARIO_RACCOON_TAIL_BBOX_WIDTH;
-				right = x + MARIO_RACCOON_BBOX_WIDTH + MARIO_RACCOON_TAIL_BBOX_WIDTH;
-			}
+				left = x  + MARIO_RACCOON_TAIL_BBOX_WIDTH;
 			else
-			{
 				left = x ;
-				right = left + MARIO_RACCOON_BBOX_WIDTH;
-			}
 		}
+
+		right = left + MARIO_RACCOON_BBOX_WIDTH;
 		bottom = top + MARIO_RACCOON_BBOX_HEIGHT;
 	}
 	else 
@@ -1002,10 +930,6 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		bottom = top + MARIO_FIRE_BBOX_HEIGHT;
 	}
 }
-
-/*
-	Reset Mario status to the beginning state of a scene
-*/
 void CMario::Reset()
 {
 	this->state = MARIO_STATE_IDLE;
@@ -1032,30 +956,6 @@ void CMario::StartThrowFire()
 		throwFire_start = GetTickCount64();
 	}
 }
-
-//void CMario::changeImminent()
-//{
-//	if (IsTouchingGround)
-//	{
-//		if (abs(vx) >= MARIO_WALKING_SPEED_MAX - 0.001)
-//		{
-//			if (GetTickCount64() - changeImminent_start >= MARIO_CHANGE_IMMINENT_TIME)
-//			{
-//				imminentStack++;
-//				if (imminentStack > MARIO_MAX_IMMINENT_STACKS - 1)
-//				{
-//					imminentStack = MARIO_MAX_IMMINENT_STACKS;
-//					IsRunning = true;
-//				}
-//				changeImminent_start = GetTickCount64();
-//			}
-//		}
-//		else
-//		{
-//			downImminent();
-//		}
-//	}
-//}
 void CMario::upImminent()
 {
 	if (IsTouchingGround)
@@ -1098,10 +998,13 @@ void CMario::StartSwingTail()
 {
 	if (GetTickCount64() - swingTail_start >= MARIO_SWING_TAIL_TIME)
 	{
-
 		IsSwingTail = true;
 		swingTail_start = GetTickCount64();
 		StageOfSwingTail = 0;
+		if (nx > 0)
+			x -= 2;
+		else
+			x -= 7;
 	}
 }
 void CMario::BeDamaged()
@@ -1140,7 +1043,6 @@ bool CMario::IsRaccoonReadyFly()
 		return true;
 	return false;
 }
-
 void CMario::UpLevel()
 {
 	switch (level)
