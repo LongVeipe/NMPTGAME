@@ -165,10 +165,16 @@
 #define MARIO_MAX_JUMPIMG_STACKS 19
 #define MARIO_MAX_IMMINENT_STACKS 7
 
+#define MARIO	1
+#define LUIGI	2
+
 
 class CMario : public CGameObject
 {
 	int level;
+	int type;
+	int money;
+	int score;
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 	vector<LPGAMEOBJECT> Bullets;
@@ -231,6 +237,9 @@ public:
 	int GetJumpStack() { return jumpStack; }
 	int GetImminentStack() { return imminentStack; }
 	int GetLevel() { return level; }
+	int GetType() { return type; }
+	int GetMoney() { return money; }
+	int GetScore() { return score; }
 	void UpJumpStack() { jumpStack += 1; }
 	void downImminent();
 	void upImminent();

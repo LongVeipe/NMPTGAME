@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "Utils.h"
+#include "HUD.h"
 
 #include "PlayScence.h"
 

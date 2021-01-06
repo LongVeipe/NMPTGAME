@@ -49,9 +49,6 @@
     <ClCompile Include="Utils.cpp">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClCompile>
-    <ClCompile Include="StatusBoard.cpp">
-      <Filter>HeaderAndSource\HUD</Filter>
-    </ClCompile>
     <ClCompile Include="Coin.cpp">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClCompile>
@@ -88,6 +85,12 @@
     <ClCompile Include="SwitchBlock.cpp">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>HeaderAndSource\StatusBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>HeaderAndSource\StatusBoard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -95,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="Mario.h">
       <Filter>HeaderAndSource\Mario</Filter>
-    </ClInclude>
-    <ClInclude Include="StatusBoard.h">
-      <Filter>HeaderAndSource\HUD</Filter>
     </ClInclude>
     <ClInclude Include="Plant.h">
       <Filter>HeaderAndSource\Enemy\Plant</Filter>
@@ -177,6 +177,12 @@
     <ClInclude Include="SwitchBlock.h">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>HeaderAndSource\StatusBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>HeaderAndSource\StatusBoard</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HeaderAndSource">
@@ -200,9 +206,6 @@
     <Filter Include="HeaderAndSource\Mario">
       <UniqueIdentifier>{ff37685b-8aa0-449e-860e-5cd10a14bedf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HeaderAndSource\HUD">
-      <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
-    </Filter>
     <Filter Include="HeaderAndSource\LittleObject">
       <UniqueIdentifier>{607617ae-1129-479e-82cb-617f7d9740f1}</UniqueIdentifier>
     </Filter>
@@ -211,6 +214,9 @@
     </Filter>
     <Filter Include="HeaderAndSource\PlatformObject">
       <UniqueIdentifier>{af93004e-9b6d-4a1e-97c9-cdc900dca52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\StatusBoard">
+      <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

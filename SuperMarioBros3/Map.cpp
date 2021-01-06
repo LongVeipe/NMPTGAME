@@ -79,6 +79,6 @@ void Map::Render()
 	for(int r = 0; r<TotalRowsOfMap; r++)
 		for (int c = startCol; c < limitCol; c++)
 		{
-			Tiles[Matrix[r][c] - 1]->Draw(c * TileWidth,r * TileHeight, 255);
+			Tiles[Matrix[r][c] - 1]->Draw(c * TileWidth,r * TileHeight - HUD_HEIGHT, 255);
 		}
 }

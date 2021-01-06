@@ -21,6 +21,8 @@ using namespace  std;
 CMario::CMario(float x, float y) : CGameObject()
 {
 	level = MARIO_LEVEL_SMALL;
+	type = MARIO;
+	money = 0;
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	changeImminent_start = 0;

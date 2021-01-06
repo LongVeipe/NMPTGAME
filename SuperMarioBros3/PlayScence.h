@@ -8,7 +8,10 @@
 #include "Goomba.h"
 #include "Koopas.h"
 #include "Map.h"
+#include "HUD.h"
+#include "Font.h"
 
+#define COUNT_DOWN_TIME_DEFAULT			300000
 
 class CPlayScene: public CScene
 {
@@ -17,6 +20,9 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 	Map* map;
+	CHUD* hud;
+	CFont* font;
+	DWORD remainTime;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -36,6 +42,9 @@ public:
 
 	CMario * GetPlayer() { return player; } 
 	Map* GetMap() { return map; }
+	CHUD* GetHUD() { return hud; }
+	CFont* GetFont() { return font; }
+	DWORD GetRemainTime() { return remainTime; }
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }
 	//friend class CPlayScenceKeyHandler;
 };

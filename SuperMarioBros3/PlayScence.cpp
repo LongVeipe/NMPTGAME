@@ -21,6 +21,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 	key_handler = new CPlayScenceKeyHandler(this);
 	map = nullptr;
 	player = nullptr;
+	hud = nullptr;
+	font = nullptr;
+	remainTime = COUNT_DOWN_TIME_DEFAULT;
 }
 
 /*
@@ -298,6 +301,9 @@ void CPlayScene::Load()
 	CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
+
+	font = new CFont();
+	hud = new CHUD();
 }
 
 void CPlayScene::Update(DWORD dt)
@@ -354,6 +360,15 @@ void CPlayScene::Update(DWORD dt)
 		cy -= game->GetScreenHeight() / 2;
 	if(!player->IsSwingTail)
 		CGame::GetInstance()->SetCamPos(round(cx), round(cy));
+
+
+	//update remain time
+	remainTime -= dt;
+	if (remainTime < 0)
+		remainTime = 0;
+
+	//update HUD
+	hud->Update(dt);
 }
 
 void CPlayScene::Render()
@@ -364,7 +379,8 @@ void CPlayScene::Render()
 	{
 		objects[i]->Render();
 	}
-	
+
+	hud->Render();
 }
 
 /*
@@ -381,7 +397,8 @@ void CPlayScene::Unload()
 	delete map;
 	map = nullptr;
 
-
+	delete hud;
+	hud = nullptr;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
