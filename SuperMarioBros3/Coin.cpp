@@ -1,6 +1,7 @@
 #include "Coin.h"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "PointsEffect.h"
 
 
 CCoin::CCoin(float _x, float _y)
@@ -9,6 +10,7 @@ CCoin::CCoin(float _x, float _y)
 	this->y = _y;
 	this->start_y = _y;
 	isEnable = true;
+	type = COIN_TYPE_DEFAULT;
 }
 void CCoin::Render()
 {
@@ -18,8 +20,6 @@ void CCoin::Render()
 	{
 		animation_set->at(0)->Render(x, y);
 	}
-	else
-		isEnable = false;
 }
 
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -39,6 +39,10 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y = start_y;
 		this->vy = 0;
 		isEnable = false;
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->UpPoints(POINTS_100);
+		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
+		CPointsEffects::GetInstance()->Add(pe);
 	}
 	CalcPotentialCollisionWithMario();
 }
@@ -50,6 +54,12 @@ void CCoin::CalcPotentialCollisionWithMario()
 	if (e->t > 0 && e->t <= 1.0f)
 	{
 		isEnable = false;
+		mario->UpMoney();
+		if (type == COIN_TYPE_GOLD_BOX)
+			mario->UpPoints(50);
+		else
+			mario->UpPoints(100);
+
 	}
 }
 

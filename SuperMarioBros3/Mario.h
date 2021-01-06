@@ -174,7 +174,7 @@ class CMario : public CGameObject
 	int level;
 	int type;
 	int money;
-	int score;
+	int points;
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 	vector<LPGAMEOBJECT> Bullets;
@@ -239,10 +239,12 @@ public:
 	int GetLevel() { return level; }
 	int GetType() { return type; }
 	int GetMoney() { return money; }
-	int GetScore() { return score; }
+	int GetPoints() { return points; }
 	void UpJumpStack() { jumpStack += 1; }
 	void downImminent();
 	void upImminent();
+	void UpPoints(unsigned int _points) { points += _points; }
+	void UpMoney() { money += 1; }
 	void BeDamaged();
 	void SlowFall();
 	void RaccoonStartFlyHigh();

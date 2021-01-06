@@ -11,12 +11,17 @@
 #define COIN_STATE_IDLE	1
 #define COIN_STATE_JUMPING	2
 
+#define COIN_TYPE_DEFAULT	1;
+#define COIN_TYPE_GOLD_BOX	2
+
+
 #define COIN_ANI_SET_ID		70000
 
 class CCoin : public CGameObject
 {
 private:
 	float start_y;
+	int type;
 public:
 	bool isEnable;
 	CCoin(float _x, float _y);
@@ -27,4 +32,6 @@ public:
 	void CalcPotentialCollisionWithMario();
 
 	void SetState(int _state);
+	void SetType(int _type) { type = _type; }
+	int GetType() { return type; }
 };

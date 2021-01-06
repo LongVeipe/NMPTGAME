@@ -13,6 +13,7 @@
 #include "Plant_Normal.h"
 #include "Koopa_Small.h"
 #include "RewardBox.h"
+#include "PointsEffect.h"
 
 using namespace std;
 
@@ -369,6 +370,9 @@ void CPlayScene::Update(DWORD dt)
 
 	//update HUD
 	hud->Update(dt);
+
+	//update pointsEffects
+	CPointsEffects::GetInstance()->Update(dt);
 }
 
 void CPlayScene::Render()
@@ -381,6 +385,7 @@ void CPlayScene::Render()
 	}
 
 	hud->Render();
+	CPointsEffects::GetInstance()->Render();
 }
 
 /*

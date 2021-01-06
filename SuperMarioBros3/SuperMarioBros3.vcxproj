@@ -143,6 +143,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Reward_LevelUp.cpp" />
+    <ClCompile Include="PointsEffect.cpp" />
     <ClCompile Include="SwitchBlock.cpp" />
     <ClCompile Include="Utils.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="Portal.h" />
     <ClInclude Include="Reward_LevelUp.h" />
+    <ClInclude Include="PointsEffect.h" />
     <ClInclude Include="SwitchBlock.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Game.h" />

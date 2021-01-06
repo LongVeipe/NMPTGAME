@@ -133,7 +133,7 @@ void CMario::UpdateFlagBaseOnTime()
 }
 void CMario::UpdateBullets(DWORD _dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	for (int i = 0; unsigned(i) < Bullets.size(); i++)
+	for (unsigned int i = 0; i < Bullets.size(); i++)
 	{
 		CBullet_Mario* bullet = (CBullet_Mario*)Bullets[i];
 		if (bullet->GetState() != BULLET_STATE_EXPLODING)

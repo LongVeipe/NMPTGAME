@@ -23,15 +23,15 @@
 #define HUD_IMMINENT_Y			7
 #define HUD_WORLD_ID_X			42
 #define HUD_WORLD_ID_Y			7
-#define HUD_SCORE_X				57
-#define HUD_SCORE_Y				15
+#define HUD_POINTS_X				57
+#define HUD_POINTS_Y				15
 #define	HUD_MONEY_X				153
 #define HUD_MONEY_Y				7
 #define HUD_TIME_X				129
 #define HUD_TIME_Y				15
 
 
-#define HUD_MAX_SCORE_NUMBER_OF_DIGIT		7
+#define HUD_MAX_POINTS_NUMBER_OF_DIGIT		7
 #define HUD_MAX_TIME_NUMBER_OF_DIGIT		3
 
 #define HUD_HEIGHT	30
@@ -50,7 +50,7 @@ private:
 	int money;
 	DWORD remainTime;
 	int Imminent;
-	int score;
+	int points;
 	LPANIMATION_SET animation_set;
 	
 public:
@@ -61,7 +61,7 @@ public:
 	void RenderMainBoard(CSprites* sprites);
 	void RenderPlayerIcon(CSprites* sprites);
 	void RenderImminent(CSprites* sprites);
-	void RenderScore(CSprites* sprites, CFont* font);
+	void RenderPoints(CSprites* sprites, CFont* font);
 	void RenderWorldId();
 	void RenderTime(CSprites* sprites, CFont* font);
 	void RenderMoney(CSprites* sprites, CFont* font);

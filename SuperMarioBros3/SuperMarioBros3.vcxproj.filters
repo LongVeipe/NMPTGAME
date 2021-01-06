@@ -91,6 +91,9 @@
     <ClCompile Include="Font.cpp">
       <Filter>HeaderAndSource\StatusBoard</Filter>
     </ClCompile>
+    <ClCompile Include="PointsEffect.cpp">
+      <Filter>HeaderAndSource\StatusBoard</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -181,6 +184,9 @@
       <Filter>HeaderAndSource\StatusBoard</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
+      <Filter>HeaderAndSource\StatusBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="PointsEffect.h">
       <Filter>HeaderAndSource\StatusBoard</Filter>
     </ClInclude>
   </ItemGroup>

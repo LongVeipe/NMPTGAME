@@ -9,7 +9,7 @@ CHUD::CHUD()
 	idWorld = 1;
 	typePlayer = player->GetType();
 	money = 0;
-	score = 0;
+	points = 0;
 	remainTime = COUNT_DOWN_TIME_DEFAULT/1000;
 }
 CHUD::~CHUD()
@@ -26,7 +26,7 @@ void CHUD::Render()
 	RenderMainBoard(sprites);
 	RenderPlayerIcon(sprites);
 	RenderImminent(sprites);
-	RenderScore(sprites, font);
+	RenderPoints(sprites, font);
 	RenderMoney(sprites, font);
 	RenderTime(sprites, font);
 }
@@ -65,20 +65,20 @@ void CHUD::RenderImminent(CSprites* sprites)
 		}
 	}
 }
-void CHUD::RenderScore(CSprites* sprites, CFont* font)
+void CHUD::RenderPoints(CSprites* sprites, CFont* font)
 {
-	string strScore = to_string(score);
-	vector<LPSPRITE> spritesScore = font->StringToSprites(strScore);
-	for (unsigned int i = 0; i < HUD_MAX_SCORE_NUMBER_OF_DIGIT; i++)
+	string strPoints = to_string(points);
+	vector<LPSPRITE> spritesPoints = font->StringToSprites(strPoints);
+	for (unsigned int i = 0; i < HUD_MAX_POINTS_NUMBER_OF_DIGIT; i++)
 	{
-		if (i < HUD_MAX_SCORE_NUMBER_OF_DIGIT - strScore.size())
+		if (i < HUD_MAX_POINTS_NUMBER_OF_DIGIT - strPoints.size())
 		{
 			LPSPRITE font_0 = font->mapping('0');
-			font_0->Draw(x + HUD_SCORE_X + i * FONT_WIDTH, y + HUD_SCORE_Y);
+			font_0->Draw(x + HUD_POINTS_X + i * FONT_WIDTH, y + HUD_POINTS_Y);
 		}
 		else
 		{
-			spritesScore.at(i - (HUD_MAX_SCORE_NUMBER_OF_DIGIT - strScore.size()))->Draw(x + HUD_SCORE_X + i * FONT_WIDTH, y + HUD_SCORE_Y);
+			spritesPoints.at(i - (HUD_MAX_POINTS_NUMBER_OF_DIGIT - strPoints.size()))->Draw(x + HUD_POINTS_X + i * FONT_WIDTH, y + HUD_POINTS_Y);
 		}
 	}
 }
@@ -112,7 +112,7 @@ void CHUD::Update(DWORD dt)
 {
 	Imminent = player->GetImminentStack();
 	money = player->GetMoney();
-	score = player->GetScore();
+	points = player->GetPoints();
 	remainTime = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetRemainTime()/1000;
 	if (remainTime < 0)
 		remainTime = 0;

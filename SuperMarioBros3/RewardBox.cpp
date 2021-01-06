@@ -220,7 +220,11 @@ void CRewardBox::CreateReward()
 		if(type == REWARD_BOX_TYPE_QUESTION)
 			reward = new CCoin(x + 3, y - 24);
 		else
+		{
 			reward = new CCoin(x + 3, y);
+			CCoin* coin = (CCoin*)reward;
+			coin->SetType(COIN_TYPE_GOLD_BOX);
+		}
 
 		reward->SetAnimationSet(CAnimationSets::GetInstance()->Get(COIN_ANI_SET_ID));
 		break;
