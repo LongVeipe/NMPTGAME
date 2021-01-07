@@ -1,0 +1,5 @@
+# id	file_path	transparent_color_r	g	b
+[TEXTURES]
+0	textures\mario.png	68	145	190
+1	textures\mario2.png	68	145	190
+10	textures\enemies.png	64	144	192

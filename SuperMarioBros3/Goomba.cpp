@@ -3,6 +3,7 @@
 #include "Mario.h"
 #include "PlayScence.h"
 #include "Utils.h"
+#include "PointsEffect.h"
 CGoomba::CGoomba(float _x, float _y, int _type):CEnemy(_x, _y, _type)
 {
 	if (type == GOOMBA_TYPE_FLYING_RED)
@@ -310,8 +311,7 @@ void CGoomba::CalculateBeSwingedTail()
 			return;
 		if ((gl<ml && gr>ml) ||(gl<mr &&mr<gr))
 		{
-			this->SetState(GOOMBA_STATE_DIE_X);
-			vx = mario->nx * GOOMBA_DIE_X_SPEED_X;
+			BeDamaged_X(mario);
 		}
 	}
 }
@@ -328,7 +328,20 @@ void CGoomba::BeDamaged_Y()
 	{
 		SetState(GOOMBA_STATE_DIE_Y);
 		SetDeadTime();
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		mario->UpPoints(POINTS_100);
+		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
+		CPointsEffects::GetInstance()->Add(pe);
 	}
+}
+void CGoomba::BeDamaged_X(CGameObject* obj)
+{
+	this->SetState(GOOMBA_STATE_DIE_X);
+	vx = obj->nx * GOOMBA_DIE_X_SPEED_X;
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	mario->UpPoints(POINTS_100);
+	CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
+	CPointsEffects::GetInstance()->Add(pe);
 }
 void CGoomba::Reset()
 {

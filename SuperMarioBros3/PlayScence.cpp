@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
+#include "Zone.h"
 #include "Portal.h"
 #include "Coin.h"
 #include "Bullet.h"
@@ -23,7 +24,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 	map = nullptr;
 	player = nullptr;
 	hud = nullptr;
-	font = nullptr;
 	remainTime = COUNT_DOWN_TIME_DEFAULT;
 }
 
@@ -38,7 +38,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define SCENE_SECTION_ANIMATIONS 4
 #define SCENE_SECTION_ANIMATION_SETS	5
 #define SCENE_SECTION_OBJECTS	6
-#define SCENE_SECTION_MAP	7
+#define SCENE_SECTION_MAP		7
+#define SCENE_SECTION_ZONE		8
 
 #define OBJECT_TYPE_MARIO			0
 #define OBJECT_TYPE_BRICK			1
@@ -88,6 +89,19 @@ void CPlayScene::_ParseSection_MAP(string line)
 	this->map = new Map(idMap, tileWidth, tileHeight, tRTileSet, tCTileSet, tRMap, tCMap, totalTiles);
 	map->LoadMatrix(MatrixPath.c_str());
 	map->CreateTilesFromTileSet();
+}
+void CPlayScene::_ParseSection_ZONE(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 5) return;
+	int id = atoi(tokens[0].c_str());
+	int l = atoi(tokens[1].c_str());
+	int t = atoi(tokens[2].c_str());
+	int r = atoi(tokens[3].c_str());
+	int b = atoi(tokens[4].c_str());
+	
+	CZone* zone = new CZone(l, t, r, b);
+	CZones::GetInstance()->Add(id, zone);
 }
 
 void CPlayScene::_ParseSection_SPRITES(string line)
@@ -240,8 +254,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		float r = atof(tokens[4].c_str());
 		float b = atof(tokens[5].c_str());
-		int scene_id = atoi(tokens[6].c_str());
-		obj = new CPortal(x, y, r, b, scene_id);
+		int targetZone = atoi(tokens[6].c_str());
+		float targetX = atof(tokens[7].c_str());
+		float targetY = atof(tokens[8].c_str());
+		int type = atoi(tokens[9].c_str());
+		obj = new CPortal(x, y, r, b, targetZone, targetX, targetY, type);
 	}
 		break;
 	default:
@@ -277,6 +294,7 @@ void CPlayScene::Load()
 
 		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
 		if (line == "[MAP]") { section = SCENE_SECTION_MAP; continue; }
+		if (line == "[ZONE]") { section = SCENE_SECTION_ZONE; continue; }
 		if (line == "[SPRITES]") { section = SCENE_SECTION_SPRITES; continue; }
 		if (line == "[ANIMATIONS]") { section = SCENE_SECTION_ANIMATIONS; continue; }
 		if (line == "[ANIMATION_SETS]") { section = SCENE_SECTION_ANIMATION_SETS; continue; }
@@ -294,6 +312,7 @@ void CPlayScene::Load()
 			case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			case SCENE_SECTION_MAP: _ParseSection_MAP(line); break;
+			case SCENE_SECTION_ZONE: _ParseSection_ZONE(line); break;
 		}
 	}
 
@@ -303,7 +322,6 @@ void CPlayScene::Load()
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 
-	font = new CFont();
 	hud = new CHUD();
 }
 
@@ -342,26 +360,7 @@ void CPlayScene::Update(DWORD dt)
 
 
 	// Update camera to follow mario
-	float cx, cy;
-	player->GetPosition(cx, cy);
-	CGame *game = CGame::GetInstance();
-	//cx
-	if (map != nullptr && (cx > map->GetMapWidth() - game->GetScreenWidth() / 2))
-		cx = map->GetMapWidth() - game->GetScreenWidth();
-	else if (cx < game->GetScreenWidth() / 2)
-		cx = 0;
-	else
-		cx -= game->GetScreenWidth() / 2;
-	//cy
-	if (map != nullptr && (cy > map->GetMapHeight() - game->GetScreenHeight() / 2))
-		cy = map->GetMapHeight() - game->GetScreenHeight();
-	else if (cy < game->GetScreenHeight() / 2)
-		cy = 0;
-	else
-		cy -= game->GetScreenHeight() / 2;
-	if(!player->IsSwingTail)
-		CGame::GetInstance()->SetCamPos(round(cx), round(cy));
-
+	SetCamera();
 
 	//update remain time
 	remainTime -= dt;
@@ -373,6 +372,35 @@ void CPlayScene::Update(DWORD dt)
 
 	//update pointsEffects
 	CPointsEffects::GetInstance()->Update(dt);
+}
+
+void CPlayScene::SetCamera()
+{
+
+	float cx, cy;
+	player->GetPosition(cx, cy);
+	CGame* game = CGame::GetInstance();
+	CZone* zone = CZones::GetInstance()->Get(idZone);
+	//cx
+	int lZone, tZone, rZone, bZone;
+	zone->GetZone(lZone, tZone, rZone, bZone);
+	int sWidth = game->GetScreenWidth();
+	if (cx >rZone  - sWidth / 2)
+		cx = rZone - sWidth;
+	else if (cx < lZone + sWidth / 2)
+		cx = lZone;
+	else
+		cx -= sWidth / 2;
+	//cy
+	int sHeight = game->GetScreenHeight();
+	if (cy < tZone + sHeight / 2)
+		cy = tZone;
+	else if (cy > bZone - sHeight / 2)
+		cy = bZone - sHeight;
+	else
+		cy -= sHeight / 2;
+	if (!player->IsSwingTail)
+		CGame::GetInstance()->SetCamPos(round(cx), round(cy));
 }
 
 void CPlayScene::Render()
@@ -406,6 +434,15 @@ void CPlayScene::Unload()
 	hud = nullptr;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
+}
+void CPlayScene::TransferZone(CPortal* portal)
+{
+	int tartgetZone = portal->GetTartgetZone();
+	float targetX = portal->GetTargetX();
+	float targetY = portal->GetTargetY();
+
+	player->SetPosition(targetX, targetY);
+	idZone = tartgetZone;
 }
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)

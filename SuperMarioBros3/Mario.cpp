@@ -237,7 +237,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 				if (e->ny == 1)
 				{
-					box->BeCollidedOnTheBottom();
+					box->BeAttacked();
 				}
 			}
 			else if(dynamic_cast<CGoomba*>(e->obj))
@@ -272,11 +272,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							goomba->SetState(GOOMBA_STATE_DIE_X);
 				}
 			}
-			//else if (dynamic_cast<CCoin*>(e->obj)) // if e->obj is Coin
-			//{
-			//	CCoin* coin = dynamic_cast<CCoin*>(e->obj);
-			//	coin->isEnable = false;
-			//}
 			else if (dynamic_cast<CKoopa_Small*>(e->obj))
 			{
 				CKoopa_Small* koopa = dynamic_cast<CKoopa_Small*>(e->obj);
@@ -326,12 +321,21 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 
-				if (e->ny == -1)
+				if (e->ny !=0)
 				{
-					if (this->state == MARIO_STATE_BEND_DOWN)
+					CPortal* p = dynamic_cast<CPortal*>(e->obj);
+					if (p->GetType() == PORTAL_TYPE_PASSIVE)
 					{
-						CPortal* p = dynamic_cast<CPortal*>(e->obj);
-						CGame::GetInstance()->SwitchScene(p->GetSceneId());
+						if (this->state == MARIO_STATE_BEND_DOWN)
+						{
+							CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+							scene->TransferZone(p);
+						}
+					}
+					else
+					{
+						CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+						scene->TransferZone(p);
 					}
 				}
 			}

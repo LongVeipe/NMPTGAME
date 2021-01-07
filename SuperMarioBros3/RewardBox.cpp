@@ -150,26 +150,11 @@ void CRewardBox::CalculateBeSwingedTail()
 			return;
 		if ((bl<ml && br>ml) || (bl < mr && mr < br))
 		{
-			if (rewardType == REWARD_BOX_TYPE_REWARD_COIN)
-				BeBroken();
-			else
-			{
-				CreateReward();
-				isEmpty = true;
-				if (rewardType == REWARD_BOX_TYPE_REWARD_LEVEL_UP)
-				{
-					CReward_LevelUp* lvUp = (CReward_LevelUp*)reward;
-					lvUp->SetState(REWARD_LEVEL_UP_STATE_JUMPING);
-				}
-				else if (rewardType == REWARD_BOX_TYPE_REWARD_SWITCH)
-				{
-
-				}
-			}
+			BeAttacked();
 		}
 	}
 }
-void CRewardBox::BeCollidedOnTheBottom()
+void CRewardBox::BeAttacked()
 {
 	if (type == REWARD_BOX_TYPE_GOLD)
 	{
@@ -212,6 +197,7 @@ void CRewardBox::BeCollidedOnTheBottom()
 		}
 	}
 }
+
 void CRewardBox::CreateReward()
 {
 	switch (rewardType)

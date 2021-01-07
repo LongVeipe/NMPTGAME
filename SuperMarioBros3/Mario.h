@@ -173,8 +173,8 @@ class CMario : public CGameObject
 {
 	int level;
 	int type;
-	int money;
-	int points;
+	unsigned int money;
+	unsigned int points;
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 	vector<LPGAMEOBJECT> Bullets;

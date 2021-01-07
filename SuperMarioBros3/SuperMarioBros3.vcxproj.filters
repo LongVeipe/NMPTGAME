@@ -94,6 +94,9 @@
     <ClCompile Include="PointsEffect.cpp">
       <Filter>HeaderAndSource\StatusBoard</Filter>
     </ClCompile>
+    <ClCompile Include="Zone.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -188,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="PointsEffect.h">
       <Filter>HeaderAndSource\StatusBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Zone.h">
+      <Filter>HeaderAndSource\Platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

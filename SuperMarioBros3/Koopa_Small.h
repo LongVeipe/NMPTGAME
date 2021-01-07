@@ -83,6 +83,7 @@ public:
 	void BeKicked(int mnx);
 	void CalculateBeSwingedTail();
 	void BeDamaged_Y();
+	void BeDamaged_X(CGameObject* obj);
 
 	virtual void Reset();
 };

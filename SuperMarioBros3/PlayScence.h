@@ -10,6 +10,7 @@
 #include "Map.h"
 #include "HUD.h"
 #include "Font.h"
+#include "Portal.h"
 
 #define COUNT_DOWN_TIME_DEFAULT			300000
 
@@ -21,8 +22,8 @@ protected:
 	vector<LPGAMEOBJECT> objects;
 	Map* map;
 	CHUD* hud;
-	CFont* font;
 	DWORD remainTime;
+	int idZone = 2;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -30,9 +31,11 @@ protected:
 	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_MAP(string line);
+	void _ParseSection_ZONE(string line);
 
-	
+	void SetCamera();
 public: 
+
 	CPlayScene(int id, LPCWSTR filePath);
 
 	virtual void Load();
@@ -43,9 +46,10 @@ public:
 	CMario * GetPlayer() { return player; } 
 	Map* GetMap() { return map; }
 	CHUD* GetHUD() { return hud; }
-	CFont* GetFont() { return font; }
 	DWORD GetRemainTime() { return remainTime; }
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }
+	void TransferZone(CPortal* portal);
+	
 	//friend class CPlayScenceKeyHandler;
 };
 

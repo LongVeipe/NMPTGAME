@@ -45,13 +45,13 @@ using namespace std;
 class CFont
 {
 private:
-	//static CFont* __instance;
+	static CFont* __instance;
 	map<char, LPSPRITE> fonts;
 public:
 	CFont();
 	LPSPRITE mapping(char c);
 	vector<LPSPRITE> StringToSprites(string str);
 
-	//static CFont* GetInstance();
+	static CFont* GetInstance();
 };
 

@@ -19,7 +19,8 @@ CHUD::~CHUD()
 
 void CHUD::Render()
 {
-	CFont* font = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetFont();
+	//CFont* font = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetFont();
+	CFont* font = CFont::GetInstance();
 	if(font == nullptr)
 		CFont* font = new CFont();
 	CSprites* sprites = CSprites::GetInstance();

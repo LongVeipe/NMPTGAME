@@ -70,6 +70,7 @@ public:
 	virtual void Render();
 
 	void BeDamaged_Y();
+	void BeDamaged_X(CGameObject*);
 
 	bool IsTouchingGround;
 	bool IsSpreadingWing;

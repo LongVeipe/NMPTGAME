@@ -63,10 +63,11 @@ vector<LPSPRITE> CFont::StringToSprites(string str)
 	}
 	return sprites;
 }
+CFont* CFont::__instance = nullptr;
 
-//CFont* CFont::GetInstance()
-//{
-//	if (__instance == NULL) 
-//		__instance = new CFont();
-//	return __instance;
-//}
+CFont* CFont::GetInstance()
+{
+	if (__instance == nullptr) 
+		__instance = new CFont();
+	return __instance;
+}

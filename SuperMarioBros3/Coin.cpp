@@ -41,6 +41,7 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isEnable = false;
 		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->UpPoints(POINTS_100);
+		mario->UpMoney();
 		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
 		CPointsEffects::GetInstance()->Add(pe);
 	}

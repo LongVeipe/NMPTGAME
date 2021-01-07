@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "RewardBox.h"
 #include "Utils.h"
+#include "PointsEffect.h"
 
 
 CReward_LevelUp::CReward_LevelUp(float _x, float _y)
@@ -224,8 +225,11 @@ void CReward_LevelUp::CalcPotentialCollisionWithMario()
 
 	if (e->t > 0 && e->t <= 1.0f)
 	{
-		mario->UpLevel();
 		isEnable = false;
+		mario->UpLevel();
+		mario->UpPoints(POINTS_1000);
+		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_1000);
+		CPointsEffects::GetInstance()->Add(pe);
 	}
 }
 void CReward_LevelUp::GetBoundingBox(float& l, float& t, float& r, float& b)

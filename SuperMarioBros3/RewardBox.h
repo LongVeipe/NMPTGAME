@@ -46,7 +46,7 @@ public:
 
 
 	void Update_GoldBox(vector<LPGAMEOBJECT>* coObjects);
-	void BeCollidedOnTheBottom();
+	void BeAttacked();
 	void BeBroken();
 	void CreateReward();
 

@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="Zone.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Plant_Normal.cpp" />
     <ClCompile Include="RewardBox.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="Animations.h" />
     <ClInclude Include="Brick.h" />
+    <ClInclude Include="Zone.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Plant_Normal.h" />
     <ClInclude Include="RewardBox.h" />

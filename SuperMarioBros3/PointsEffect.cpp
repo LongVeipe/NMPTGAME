@@ -1,4 +1,5 @@
 #include "PointsEffect.h"
+#include "HUD.h"
 
 CPointsEffect::CPointsEffect(float _x, float _y, unsigned int point)
 {
@@ -60,7 +61,7 @@ void CPointsEffect::GetBoundingBox(float& left, float& top, float& right, float&
 }
 void CPointsEffect::Render()
 {
-	sprite->Draw(x, y);
+	sprite->Draw(x, y - HUD_HEIGHT);
 }
 
 

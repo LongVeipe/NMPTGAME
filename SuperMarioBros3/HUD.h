@@ -47,10 +47,10 @@ private:
 	CMario* player;
 	int idWorld;
 	int typePlayer;
-	int money;
+	unsigned int money;
 	DWORD remainTime;
 	int Imminent;
-	int points;
+	unsigned int points;
 	LPANIMATION_SET animation_set;
 	
 public:

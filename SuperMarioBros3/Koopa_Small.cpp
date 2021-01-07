@@ -5,6 +5,8 @@
 #include "Game.h"
 #include "PlayScence.h"
 #include "Utils.h"
+#include "PointsEffect.h"
+#include "RewardBox.h"
 
 CKoopa_Small::CKoopa_Small(float _x, float _y, int _type) :CKoopas(_x, _y, _type)
 {
@@ -235,10 +237,30 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 						if (this->state != KOOPA_SMALL_STATE_IDLE)
 						{
 							CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
-							goomba->SetState(GOOMBA_STATE_DIE_X);
-							goomba->vx = this->nx * GOOMBA_DIE_X_SPEED_X;
+							goomba->BeDamaged_X(this);
 						}
 					}
+				}
+			}
+			else if (dynamic_cast<CRewardBox*>(e->obj))
+			{
+				CRewardBox* rBox = dynamic_cast<CRewardBox*>(e->obj);
+				if (e->nx != 0)
+				{
+					this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
+					TurnAround();
+					if (type == KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL || type == KOOPA_SMALL_TYPE_RED_TURTOISESHELL)
+					{
+						rBox->BeAttacked();
+					}
+				}
+				if (e->ny != 0)
+				{
+					this->vy = 0;
+					this->y = y0 + min_ty * this->dy + e->ny * 0.1f;
+
+					if (e->ny == -1 && isTouchingGround == false)
+						isTouchingGround = true;
 				}
 			}
 		}
@@ -247,6 +269,7 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//UpdaetState();
 	if (CalculateTurningAround(coObjects) && type == KOOPA_SMALL_TYPE_RED_WALKING)
 		TurnAround();
+	CalculateBeSwingedTail();
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -307,8 +330,10 @@ void CKoopa_Small::Render()
 	{
 		if (state == KOOPA_SMALL_STATE_IDLE)
 			ani = KOOPA_SMALL_ANI_RED_TURTOISESHELL_IDLE;
-		else //if (state == KOOPA_SMALL_STATE_RUNNING_LEFT)
+		else if (state == KOOPA_SMALL_STATE_RUNNING_LEFT)
 			ani = KOOPA_SMALL_ANI_RED_TURTOISESHELL_RUNNING;
+		//else if(state == KOOPA_SMALL_STATE_BE_KNOCKED_DOWN)
+
 		if (IsWaggling)
 			ani = KOOPA_SMALL_ANI_RED_TURTOISESHELL_WAGGLE;
 	}
@@ -331,9 +356,11 @@ void CKoopa_Small::SetState(int state)
 	switch (state)
 	{
 	case KOOPA_SMALL_STATE_WALKING_RIGHT:
+		nx = 1;
 		vx = KOOPA_WALKING_SPEED;
 		break;
 	case KOOPA_SMALL_STATE_WALKING_LEFT:
+		nx = -1;
 		vx = -KOOPA_WALKING_SPEED;
 		break;
 	case KOOPA_SMALL_STATE_JUMPING_LEFT:
@@ -350,9 +377,11 @@ void CKoopa_Small::SetState(int state)
 		vy = -KOOPA_BE_KNOCKED_DOWN_SPEED_Y;
 		break;
 	case KOOPA_SMALL_STATE_RUNNING_LEFT:
+		nx = -1;
 		vx = -KOOPA_SPEED_TURTOISESHELL_X;
 		break;
 	case KOOPA_SMALL_STATE_RUNNING_RIGHT:
+		nx = 1;
 		vx = KOOPA_SPEED_TURTOISESHELL_X;
 		break;
 	case KOOPA_SMALL_STATE_IDLE:
@@ -397,6 +426,7 @@ void CKoopa_Small::BeKicked(int mnx)
 
 void CKoopa_Small:: BeDamaged_Y()
 {
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
 	{
 		delete leftWing;
@@ -416,11 +446,17 @@ void CKoopa_Small:: BeDamaged_Y()
 	{
 		SetState(KOOPA_SMALL_STATE_IDLE);
 		SetType(KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL);
+		mario->UpPoints(POINTS_100);
+		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
+		CPointsEffects::GetInstance()->Add(pe);
 	}
 	else if(type == KOOPA_SMALL_TYPE_RED_WALKING)
 	{
 		SetState(KOOPA_SMALL_STATE_IDLE);
 		SetType(KOOPA_SMALL_TYPE_RED_TURTOISESHELL);
+		mario->UpPoints(POINTS_100);
+		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
+		CPointsEffects::GetInstance()->Add(pe);
 	}
 	else // type == TURROISESHELL
 	{
@@ -434,15 +470,26 @@ void CKoopa_Small:: BeDamaged_Y()
 				this->SetState(KOOPA_SMALL_STATE_RUNNING_RIGHT);
 			else
 				this->SetState(KOOPA_SMALL_STATE_RUNNING_LEFT);
+			mario->UpPoints(POINTS_200);
+			CPointsEffect* pe = new CPointsEffect(x, y, POINTS_200);
+			CPointsEffects::GetInstance()->Add(pe);
 		}
 		else
 		{
 			SetState(KOOPA_SMALL_STATE_IDLE);
+			mario->UpPoints(POINTS_100);
+			CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
+			CPointsEffects::GetInstance()->Add(pe);
 		}
 	}
 	
 }
+void CKoopa_Small::BeDamaged_X(CGameObject* obj)
+{
+	this->SetState(KOOPA_SMALL_STATE_BE_KNOCKED_DOWN);
+	vx = obj->nx * KOOPA_BE_KNOCKED_DOWN_SPEED_X;
 
+}
 void CKoopa_Small::CalculateBeSwingedTail()
 {
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
@@ -456,9 +503,7 @@ void CKoopa_Small::CalculateBeSwingedTail()
 			return;
 		if ((kl<ml && kr>ml) || (kl < mr && mr < kr))
 		{
-			this->SetState(KOOPA_SMALL_STATE_BE_KNOCKED_DOWN);
-			vx = mario->nx * KOOPA_BE_KNOCKED_DOWN_SPEED_X;
-			
+			BeDamaged_X(mario);
 		}
 	}
 }
