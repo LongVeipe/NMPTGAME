@@ -1065,7 +1065,7 @@
 
 
 # -- BRICK--
-#Type	x	y	ani	TypeBrick	typeReward
+#Type	x	y	ani	TypeBrick
 #typeReward	0 = null, 1 = coin, 2 = SuperLeaf
 # WOODEN BRICK
 1	2256	304	20001	0
@@ -1756,7 +1756,7 @@
 
 
 #== MARIO ==
-0	2104.0	512	1
+0	40.0	384	1
 
 
 # --- SCENE PORTAL ----

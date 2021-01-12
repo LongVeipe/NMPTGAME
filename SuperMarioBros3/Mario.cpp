@@ -59,21 +59,30 @@ void CMario::Calculate_vx(DWORD _dt)
 		vx = float(nx * (MARIO_WALKING_SPEED_MAX + imminentStack * MARIO_IMMINANT_WALKING_SPEED));
 	}
 	//state == idle
-	//if (state == MARIO_STATE_IDLE)
+	if (state == MARIO_STATE_IDLE)
 	{
 		if (nx > 0)
 		{
 			if (vx < 0)
 			{
 				vx = 0;
-				//DebugOut(L"[INFO] Animation added: %d \n", spriteId);
+				ax = 0;
 			}
 		}
 		else
 			if (vx > 0)
+			{
 				vx = 0;
+				ax = 0;
+			}
 	}
-
+	if (IsFallingSlowly)
+	{
+		if (abs(vx) > MARIO_FLYING_SPEED_MAX + imminentStack * MARIO_IMMINANT_WALKING_SPEED)
+		{
+			vx = float(nx * (MARIO_FLYING_SPEED_MAX + imminentStack * MARIO_IMMINANT_WALKING_SPEED));
+		}
+	}
 }
 void CMario::Calculate_vy(DWORD _dt)
 {
@@ -123,13 +132,24 @@ void CMario::UpdateFlagBaseOnTime()
 			x += 7;
 	}
 
-	if (GetTickCount64() - kick_start > MARIO_KICKING_TIME)
+	if (GetTickCount64() - kick_start > MARIO_KICKING_TIME && IsKicking)
 		IsKicking = false;
 
 	if (GetTickCount64() - fallSlowly_start > MARIO_FALLING_SLOWLY_TIME)
 		IsFallingSlowly = false;
 	if (GetTickCount64() - canFlyHigh_start > MARIO_RACCOON_CAN_FLY_TIME)
 		IsRaccoonCanFlyHigh = false;
+	if (GetTickCount64() - transform_start > MARIO_TRANSFORM_TIME && IsTransforming)
+	{
+		IsTransforming = false;
+		CPlayScene* s = (CPlayScene*)CGame::GetInstance();
+		s->ContinueTimeline();
+	}
+	if (GetTickCount64() - bonk_start > MARIO_BONK_TIME && IsBonk)
+	{
+		IsBonk = false;
+		IsLookingUp = true;
+	}
 }
 void CMario::UpdateBullets(DWORD _dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -148,6 +168,8 @@ void CMario::UpdateBullets(DWORD _dt, vector<LPGAMEOBJECT>* coObjects)
 }
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
+	if (!IsEnable)
+		return;
 	CGameObject::Update(dt);
 	UpdateBullets(dt, coObjects);
 	Calculate_vy(dt);
@@ -161,21 +183,29 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// turn off collision when die 
 	if (state!=MARIO_STATE_DIE)
 		CalcPotentialCollisions(coObjects, coEvents);
-
 	
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
-		if (x + dx < 0)
-			x = 0;
-		else
-			x += dx; 
+		CScene* s = CGame::GetInstance()->GetCurrentScene();
+		if (dynamic_cast<CPlayScene*>(s))
+		{
+			if (x + dx < 0)
+				x = 0;
+			else
+				x += dx;
 
 
-		if (y + dy < -30)
-			y = -30;
+			if (y + dy < -30)
+				y = -30;
+			else
+				y += dy;
+		}
 		else
+		{
+			x += dx;
 			y += dy;
+		}
 		//IsTouchingGround = false;
 	}
 	else
@@ -283,13 +313,13 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						{
 							IsHolding = true;
 							koopa->IsBeingHeld = true;
+							koopa->SetHolder(this);
 							koopa->SetState(KOOPA_SMALL_STATE_IDLE);
 							IsReadyHolding = false;
 						}
 						else
 						{
-							IsKicking = true;
-							kick_start = GetTickCount64();
+							StartKick();
 							koopa->BeKicked(this->nx);
 						}
 					}
@@ -308,14 +338,49 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						IsJumping = true;
 						ny = -1;
 					}
-					else if (untouchable == 0)
-						this->BeDamaged();
+					else
+					{
+						if (koopa->GetType() == KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL || koopa->GetType() == KOOPA_SMALL_TYPE_RED_TURTOISESHELL)
+						{
+							koopa->vy = -KOOPA_SPEED_TURTOISESHELL_DEFLECT_Y;
+							koopa->vx = -KOOPA_SPEED_TURTOISESHELL_DEFLECT_X;
+							IsBonk = true;
+							bonk_start = GetTickCount64();
+							SetState(MARIO_STATE_IDLE);
+						}
+						else if (untouchable == 0)
+							this->BeDamaged();
+					}
 				}
 			}
 			else if (dynamic_cast<CPlant*>(e->obj))
 			{
 				if (untouchable == 0)
 					BeDamaged();
+			}
+			else if (dynamic_cast<CMario*>(e->obj))
+			{
+				if (type == LUIGI)
+				{
+					if (e->ny < 0) // for luigi
+					{
+						BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+						vy = -LUIGI_JUMP_DEFLECT_SPEED;
+						IsJumping = true;
+						ny = -1;
+					}
+				}
+				else //if(type == MARIO)
+				{
+					if (e->ny > 0)
+					{
+						IsDucking = true;
+						SetState(MARIO_STATE_IDLE);
+						ax = 0;
+						vx = 0;
+						y = y + MARIO_BIG_BBOX_HEIGHT - MARIO_BBOX_DUCKING_HEIGHT;
+					}
+				}
 			}
 			else if (dynamic_cast<CPortal*>(e->obj))
 			{
@@ -356,7 +421,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) 
 		delete coEvents[i];
-	
 }
 void CMario::BasicCollision(float min_tx, float min_ty, float _nx, float _ny, float x0, float y0)
 {
@@ -395,13 +459,15 @@ void CMario::BasicCollision(float min_tx, float min_ty, float _nx, float _ny, fl
 }
 void CMario::Render()
 {
+	if (!IsEnable)
+		return;
 	int ani = -1;
 	if (state == MARIO_STATE_DIE)
 		ani = MARIO_ANI_DIE;
 	else if(level == MARIO_LEVEL_BIG)
 	{
 		if (state == MARIO_STATE_WALKING_LEFT)
-			if (vx >= 0)
+			if (vx > 0)
 				ani = MARIO_ANI_BIG_SKIDDING_LEFT;
 			else
 			{
@@ -411,7 +477,7 @@ void CMario::Render()
 					ani = MARIO_ANI_BIG_WALKING_LEFT;
 			}
 		else if (state == MARIO_STATE_WALKING_RIGHT)
-			if (vx <= 0)
+			if (vx < 0)
 				ani = MARIO_ANI_BIG_SKIDDING_RIGHT;
 			else
 			{
@@ -490,6 +556,19 @@ void CMario::Render()
 				ani = MARIO_ANI_BIG_KICKING_RIGHT;
 			else ani = MARIO_ANI_BIG_KICKING_LEFT;
 		}
+		else if (IsDucking)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_BIG_DUCKING_RIGHT;
+			else
+				ani = MARIO_ANI_BIG_DUCKING_LEFT;
+		}
+		else if (IsBonk)
+		{
+			ani = MARIO_ANI_BIG_BONK;
+		}
+		else if (IsLookingUp)
+			ani = MARIO_ANI_BIG_LOOKING_UP;
 	}
 	else if (level == MARIO_LEVEL_SMALL)
 	{
@@ -836,6 +915,8 @@ void CMario::Render()
 }
 void CMario::SetState(int state)
 {
+	if (IsLookingUp)
+		IsLookingUp = false;
 	if (this->state == MARIO_STATE_DIE)
 		return;
 	CGameObject::SetState(state);
@@ -930,11 +1011,14 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 		right = left + MARIO_RACCOON_BBOX_WIDTH;
 		bottom = top + MARIO_RACCOON_BBOX_HEIGHT;
 	}
-	else 
+	else //level == FIRE
 	{
 		right = left + MARIO_FIRE_BBOX_WIDTH;
 		bottom = top + MARIO_FIRE_BBOX_HEIGHT;
 	}
+
+	if (IsDucking)
+		bottom = top + MARIO_BBOX_DUCKING_HEIGHT;
 }
 void CMario::Reset()
 {
@@ -1015,6 +1099,7 @@ void CMario::StartSwingTail()
 }
 void CMario::BeDamaged()
 {
+	//transform_start = GetTickCount64();
 	switch (level)
 	{
 	case MARIO_LEVEL_SMALL:
@@ -1051,6 +1136,11 @@ bool CMario::IsRaccoonReadyFly()
 }
 void CMario::UpLevel()
 {
+	transform_start = GetTickCount64();
+	IsTransforming = true;
+	CPlayScene* s = (CPlayScene*)CGame::GetInstance();
+	s->StopTimeline();
+
 	switch (level)
 	{
 	case MARIO_LEVEL_SMALL:
@@ -1064,4 +1154,9 @@ void CMario::UpLevel()
 	case MARIO_LEVEL_RACCOON:
 		break;
 	}
+}
+void CMario::StartKick()
+{
+	IsKicking = true;
+	kick_start = GetTickCount64();
 }

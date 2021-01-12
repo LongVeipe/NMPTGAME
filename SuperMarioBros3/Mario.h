@@ -2,13 +2,16 @@
 #include "GameObject.h"
 
 
-#define MARIO_WALKING_SPEED_START	0.08f 
-#define MARIO_WALKING_ACCELERATION	0.0001f
+#define MARIO_WALKING_SPEED_START	0.04f 
+#define MARIO_WALKING_ACCELERATION	0.00015f
 #define MARIO_WALKING_FRICTION	0.00025f
 #define MARIO_WALKING_SPEED_MAX		0.1
+#define MARIO_FLYING_SPEED_MAX		0.06
 #define MARIO_IMMINANT_WALKING_SPEED		0.02
 #define MARIO_JUMP_SPEED_Y		0.2f
+#define MARIO_HIGH_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_DEFLECT_SPEED 0.3f
+#define LUIGI_JUMP_DEFLECT_SPEED	0.72f
 #define MARIO_GRAVITY			0.002f
 #define MARIO_RACCOON_FLY_GRAVITY_COEFFICIENT 0.37
 #define MARIO_DIE_DEFLECT_SPEED	 0.5f
@@ -23,6 +26,7 @@
 #define MARIO_STATE_JUMP			300
 #define MARIO_STATE_DIE				400
 #define MARIO_STATE_BEND_DOWN		500
+#define MARIO_STATE_HIGH_JUMP		600
 
 #define MARIO_ANI_BIG_IDLE_RIGHT			0
 #define MARIO_ANI_BIG_IDLE_LEFT				1
@@ -46,6 +50,8 @@
 #define MARIO_ANI_BIG_KICKING_LEFT			19
 #define MARIO_ANI_BIG_SKIDDING_RIGHT		20
 #define MARIO_ANI_BIG_SKIDDING_LEFT			21
+#define MARIO_ANI_BIG_BONK					79
+#define MARIO_ANI_BIG_LOOKING_UP			80
 
 #define MARIO_ANI_SMALL_IDLE_RIGHT			22
 #define MARIO_ANI_SMALL_IDLE_LEFT			23
@@ -149,6 +155,7 @@
 #define MARIO_RACCOON_HEAD_BBOX_HEIGHT  15
 #define MARIO_FIRE_BBOX_WIDTH  14
 #define MARIO_FIRE_BBOX_HEIGHT 27
+#define MARIO_BBOX_DUCKING_HEIGHT	18
 
 #define MARIO_UNTOUCHABLE_TIME 2000
 #define MARIO_CHANGE_IMMINENT_TIME	200
@@ -160,6 +167,8 @@
 #define MARIO_KICKING_TIME			300
 #define MARIO_FALLING_SLOWLY_TIME	300
 #define MARIO_RACCOON_CAN_FLY_TIME	4500
+#define MARIO_TRANSFORM_TIME		2000
+#define MARIO_BONK_TIME				200
 
 
 #define MARIO_MAX_JUMPIMG_STACKS 19
@@ -187,6 +196,8 @@ class CMario : public CGameObject
 	DWORD changeImminent_start;
 	DWORD fallSlowly_start;
 	DWORD canFlyHigh_start;
+	DWORD transform_start;
+	DWORD bonk_start;
  
 	int jumpStack;
 	int imminentStack;
@@ -215,6 +226,10 @@ public:
 	bool IsSwingTail;
 	bool IsFallingSlowly;
 	bool IsRaccoonCanFlyHigh;
+	bool IsTransforming;
+	bool IsDucking;
+	bool IsBonk;
+	bool IsLookingUp;
 
 
 	CMario(float x = 0.0f, float y = 0.0f);
@@ -238,6 +253,7 @@ public:
 	int GetImminentStack() { return imminentStack; }
 	int GetLevel() { return level; }
 	int GetType() { return type; }
+	void SetType(int _type) { type = _type; }
 	int GetMoney() { return money; }
 	int GetPoints() { return points; }
 	void UpJumpStack() { jumpStack += 1; }
@@ -247,6 +263,7 @@ public:
 	void UpMoney() { money += 1; }
 	void BeDamaged();
 	void SlowFall();
+	void StartKick();
 	void RaccoonStartFlyHigh();
 	bool IsRaccoonReadyFly();
 	bool IsUntouchable() { if (untouchable == 1) return true; return false; }

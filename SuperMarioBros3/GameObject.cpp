@@ -11,6 +11,7 @@
 #include "Goomba.h"
 #include "Mario.h"
 #include "PlayScence.h"
+#include "IntroScene.h"
 
 CGameObject::CGameObject()
 {
@@ -74,9 +75,10 @@ void CGameObject::CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vecto
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
 		LPGAMEOBJECT object = coObjects->at(i);
-		if (!IsInCamera())
-			continue;
-
+		CScene* s = CGame::GetInstance()->GetCurrentScene();
+		if(dynamic_cast<CPlayScene*>(s))
+			if (!IsInCamera())
+				continue;
 
 		LPCOLLISIONEVENT e = SweptAABBEx(object);
 
@@ -172,7 +174,14 @@ void CGameObject::RenderBoundingBox()
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
 
-	CGame::GetInstance()->Draw(x, y-HUD_HEIGHT, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	CScene* scene = CGame::GetInstance()->GetCurrentScene();
+	if (scene != nullptr)
+	{
+		if (dynamic_cast<CIntroScene*>(scene))
+			CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+		else
+			CGame::GetInstance()->Draw(x, y - HUD_HEIGHT, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+	}
 }
 
 bool CGameObject::IsInCamera()

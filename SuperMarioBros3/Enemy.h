@@ -9,7 +9,6 @@ protected:
 	int start_type;
 	float start_x;
 	float start_y;
-	bool isEnable;
 	bool isReadyToEnable;
 public:
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom) = 0;

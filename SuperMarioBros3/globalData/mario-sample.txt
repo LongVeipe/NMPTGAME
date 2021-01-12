@@ -1,6 +1,6 @@
 [SETTINGS]
-start	1
+start	0
 #scene list
 [SCENES]
+0	scene\IntroScene.txt
 1	scene\World1-1.txt
-2	scene\World1-1_Bonus.txt

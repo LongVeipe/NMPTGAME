@@ -4,6 +4,7 @@
 #include "PlayScence.h"
 #include "Utils.h"
 #include "PointsEffect.h"
+#include "IntroScene.h"
 CGoomba::CGoomba(float _x, float _y, int _type):CEnemy(_x, _y, _type)
 {
 	if (type == GOOMBA_TYPE_FLYING_RED)
@@ -23,7 +24,7 @@ CGoomba::~CGoomba()
 }
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (isEnable)
+	if (IsEnable)
 	{
 		if (this->state == GOOMBA_STATE_DIE_X || this->state == GOOMBA_STATE_DIE_Y)
 			left = top = right = bottom = 0;
@@ -52,12 +53,11 @@ void CGoomba::Calculate_vy()
 	{
 		vy += dt * GOOMBA_GRAVITY;
 	}
-	if (vy > GOOMBA_MAX_FALL_SPEED)
-		vy = GOOMBA_MAX_FALL_SPEED;
 }
 void CGoomba::Calculate_vx()
 {
-
+	if (state == GOOMBA_STATE_WALKING && !IsTouchingGround)
+		vx = 0;
 }
 void CGoomba::Update_FlyingRed()
 {
@@ -107,32 +107,42 @@ void CGoomba::Update_Wings()
 }
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	if (!IsInCamera())
+	CScene* s = CGame::GetInstance()->GetCurrentScene();
+	if (dynamic_cast<CPlayScene*>(s))
 	{
-		if (isEnable)
-			Reset();
-		else if (!isReadyToEnable)
+		if (!IsInCamera())
 		{
-			isReadyToEnable = true;
-		}
-		return;
-	}
-	else
-	{
-		if (!isEnable)
-		{
-			if (isReadyToEnable)
+			if (IsEnable)
+				Reset();
+			else if (!isReadyToEnable)
 			{
-				isEnable = true;
-				isReadyToEnable = false;
+				isReadyToEnable = true;
 			}
 			return;
 		}
+		else
+		{
+			if (!IsEnable)
+			{
+				if (isReadyToEnable)
+				{
+					IsEnable = true;
+					isReadyToEnable = false;
+				}
+				return;
+			}
 
+		}
+	}
+	else if (dynamic_cast<CIntroScene*>(s))
+	{
+		if (!IsEnable)
+			return;
 	}
 	CGameObject::Update(dt, coObjects);
 
 	Calculate_vy();
+	Calculate_vx();
 	if (type == GOOMBA_TYPE_FLYING_RED)
 		Update_FlyingRed();
 	
@@ -141,6 +151,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	coEvents.clear();
 	CalcPotentialCollisions(coObjects, coEvents);
+
+	//DebugOut(L"y: %f \n", y);
 	if (coEvents.size() == 0)
 	{
 			x += dx;
@@ -172,7 +184,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				if (ny != 0)
 				{
 					IsTouchingGround = true;
-					state = GOOMBA_STATE_WALKING;
+					if(state != GOOMBA_STATE_IDLE)
+						state = GOOMBA_STATE_WALKING;
 					if (type == GOOMBA_TYPE_FLYING_RED)
 					{
 						leftWing->SetState(WING_STATE_IDLE);
@@ -204,13 +217,16 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 }
 void CGoomba::Render()
 {
-	if (!isEnable)
+	if (!IsEnable)
 		return;
-
 	int ani = -1;
 	if (type == GOOMBA_TYPE_NORMAL)
 	{
-		if (this->state == GOOMBA_STATE_DIE_Y)
+		if (state == GOOMBA_STATE_IDLE)
+		{
+			ani = GOOMBA_ANI_NORMAL_IDLE;
+		}
+		else if (this->state == GOOMBA_STATE_DIE_Y)
 		{
 			ani = GOOMBA_ANI_NORMAL_DIE_Y;
 			if (DeadTime != 0 && (GetTickCount64() - this->DeadTime) >= GOOMBA_TIME_TO_STOP_RENDERING)
@@ -252,44 +268,47 @@ void CGoomba::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
-		case GOOMBA_STATE_DIE_Y:
-			if(type == GOOMBA_TYPE_NORMAL)
-				y += GOOMBA_BBOX_NORMAL_HEIGHT - GOOMBA_BBOX_NORMAL_HEIGHT_DIE + 1;
-			else if(type == GOOMBA_TYPE_WALKING_RED)
-				y += GOOMBA_BBOX_RED_HEIGHT - GOOMBA_BBOX_RED_HEIGHT_DIE + 1;
-			vx = 0;
-			vy = 0;
-			break;
-		case GOOMBA_STATE_DIE_X:
-			vy = -GOOMBA_DIE_X_SPEED_Y;
-			vx = 0;
-			break;
-		case GOOMBA_STATE_WALKING: 
-			vx = -GOOMBA_WALKING_SPEED;
-			if (type == GOOMBA_TYPE_FLYING_RED)
-			{
-				leftWing->SetState(WING_STATE_IDLE);
-				rightWing->SetState(WING_STATE_IDLE);
-			}
-			break;
-		case GOOMBA_STATE_JUMPING:
-			IsTouchingGround = false;
-			vy = -GOOMBA_JUMP_SPEED_Y;
-			if (type == GOOMBA_TYPE_FLYING_RED)
-			{
-				leftWing->SetState(WING_STATE_FLYING);
-				rightWing->SetState(WING_STATE_FLYING);
-			}
-			break;
-		case GOOMBA_STATE_FLYING:
-			IsTouchingGround = false;
-			vy = -GOOMBA_FLY_SPEED_Y;
-			if (type == GOOMBA_TYPE_FLYING_RED)
-			{
-				leftWing->SetState(WING_STATE_FLYING);
-				rightWing->SetState(WING_STATE_FLYING);
-			}
-			break;
+	case GOOMBA_STATE_IDLE:
+		vx = 0;
+		break;
+	case GOOMBA_STATE_DIE_Y:
+		if (type == GOOMBA_TYPE_NORMAL)
+			y += GOOMBA_BBOX_NORMAL_HEIGHT - GOOMBA_BBOX_NORMAL_HEIGHT_DIE + 1;
+		else if (type == GOOMBA_TYPE_WALKING_RED)
+			y += GOOMBA_BBOX_RED_HEIGHT - GOOMBA_BBOX_RED_HEIGHT_DIE + 1;
+		vx = 0;
+		vy = 0;
+		break;
+	case GOOMBA_STATE_DIE_X:
+		vy = -GOOMBA_DIE_X_SPEED_Y;
+		vx = 0;
+		break;
+	case GOOMBA_STATE_WALKING:
+		vx = -GOOMBA_WALKING_SPEED;
+		if (type == GOOMBA_TYPE_FLYING_RED)
+		{
+			leftWing->SetState(WING_STATE_IDLE);
+			rightWing->SetState(WING_STATE_IDLE);
+		}
+		break;
+	case GOOMBA_STATE_JUMPING:
+		IsTouchingGround = false;
+		vy = -GOOMBA_JUMP_SPEED_Y;
+		if (type == GOOMBA_TYPE_FLYING_RED)
+		{
+			leftWing->SetState(WING_STATE_FLYING);
+			rightWing->SetState(WING_STATE_FLYING);
+		}
+		break;
+	case GOOMBA_STATE_FLYING:
+		IsTouchingGround = false;
+		vy = -GOOMBA_FLY_SPEED_Y;
+		if (type == GOOMBA_TYPE_FLYING_RED)
+		{
+			leftWing->SetState(WING_STATE_FLYING);
+			rightWing->SetState(WING_STATE_FLYING);
+		}
+		break;
 	}
 }
 void CGoomba::SetDeadTime()
@@ -357,5 +376,5 @@ void CGoomba::Reset()
 	SetState(GOOMBA_STATE_WALKING);
 	this->PARA_jumpStack = 0;
 	loop_start == GetTickCount64();
-	isEnable = false;
+	IsEnable = false;
 }

@@ -97,6 +97,21 @@
     <ClCompile Include="Zone.cpp">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClCompile>
+    <ClCompile Include="IntroScene.cpp">
+      <Filter>HeaderAndSource\IntroScene</Filter>
+    </ClCompile>
+    <ClCompile Include="IntroSceneBackground.cpp">
+      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+    </ClCompile>
+    <ClCompile Include="Curtain.cpp">
+      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+    </ClCompile>
+    <ClCompile Include="NameOfGame.cpp">
+      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+    </ClCompile>
+    <ClCompile Include="Star.cpp">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -195,6 +210,21 @@
     <ClInclude Include="Zone.h">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClInclude>
+    <ClInclude Include="IntroScene.h">
+      <Filter>HeaderAndSource\IntroScene</Filter>
+    </ClInclude>
+    <ClInclude Include="IntroSceneBackground.h">
+      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+    </ClInclude>
+    <ClInclude Include="Curtain.h">
+      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+    </ClInclude>
+    <ClInclude Include="NameOfGame.h">
+      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+    </ClInclude>
+    <ClInclude Include="Star.h">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HeaderAndSource">
@@ -229,6 +259,12 @@
     </Filter>
     <Filter Include="HeaderAndSource\StatusBoard">
       <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\IntroScene">
+      <UniqueIdentifier>{46b7cc35-faf8-4450-8c92-e8cafdf8c966}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\IntroScene\IntroSceneBackgrond">
+      <UniqueIdentifier>{b122288c-2bce-47ac-8b4d-be8008f9f3c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

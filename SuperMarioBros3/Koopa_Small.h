@@ -1,14 +1,17 @@
 #pragma once
 #include "Koopas.h"
 #include "Wing.h"
+#include "Mario.h"
 
 #define KOOPA_BE_KNOCKED_DOWN_SPEED_Y 0.3f
 #define KOOPA_BE_KNOCKED_DOWN_SPEED_X 0.04f
 #define KOOPA_JUMP_SPEED_Y		0.28f
 #define KOOPA_GRAVITY			0.001f
 #define KOOPA_MAX_FALL_SPEED	0.12
-#define KOOPA_WALKING_SPEED 0.033f;
+#define KOOPA_WALKING_SPEED 0.032f;
 #define KOOPA_SPEED_TURTOISESHELL_X	0.2
+#define KOOPA_SPEED_TURTOISESHELL_DEFLECT_X	0.08
+#define KOOPA_SPEED_TURTOISESHELL_DEFLECT_Y	0.1
 
 #define KOOPA_SMALL_BBOX_WIDTH 16
 #define KOOPA_SMALL_BBOX_HEIGHT 26
@@ -56,8 +59,10 @@ class CKoopa_Small: public CKoopas
 private:
 	CWing* leftWing;
 	CWing* rightWing;
+	CMario* holder;
 
 public:
+
 	bool IsBeingHeld;
 	bool IsWaggling;
 
@@ -77,6 +82,7 @@ public:
 	void UpdateFlyingType();
 
 	virtual void SetState(int state);
+	void SetHolder(CMario* _holder) { holder = _holder; }
 	int GetType() { return this->type; }
 
 	void BeHeld();

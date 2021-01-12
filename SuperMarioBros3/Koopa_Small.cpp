@@ -7,6 +7,7 @@
 #include "Utils.h"
 #include "PointsEffect.h"
 #include "RewardBox.h"
+#include "IntroScene.h"
 
 CKoopa_Small::CKoopa_Small(float _x, float _y, int _type) :CKoopas(_x, _y, _type)
 {
@@ -21,7 +22,7 @@ CKoopa_Small::CKoopa_Small(float _x, float _y, int _type) :CKoopas(_x, _y, _type
 	else //type == turtoiseshell
 		SetState(KOOPA_SMALL_STATE_IDLE);
 
-	isEnable = true;
+	IsEnable = true;
 }
 
 CKoopa_Small::~CKoopa_Small()
@@ -33,7 +34,7 @@ CKoopa_Small::~CKoopa_Small()
 
 void CKoopa_Small::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	if (isEnable)
+	if (IsEnable)
 	{
 		left = x;
 		top = y;
@@ -69,8 +70,16 @@ void CKoopa_Small::UpdateFlyingType()
 void CKoopa_Small::Update_vy()
 {
 	vy += dt * KOOPA_GRAVITY;
-	if (vy > KOOPA_MAX_FALL_SPEED)
-		vy = KOOPA_MAX_FALL_SPEED;
+	if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+	{
+		if (vy > KOOPA_MAX_FALL_SPEED)
+			vy = KOOPA_MAX_FALL_SPEED;
+	}
+	else
+	{
+		if (vy > 2.5*KOOPA_MAX_FALL_SPEED)
+			vy = 2.5*KOOPA_MAX_FALL_SPEED;
+	}
 }
 
 bool CKoopa_Small::CalculateTurningAround(vector<LPGAMEOBJECT>* coObjects)
@@ -129,32 +138,41 @@ void CKoopa_Small::TurnAround()
 
 void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!IsInCamera())
+	CScene* s = CGame::GetInstance()->GetCurrentScene();
+	if (dynamic_cast<CPlayScene*>(s))
 	{
-		if (isEnable)
-			Reset();
-		else if(!isReadyToEnable)
+		if (!IsInCamera())
 		{
-			isReadyToEnable = true;
-		}
-		return;
-	}
-	else
-	{
-		if (!isEnable)
-		{
-			if (isReadyToEnable)
+			if (IsEnable)
+				Reset();
+			else if (!isReadyToEnable)
 			{
-				isEnable = true;
-				isReadyToEnable = false;
+				isReadyToEnable = true;
 			}
 			return;
 		}
+		else
+		{
+			if (!IsEnable)
+			{
+				if (isReadyToEnable)
+				{
+					IsEnable = true;
+					isReadyToEnable = false;
+				}
+				return;
+			}
 
+		}
 	}
-
+	else if (dynamic_cast<CIntroScene*>(s))
+	{
+		if (!IsEnable)
+			return;
+	}
 	
 	CGameObject::Update(dt, coObjects);
+
 	if (IsBeingHeld)
 	{
 		BeHeld();
@@ -224,7 +242,11 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				}
 
 				if (e->ny == -1 && isTouchingGround == false)
+				{
 					isTouchingGround = true;
+					if (state == KOOPA_SMALL_STATE_IDLE)
+						vx = 0;
+				}
 			}
 			else if (dynamic_cast<CGoomba*>(e->obj))
 			{
@@ -281,9 +303,8 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CKoopa_Small::Render()
 {
-	if (!isEnable)
+	if (!IsEnable)
 		return;
-
 
 	int ani = -1;
 	if ( type == KOOPA_SMALL_TYPE_RED_WALKING)
@@ -393,12 +414,11 @@ void CKoopa_Small::SetState(int state)
 
 void CKoopa_Small::BeHeld()
 {
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	if (mario->IsHolding)
+	if (holder->IsHolding)
 	{
 		float l, t, r, b;
-		mario->GetBoundingBox(l, t, r, b);
-		if (mario->nx > 0)
+		holder->GetBoundingBox(l, t, r, b);
+		if (holder->nx > 0)
 			this->x = (r - 4);
 		else
 			this->x = l - 12;
@@ -408,7 +428,7 @@ void CKoopa_Small::BeHeld()
 	else
 	{
 		IsBeingHeld = false;
-		if (mario->nx > 0)
+		if (holder->nx > 0)
 			SetState(KOOPA_SMALL_STATE_RUNNING_RIGHT);
 		else
 			SetState(KOOPA_SMALL_STATE_RUNNING_LEFT);
@@ -527,5 +547,5 @@ void CKoopa_Small::Reset()
 	}
 	else //type == turtoiseshell
 		SetState(KOOPA_SMALL_STATE_IDLE);
-	isEnable = false;
+	IsEnable = false;
 }

@@ -69,7 +69,6 @@ void CPlayScene::_ParseSection_TEXTURES(string line)
 
 	CTextures::GetInstance()->Add(texID, path.c_str(), D3DCOLOR_XRGB(R, G, B));
 }
-
 void CPlayScene::_ParseSection_MAP(string line)
 {
 	vector<string> tokens = split(line);
@@ -103,7 +102,6 @@ void CPlayScene::_ParseSection_ZONE(string line)
 	CZone* zone = new CZone(l, t, r, b);
 	CZones::GetInstance()->Add(id, zone);
 }
-
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);
@@ -126,7 +124,6 @@ void CPlayScene::_ParseSection_SPRITES(string line)
 
 	CSprites::GetInstance()->Add(ID, l, t, r, b, tex);
 }
-
 void CPlayScene::_ParseSection_ANIMATIONS(string line)
 {
 	vector<string> tokens = split(line);
@@ -147,7 +144,6 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 
 	CAnimations::GetInstance()->Add(ani_id, ani);
 }
-
 void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 {
 	vector<string> tokens = split(line);
@@ -170,10 +166,6 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimationSets::GetInstance()->Add(ani_set_id, s);
 }
-
-/*
-	Parse a line in section [OBJECTS] 
-*/
 void CPlayScene::_ParseSection_OBJECTS(string line)
 {
 	vector<string> tokens = split(line);
@@ -335,43 +327,36 @@ void CPlayScene::Update(DWORD dt)
 	{
 		coObjects.push_back(objects[i]);
 	}
-
-	for (size_t i = 0; i < objects.size(); i++)
+	if (isStoppingTime == false)
 	{
-		/*if (dynamic_cast<CGoomba*>(objects[i]))
+		for (size_t i = 0; i < objects.size(); i++)
 		{
-			CGoomba* goomba = dynamic_cast<CGoomba*>(objects[i]);
-			if ((goomba->GetState() == GOOMBA_STATE_DIE_X || goomba->GetState() == GOOMBA_STATE_DIE_Y ) && !goomba->IsInCamera())
-			{
-				objects.erase(objects.begin() + i);
-				coObjects.erase(coObjects.begin() + i);
-				delete goomba;
-				goomba = nullptr;
-			}
-			else
-				goomba->Update(dt, &coObjects);
-		}
-		else*/
+
 			objects[i]->Update(dt, &coObjects);
+		}
+
+		// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
+		if (player == NULL) return;
+
+
+		// Update camera to follow mario
+		SetCamera();
+
+		//update remain time
+		remainTime -= dt;
+		if (remainTime < 0)
+			remainTime = 0;
+
+		//update HUD
+		hud->Update(dt);
+
+		//update pointsEffects
+		CPointsEffects::GetInstance()->Update(dt);
 	}
-
-	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-	if (player == NULL) return; 
-
-
-	// Update camera to follow mario
-	SetCamera();
-
-	//update remain time
-	remainTime -= dt;
-	if (remainTime < 0)
-		remainTime = 0;
-
-	//update HUD
-	hud->Update(dt);
-
-	//update pointsEffects
-	CPointsEffects::GetInstance()->Update(dt);
+	else
+	{
+		player->Update(dt, &coObjects);
+	}
 }
 
 void CPlayScene::SetCamera()
@@ -525,7 +510,10 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		break;
 	case DIK_B:
 		mario->IsReadyHolding = false;
+		if (mario->IsHolding)
+			mario->StartKick();
 		mario->IsHolding = false;
+
 		break;
 	}
 }

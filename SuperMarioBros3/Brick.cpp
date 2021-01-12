@@ -10,6 +10,7 @@ void CBrick::Render()
 {
 	int ani = 0;
 	animation_set->at(ani)->Render(x, y);
+	RenderBoundingBox();
 }
 
 void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)

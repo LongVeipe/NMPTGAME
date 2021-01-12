@@ -8,9 +8,9 @@
 
 #define REWARD_LEVEL_UP_LEAF_JUMP_SPEED_Y	0.35f
 #define REWARD_LEVEL_UP_MUSHROOM_JUMP_SPEED_Y	0.01f
-#define REWARD_LEVEL_UP_SHAKING_SPEED_X	0.06f
-#define REWARD_LEVEL_UP_GRAVITY			0.002f
-#define REWARD_LEVEL_UP_JET				0.00005f
+#define REWARD_LEVEL_UP_SHAKING_SPEED_X	0.08f
+#define REWARD_LEVEL_UP_GRAVITY			0.0033f
+#define REWARD_LEVEL_UP_JET				0.0001f
 #define REWARD_LEVEL_UP_WALKING_SPEED	0.07f
 #define REWARD_LEVEL_UP_MAX_FALLING_SPEED	0.5f
 
@@ -41,7 +41,7 @@ private:
 
 	void CalcPotentialCollisionWithMario();
 public:
-	bool isEnable;
+	bool IsTouchingGround;
 	CReward_LevelUp(float _x, float _y);
 	virtual void Render();
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);

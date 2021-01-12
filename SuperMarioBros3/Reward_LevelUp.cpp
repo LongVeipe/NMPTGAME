@@ -6,6 +6,7 @@
 #include "RewardBox.h"
 #include "Utils.h"
 #include "PointsEffect.h"
+#include "IntroScene.h"
 
 
 CReward_LevelUp::CReward_LevelUp(float _x, float _y)
@@ -13,19 +14,23 @@ CReward_LevelUp::CReward_LevelUp(float _x, float _y)
 	this->x = _x;
 	this->y = _y;
 	this->start_y = _y;
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	switch (mario->GetLevel())
+	CScene* s = CGame::GetInstance()->GetCurrentScene();
+	if (dynamic_cast<CPlayScene*>(s))
 	{
-	case MARIO_LEVEL_SMALL:
-		type = REWARD_LEVEL_UP_TYPE_SUPER_MUSHROOM;
-		break;
-	case MARIO_LEVEL_BIG:
-	case MARIO_LEVEL_FIRE:
-	case MARIO_LEVEL_RACCOON:
-		type = REWARD_LEVEL_UP_TYPE_SUPER_LEAF;
-		break;
+		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+		switch (mario->GetLevel())
+		{
+		case MARIO_LEVEL_SMALL:
+			type = REWARD_LEVEL_UP_TYPE_SUPER_MUSHROOM;
+			break;
+		case MARIO_LEVEL_BIG:
+		case MARIO_LEVEL_FIRE:
+		case MARIO_LEVEL_RACCOON:
+			type = REWARD_LEVEL_UP_TYPE_SUPER_LEAF;
+			break;
+		}
 	}
-	isEnable = true;
+	IsEnable = true;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(REWARD_LEVEL_UP_ANI_SET_ID));
 	/*if (type == REWARD_LEVEL_UP_TYPE_SUPER_LEAF)
 	{
@@ -42,7 +47,7 @@ CReward_LevelUp::CReward_LevelUp(float _x, float _y)
 
 void CReward_LevelUp::Render()
 {
-	if (!isEnable)
+	if (!IsEnable)
 		return;
 	int ani = -1;
 
@@ -76,7 +81,7 @@ bool CReward_LevelUp::IsOnTheLeftOfMario()
 }
 void CReward_LevelUp::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!isEnable)
+	if (!IsEnable)
 		return;
 		
 	CGameObject::Update(dt, coObjects);
@@ -174,7 +179,7 @@ void CReward_LevelUp::Update_MushRoom(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		{
 			this->vy = 0;
 			this->y = y0 + min_ty * this->dy + ny * 0.1f;
-
+			IsTouchingGround = true;
 		}
 
 	}
@@ -186,9 +191,11 @@ void CReward_LevelUp::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, v
 {
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
+		CScene* s = CGame::GetInstance()->GetCurrentScene();
+		if (dynamic_cast<CPlayScene*>(s))
+			if (!IsInCamera())
+				continue;
 
-		if (!IsInCamera())
-			continue;
 		LPGAMEOBJECT object = coObjects->at(i);
 		if (!dynamic_cast<CBrick*>(object) && !dynamic_cast<CRewardBox*>(object))
 			continue;
@@ -220,21 +227,37 @@ void CReward_LevelUp::CalcPotentialCollisions(vector<LPGAMEOBJECT>* coObjects, v
 
 void CReward_LevelUp::CalcPotentialCollisionWithMario()
 {
-	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	LPCOLLISIONEVENT e = SweptAABBEx(mario);
-
-	if (e->t > 0 && e->t <= 1.0f)
+	CScene* s = CGame::GetInstance()->GetCurrentScene();
+	CMario* mario;
+	if (dynamic_cast<CPlayScene*>(s))
 	{
-		isEnable = false;
-		mario->UpLevel();
-		mario->UpPoints(POINTS_1000);
-		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_1000);
-		CPointsEffects::GetInstance()->Add(pe);
+		mario = ((CPlayScene*)s)->GetPlayer();
+		LPCOLLISIONEVENT e = SweptAABBEx(mario);
+
+		if (e->t > 0 && e->t <= 1.0f)
+		{
+			IsEnable = false;
+			mario->UpLevel();
+			mario->UpPoints(POINTS_1000);
+			CPointsEffect* pe = new CPointsEffect(x, y, POINTS_1000);
+			CPointsEffects::GetInstance()->Add(pe);
+		}
+	}
+	else
+	{
+		mario = ((CIntroScene*)s)->GetMario();
+		LPCOLLISIONEVENT e = SweptAABBEx(mario);
+
+		if (e->t > 0 && e->t <= 1.0f)
+		{
+			IsEnable = false;
+			mario->UpLevel();
+		}
 	}
 }
 void CReward_LevelUp::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	if (!isEnable)
+	if (!IsEnable)
 		l = t = r = b = 0;
 	else if(type == REWARD_LEVEL_UP_TYPE_SUPER_LEAF)
 	{

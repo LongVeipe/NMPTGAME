@@ -14,16 +14,18 @@
 
 #define COUNT_DOWN_TIME_DEFAULT			300000
 
-class CPlayScene: public CScene
+class CPlayScene : public CScene
 {
-protected: 
-	CMario *player;					// A play scene has to have player, right? 
+protected:
+	CMario* player;					// A play scene has to have player, right? 
 
 	vector<LPGAMEOBJECT> objects;
 	Map* map;
 	CHUD* hud;
 	DWORD remainTime;
-	int idZone = 2;
+	int idZone = 1;
+
+	bool isStoppingTime;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -34,7 +36,7 @@ protected:
 	void _ParseSection_ZONE(string line);
 
 	void SetCamera();
-public: 
+public:
 
 	CPlayScene(int id, LPCWSTR filePath);
 
@@ -43,12 +45,14 @@ public:
 	virtual void Render();
 	virtual void Unload();
 
-	CMario * GetPlayer() { return player; } 
+	CMario* GetPlayer() { return player; }
 	Map* GetMap() { return map; }
 	CHUD* GetHUD() { return hud; }
 	DWORD GetRemainTime() { return remainTime; }
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }
 	void TransferZone(CPortal* portal);
+	void StopTimeline() { isStoppingTime = true; }
+	void ContinueTimeline() { isStoppingTime = false; }
 	
 	//friend class CPlayScenceKeyHandler;
 };
