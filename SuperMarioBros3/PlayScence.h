@@ -25,7 +25,6 @@ protected:
 	DWORD remainTime;
 	int idZone = 1;
 
-	bool isStoppingTime;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -51,8 +50,6 @@ public:
 	DWORD GetRemainTime() { return remainTime; }
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }
 	void TransferZone(CPortal* portal);
-	void StopTimeline() { isStoppingTime = true; }
-	void ContinueTimeline() { isStoppingTime = false; }
 	
 	//friend class CPlayScenceKeyHandler;
 };

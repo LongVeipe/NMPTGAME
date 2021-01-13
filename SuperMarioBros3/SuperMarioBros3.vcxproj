@@ -132,6 +132,7 @@
     <ClCompile Include="IntroScene.cpp" />
     <ClCompile Include="IntroSceneBackground.cpp" />
     <ClCompile Include="Star.cpp" />
+    <ClCompile Include="WorldMap.cpp" />
     <ClCompile Include="Zone.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="Plant_Normal.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="IntroScene.h" />
     <ClInclude Include="IntroSceneBackground.h" />
     <ClInclude Include="Star.h" />
+    <ClInclude Include="WorldMap.h" />
     <ClInclude Include="Zone.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="Plant_Normal.h" />

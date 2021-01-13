@@ -112,6 +112,9 @@
     <ClCompile Include="Star.cpp">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClCompile>
+    <ClCompile Include="WorldMap.cpp">
+      <Filter>HeaderAndSource\WorldMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -225,6 +228,9 @@
     <ClInclude Include="Star.h">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
+    <ClInclude Include="WorldMap.h">
+      <Filter>HeaderAndSource\WorldMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HeaderAndSource">
@@ -265,6 +271,9 @@
     </Filter>
     <Filter Include="HeaderAndSource\IntroScene\IntroSceneBackgrond">
       <UniqueIdentifier>{b122288c-2bce-47ac-8b4d-be8008f9f3c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\WorldMap">
+      <UniqueIdentifier>{76d0fdc9-d151-4441-a5ac-5271db8cb9cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -327,36 +327,29 @@ void CPlayScene::Update(DWORD dt)
 	{
 		coObjects.push_back(objects[i]);
 	}
-	if (isStoppingTime == false)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
-		for (size_t i = 0; i < objects.size(); i++)
-		{
 
-			objects[i]->Update(dt, &coObjects);
-		}
-
-		// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
-		if (player == NULL) return;
-
-
-		// Update camera to follow mario
-		SetCamera();
-
-		//update remain time
-		remainTime -= dt;
-		if (remainTime < 0)
-			remainTime = 0;
-
-		//update HUD
-		hud->Update(dt);
-
-		//update pointsEffects
-		CPointsEffects::GetInstance()->Update(dt);
+		objects[i]->Update(dt, &coObjects);
 	}
-	else
-	{
-		player->Update(dt, &coObjects);
-	}
+
+	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
+	if (player == NULL) return;
+
+
+	// Update camera to follow mario
+	SetCamera();
+
+	//update remain time
+	remainTime -= dt;
+	if (remainTime < 0)
+		remainTime = 0;
+
+	//update HUD
+	hud->Update(dt);
+
+	//update pointsEffects
+	CPointsEffects::GetInstance()->Update(dt);
 }
 
 void CPlayScene::SetCamera()

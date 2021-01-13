@@ -142,9 +142,9 @@ void CMario::UpdateFlagBaseOnTime()
 	if (GetTickCount64() - transform_start > MARIO_TRANSFORM_TIME && IsTransforming)
 	{
 		IsTransforming = false;
-		CPlayScene* s = (CPlayScene*)CGame::GetInstance();
-		s->ContinueTimeline();
 	}
+	else if (GetTickCount64() - transform_start > MARIO_GROWING_TIME && IsGrowing)
+		IsGrowing = false;
 	if (GetTickCount64() - bonk_start > MARIO_BONK_TIME && IsBonk)
 	{
 		IsBonk = false;
@@ -563,6 +563,13 @@ void CMario::Render()
 			else
 				ani = MARIO_ANI_BIG_DUCKING_LEFT;
 		}
+		else if (IsGrowing)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_GROWING_RIGHT;
+			else
+				ani = MARIO_ANI_GROWING_LEFT;
+		}
 		else if (IsBonk)
 		{
 			ani = MARIO_ANI_BIG_BONK;
@@ -661,6 +668,13 @@ void CMario::Render()
 			if (nx > 0)
 				ani = MARIO_ANI_SMALL_KICKING_RIGHT;
 			else ani = MARIO_ANI_SMALL_KICKING_LEFT;
+		}
+		else if (IsGrowing)
+		{
+			if (nx > 0)
+				ani = MARIO_ANI_SHRINKING_RIGHT;
+			else
+				ani = MARIO_ANI_SHRINKING_LEFT;
 		}
 	}
 	else if (level == MARIO_LEVEL_RACCOON)
@@ -903,6 +917,15 @@ void CMario::Render()
 	}
 	}
 
+	if (IsTransforming)
+	{
+		if (nx > 0)
+			CAnimations::GetInstance()->Get(EXPLOSION_ANI_ID_RIGHT)->Render(x, y);
+		else
+			CAnimations::GetInstance()->Get(EXPLOSION_ANI_ID_LEFT)->Render(x, y);
+		return;
+	}
+
 	int alpha = 255;
 	if (untouchable && state!= MARIO_STATE_DIE) alpha = 128;
 
@@ -913,15 +936,17 @@ void CMario::Render()
 		Bullets[i]->Render();
 	}
 }
-void CMario::SetState(int state)
+void CMario::SetState(int _state)
 {
 	if (IsLookingUp)
 		IsLookingUp = false;
+	else if (IsTransforming)
+		return;
 	if (this->state == MARIO_STATE_DIE)
 		return;
-	CGameObject::SetState(state);
+	CGameObject::SetState(_state);
 
-	switch (state)
+	switch (_state)
 	{
 	case MARIO_STATE_WALKING_RIGHT:
 		if (!IsSwingTail)
@@ -995,6 +1020,8 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 	{
 		right = left + MARIO_SMALL_BBOX_WIDTH ;
 		bottom = top + MARIO_SMALL_BBOX_HEIGHT;
+		if (IsGrowing)
+			bottom = top + MARIO_BIG_BBOX_HEIGHT;
 	}
 	else if(level == MARIO_LEVEL_RACCOON)
 	{
@@ -1099,7 +1126,7 @@ void CMario::StartSwingTail()
 }
 void CMario::BeDamaged()
 {
-	//transform_start = GetTickCount64();
+	transform_start = GetTickCount64();
 	switch (level)
 	{
 	case MARIO_LEVEL_SMALL:
@@ -1107,14 +1134,39 @@ void CMario::BeDamaged()
 		untouchable = 1;
 		break;
 	case MARIO_LEVEL_BIG:
+		IsGrowing = true;
 		level = MARIO_LEVEL_SMALL;
 		StartUntouchable();
 		break;
 	case MARIO_LEVEL_RACCOON:
+		IsTransforming = true;
 		level = MARIO_LEVEL_BIG;
 		StartUntouchable();
 		break;
 	case MARIO_LEVEL_FIRE:
+		IsTransforming = true;
+		break;
+	}
+}
+void CMario::UpLevel()
+{
+	SetState(MARIO_STATE_IDLE);
+	transform_start = GetTickCount64();
+	CScene* s = CGame::GetInstance()->GetCurrentScene();
+
+	switch (level)
+	{
+	case MARIO_LEVEL_SMALL:
+		IsGrowing = true;
+		SetLevel(MARIO_LEVEL_BIG);
+		y = y + MARIO_SMALL_BBOX_HEIGHT - MARIO_BIG_BBOX_HEIGHT;
+		break;
+	case MARIO_LEVEL_BIG:
+	case MARIO_LEVEL_FIRE:
+		IsTransforming = true;
+		SetLevel(MARIO_LEVEL_RACCOON);
+		break;
+	case MARIO_LEVEL_RACCOON:
 		break;
 	}
 }
@@ -1133,27 +1185,6 @@ bool CMario::IsRaccoonReadyFly()
 	if (!IsFlying && imminentStack == MARIO_MAX_IMMINENT_STACKS)
 		return true;
 	return false;
-}
-void CMario::UpLevel()
-{
-	transform_start = GetTickCount64();
-	IsTransforming = true;
-	CPlayScene* s = (CPlayScene*)CGame::GetInstance();
-	s->StopTimeline();
-
-	switch (level)
-	{
-	case MARIO_LEVEL_SMALL:
-		SetLevel(MARIO_LEVEL_BIG);
-		y = y + MARIO_SMALL_BBOX_HEIGHT - MARIO_BIG_BBOX_HEIGHT;
-		break;
-	case MARIO_LEVEL_BIG:
-	case MARIO_LEVEL_FIRE:
-		SetLevel(MARIO_LEVEL_RACCOON);
-		break;
-	case MARIO_LEVEL_RACCOON:
-		break;
-	}
 }
 void CMario::StartKick()
 {

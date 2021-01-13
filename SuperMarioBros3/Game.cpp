@@ -8,6 +8,10 @@
 #include "PlayScence.h"
 #include "IntroScene.h"
 
+#define TYPE_INTRO_SCENE	1
+#define TYPE_WORLD_MAP		2
+#define TYPE_PLAY_SCENE		3
+
 CGame * CGame::__instance = NULL;
 
 /*
@@ -339,8 +343,21 @@ void CGame::_ParseSection_SCENES(string line)
 	if (tokens.size() < 2) return;
 	int id = atoi(tokens[0].c_str());
 	LPCWSTR path = ToLPCWSTR(tokens[1]);
+	int type = atoi(tokens[2].c_str());
 
-	LPSCENE scene = new CIntroScene(id, path);
+	LPSCENE scene = nullptr;
+	switch (type)
+	{
+	case TYPE_INTRO_SCENE:
+		scene = new CIntroScene(id, path);
+		break;
+	case TYPE_WORLD_MAP:
+		break;
+	case TYPE_PLAY_SCENE:
+		scene = new CPlayScene(id, path);
+		break;
+	}
+	 
 	scenes[id] = scene;
 }
 

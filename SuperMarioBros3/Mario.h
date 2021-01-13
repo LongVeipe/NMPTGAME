@@ -139,6 +139,15 @@
 #define MARIO_ANI_FIRE_SLIDING_RIGHT			103
 #define MARIO_ANI_FIRE_SLIDING_LEFT				104
 
+#define MARIO_ANI_GROWING_RIGHT				105
+#define MARIO_ANI_GROWING_LEFT				106
+#define MARIO_ANI_SHRINKING_RIGHT			107
+#define MARIO_ANI_SHRINKING_LEFT			108
+
+#define EXPLOSION_ANI_ID_RIGHT		11003
+#define EXPLOSION_ANI_ID_LEFT		11004
+
+
 #define	MARIO_LEVEL_SMALL	1
 #define	MARIO_LEVEL_BIG		2
 #define	MARIO_LEVEL_RACCOON	3
@@ -167,7 +176,8 @@
 #define MARIO_KICKING_TIME			300
 #define MARIO_FALLING_SLOWLY_TIME	300
 #define MARIO_RACCOON_CAN_FLY_TIME	4500
-#define MARIO_TRANSFORM_TIME		2000
+#define MARIO_TRANSFORM_TIME		120
+#define MARIO_GROWING_TIME			500
 #define MARIO_BONK_TIME				200
 
 
@@ -227,6 +237,7 @@ public:
 	bool IsFallingSlowly;
 	bool IsRaccoonCanFlyHigh;
 	bool IsTransforming;
+	bool IsGrowing;
 	bool IsDucking;
 	bool IsBonk;
 	bool IsLookingUp;
