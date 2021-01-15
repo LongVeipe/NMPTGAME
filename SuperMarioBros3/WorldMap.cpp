@@ -10,6 +10,7 @@
 #include "MarioWM.h"
 #include "Station.h"
 #include "Bush.h"
+#include "BackUp.h"
 
 using namespace std;
 
@@ -254,11 +255,13 @@ void CWorldMap::Load()
 
 	f.close();
 
+	CBackUp::GetInstance()->LoadBackUpMarioWM(player);
+
 	CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 
-	//hud = new CHUD();
+	hud = new CHUD(HUD_TYPE_WORLDMAP);
 }
 
 void CWorldMap::Update(DWORD dt)
@@ -316,6 +319,8 @@ void CWorldMap::Render()
 */
 void CWorldMap::Unload()
 {
+	if(player)
+		CBackUp::GetInstance()->BackUpMarioWM(player);
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
 
@@ -336,7 +341,7 @@ void CWorldMap::Unload()
 
 void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 {
-	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
 	CMarioWM* mario = ((CWorldMap*)scence)->GetPlayer();
 	switch (KeyCode)
@@ -352,6 +357,9 @@ void CWorldMapKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_RIGHT:
 		mario->SetState(MARIOWM_STATE_WALKING_RIGHT);
+		break;
+	case DIK_S:
+		CGame::GetInstance()->SwitchScene(mario->targetScene);
 		break;
 	}
 }

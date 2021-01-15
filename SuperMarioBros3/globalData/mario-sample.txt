@@ -1,9 +1,9 @@
 [SETTINGS]
-start	1
+start	101
 #scene list
 [SCENES]
-#id	path			type
+#id	path			type	idWM
 #1: intro; 2: WorldMap; 3: playScene
 0	scene\IntroScene.txt	1
 1	scene\WorldMap1.txt	2
-2	scene\World1-1.txt	3
+101	scene\World1-1.txt	3	1

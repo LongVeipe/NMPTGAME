@@ -16,6 +16,7 @@
 #include "Koopa_Small.h"
 #include "RewardBox.h"
 #include "Plant_Normal.h"
+#include "Item.h"
 using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
@@ -23,6 +24,7 @@ CMario::CMario(float x, float y) : CGameObject()
 	level = MARIO_LEVEL_SMALL;
 	type = MARIO;
 	money = 0;
+	typeCard = new int[3]{ 0,0,0 };
 	untouchable = 0;
 	SetState(MARIO_STATE_IDLE);
 	changeImminent_start = 0;
@@ -59,7 +61,7 @@ void CMario::Calculate_vx(DWORD _dt)
 		vx = float(nx * (MARIO_WALKING_SPEED_MAX + imminentStack * MARIO_IMMINANT_WALKING_SPEED));
 	}
 	//state == idle
-	if (state == MARIO_STATE_IDLE)
+	if (state == MARIO_STATE_IDLE || state == MARIO_STATE_JUMP)
 	{
 		if (nx > 0)
 		{
@@ -76,7 +78,7 @@ void CMario::Calculate_vx(DWORD _dt)
 				ax = 0;
 			}
 	}
-	if (IsFallingSlowly)
+	if (IsFallingSlowly ||IsFlying)
 	{
 		if (abs(vx) > MARIO_FLYING_SPEED_MAX + imminentStack * MARIO_IMMINANT_WALKING_SPEED)
 		{
@@ -380,6 +382,15 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						vx = 0;
 						y = y + MARIO_BIG_BBOX_HEIGHT - MARIO_BBOX_DUCKING_HEIGHT;
 					}
+				}
+			}
+			else if (dynamic_cast<CItem*>(e->obj))
+			{
+				CItem* item = (CItem*)e->obj;
+				if (item->IsIntact)
+				{
+					item->BeTaken();
+					AddCard(item->GetType());
 				}
 			}
 			else if (dynamic_cast<CPortal*>(e->obj))
@@ -984,17 +995,17 @@ void CMario::SetState(int _state)
 		if (IsTouchingGround == true)
 		{
 			if (vx > 0)
-				ax = -MARIO_WALKING_FRICTION;
+				ax = -MARIO_WALKING_GROUND_FRICTION;
 			else if (vx < 0)
-				ax = MARIO_WALKING_FRICTION;
+				ax = MARIO_WALKING_GROUND_FRICTION;
 			else ax = 0;
 		}
 		else
 		{
 			if (vx > 0 && nx > 0)
-				ax = -MARIO_WALKING_ACCELERATION;
+				ax = -MARIO_WALKING_AIR_FRICTION;
 			else if (vx < 0 && nx < 0)
-				ax = MARIO_WALKING_ACCELERATION;
+				ax = MARIO_WALKING_AIR_FRICTION;
 			else ax = 0;
 		}
 		IsWalkingLeft = IsWalkingRight = false;
@@ -1188,4 +1199,15 @@ void CMario::StartKick()
 {
 	IsKicking = true;
 	kick_start = GetTickCount64();
+}
+void CMario::AddCard(int  card)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (typeCard[i] == 0)
+		{
+			typeCard[i] = card;
+			return;
+		}
+	}
 }

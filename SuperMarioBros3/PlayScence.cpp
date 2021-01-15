@@ -15,11 +15,14 @@
 #include "Koopa_Small.h"
 #include "RewardBox.h"
 #include "PointsEffect.h"
+#include "BackUp.h"
+#include "Item.h"
 
 using namespace std;
 
-CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
+CPlayScene::CPlayScene(int id, LPCWSTR filePath, int idWM):CScene(id, filePath)
 {
+	idWorldMap = idWM;
 	key_handler = new CPlayScenceKeyHandler(this);
 	map = nullptr;
 	player = nullptr;
@@ -49,6 +52,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):CScene(id, filePath)
 #define OBJECT_TYPE_COIN			5
 #define OBJECT_TYPE_PLANT_FIRE		6
 #define OBJECT_TYPE_PLANT_NORMAL	7
+#define OBJECT_TYPE_ITEM			8
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -242,6 +246,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CCoin(x, y);
 		break;
 	}
+	case OBJECT_TYPE_ITEM:
+	{
+		obj = new CItem();
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
@@ -312,9 +321,11 @@ void CPlayScene::Load()
 
 	CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
+	CBackUp::GetInstance()->LoadBackUpMario(player);
+
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 
-	hud = new CHUD();
+	hud = new CHUD(HUD_TYPE_PLAYSCENE);
 	SetCamera();
 }
 
@@ -351,6 +362,10 @@ void CPlayScene::Update(DWORD dt)
 
 	//update pointsEffects
 	CPointsEffects::GetInstance()->Update(dt);
+
+	//out to WorldMap when mario die
+	if ( player->y > CZones::GetInstance()->Get(idZone)->GetBottom())
+		CGame::GetInstance()->SwitchScene(idWorldMap);
 }
 
 void CPlayScene::SetCamera()
@@ -381,7 +396,6 @@ void CPlayScene::SetCamera()
 	if (!player->IsSwingTail)
 		CGame::GetInstance()->SetCamPos(round(cx), round(cy));
 }
-
 void CPlayScene::Render()
 {
 	if (map)
@@ -400,6 +414,8 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
+	if(player)
+		CBackUp::GetInstance()->BackUpMario(player);
 	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
 	
@@ -431,7 +447,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	CMario *mario = ((CPlayScene*)scence)->GetPlayer();
 	switch (KeyCode)
 	{
-	case DIK_SPACE:
+	case DIK_S:
 		if (mario->GetLevel() == MARIO_LEVEL_RACCOON)
 		{
 			if (mario->IsRaccoonReadyFly())
@@ -463,7 +479,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_Q: 
 		mario->Reset();
 		break;
-	case DIK_C:
+	case DIK_A:
 		if (mario->GetLevel() == MARIO_LEVEL_FIRE)
 			mario->StartThrowFire();
 		else if (mario->GetLevel() == MARIO_LEVEL_RACCOON)
@@ -492,7 +508,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_IDLE);
 		break;
-	case DIK_SPACE:
+	case DIK_S:
 		mario->SetJumpStack(MARIO_MAX_JUMPIMG_STACKS);
 		mario->IsReadyJump = false;
 		break;
@@ -525,7 +541,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		mario->SetState(MARIO_STATE_WALKING_RIGHT);
 
-		if (game->IsKeyDown(DIK_SPACE))
+		if (game->IsKeyDown(DIK_S))
 		{
 			if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
 			{
@@ -535,7 +551,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->downImminent();
 		}
-		else if (game->IsKeyDown(DIK_D))
+		else if (game->IsKeyDown(DIK_A))
 		{
 			mario->upImminent();
 		}
@@ -545,7 +561,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	else if (game->IsKeyDown(DIK_LEFT))
 	{
 		mario->SetState(MARIO_STATE_WALKING_LEFT);
-		if (game->IsKeyDown(DIK_SPACE))
+		if (game->IsKeyDown(DIK_S))
 		{
 			if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
 			{
@@ -555,7 +571,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			}
 			mario->downImminent();
 		}
-		else if (game->IsKeyDown(DIK_D))
+		else if (game->IsKeyDown(DIK_A))
 		{
 			mario->upImminent();
 		}
@@ -564,7 +580,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			mario->downImminent();
 		}
 	}
-	else if(game->IsKeyDown(DIK_SPACE))
+	else if(game->IsKeyDown(DIK_S))
 	{ 
 		if (mario->IsReadyJump == true && mario->GetJumpStack() < MARIO_MAX_JUMPIMG_STACKS)
 		{

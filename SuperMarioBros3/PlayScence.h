@@ -24,6 +24,7 @@ protected:
 	CHUD* hud;
 	DWORD remainTime;
 	int idZone = 1;
+	int idWorldMap;
 
 
 	void _ParseSection_TEXTURES(string line);
@@ -37,7 +38,7 @@ protected:
 	void SetCamera();
 public:
 
-	CPlayScene(int id, LPCWSTR filePath);
+	CPlayScene(int id, LPCWSTR filePath, int _idWorldMap);
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

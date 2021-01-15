@@ -6,6 +6,7 @@ CMarioWM::CMarioWM(float _x , float _y ):CGameObject::CGameObject()
 	x = _x;
 	y = _y;
 	level = MARIOWM_LEVEL_SMALL;
+	typeCard = new int[3]{ 0,0,0 };
 	canWalkToRight = true;
 	SetState(MARIOWM_STATE_IDLE);
 }
@@ -54,7 +55,7 @@ void CMarioWM::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				{
 					station->IsReadyToPrevent = true;
 					station->GetWay(canWalkToLeft, canWalkUp, canWalkToRight, canWalkDown);
-
+					targetScene = station->GetIdPlayScene();
 				}
 			}
 		}
@@ -152,4 +153,16 @@ void CMarioWM::BePrevented()
 	SetState(MARIOWM_STATE_IDLE);
 	IsBeingPrevented = true;
 	bePrevented_start = GetTickCount64();
+}
+
+void CMarioWM::AddCard(int  card)
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (typeCard[i] == 0)
+		{
+			typeCard[i] = card;
+			return;
+		}
+	}
 }

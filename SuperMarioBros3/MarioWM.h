@@ -37,6 +37,12 @@ class CMarioWM: public CGameObject
 {
 private:
 	int level;
+	int type;
+	unsigned int money;
+	unsigned int points;
+	unsigned int life;
+	int* typeCard;
+
 	bool canWalkToLeft;
 	bool canWalkUp;
 	bool canWalkToRight;
@@ -45,6 +51,7 @@ private:
 	int IdPlayScene;
 public:
 	bool IsBeingPrevented;
+	int targetScene;
 
 	CMarioWM(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
@@ -53,6 +60,17 @@ public:
 
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
+	void SetType(int t) { type = t; }
+	void SetMoney(int m) { money = m; }
+	void SetPoints(int p) { points = p; }
+	void SetLife(unsigned int l) { life = l; }
+	void AddCard(int card);
+	int GetLevel() { return level; }
+	int GetType() { return type; }
+	unsigned int GetMoney() { return money; }
+	unsigned int GetPoints() { return points; }
+	unsigned int GetLife() { return life; }
+	int* GetTypeCard() { return typeCard; }
 
 	void BePrevented();
 };

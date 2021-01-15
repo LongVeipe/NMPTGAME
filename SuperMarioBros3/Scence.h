@@ -3,6 +3,9 @@
 #include <d3dx9.h>
 #include "KeyEventHandler.h"
 
+#define WORLDMAP_1_ID	1
+#define SCENE_1_1_ID	101
+
 class CScene
 {
 protected:

@@ -124,6 +124,15 @@
     <ClCompile Include="Bush.cpp">
       <Filter>HeaderAndSource\WorldMap</Filter>
     </ClCompile>
+    <ClCompile Include="MenuIntro.cpp">
+      <Filter>HeaderAndSource\IntroScene</Filter>
+    </ClCompile>
+    <ClCompile Include="BackUp.cpp">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>HeaderAndSource\LittleObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -248,6 +257,15 @@
     </ClInclude>
     <ClInclude Include="Bush.h">
       <Filter>HeaderAndSource\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuIntro.h">
+      <Filter>HeaderAndSource\IntroScene</Filter>
+    </ClInclude>
+    <ClInclude Include="BackUp.h">
+      <Filter>HeaderAndSource\Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>HeaderAndSource\LittleObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

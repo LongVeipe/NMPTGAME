@@ -8,6 +8,8 @@
 #include "PlayScence.h"
 #include "IntroScene.h"
 #include "WorldMap.h"
+#include "Font.h"
+#include "PointsEffect.h"
 
 #define TYPE_INTRO_SCENE	1
 #define TYPE_WORLD_MAP		2
@@ -356,7 +358,8 @@ void CGame::_ParseSection_SCENES(string line)
 		scene = new CWorldMap(id, path);
 		break;
 	case TYPE_PLAY_SCENE:
-		scene = new CPlayScene(id, path);
+		int idWM = atoi(tokens[3].c_str());
+		scene = new CPlayScene(id, path,idWM);
 		break;
 	}
 	 
@@ -406,14 +409,23 @@ void CGame::SwitchScene(int scene_id)
 {
 	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
+
+	LPSCENE s = scenes[scene_id];
+	if (s == nullptr)
+	{
+		DebugOut(L"[INFO] scene %d not found\n", scene_id);
+		return;
+	}
+
+
 	scenes[current_scene]->Unload();
 
+	CPointsEffects::GetInstance()->Clear();
 	CTextures::GetInstance()->Clear();
 	CSprites::GetInstance()->Clear();
 	CAnimations::GetInstance()->Clear();
 
 	current_scene = scene_id;
-	LPSCENE s = scenes[scene_id];
 	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
-	s->Load();	
+	s->Load();
 }

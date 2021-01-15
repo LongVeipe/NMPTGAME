@@ -25,6 +25,7 @@ public:
 
 	void GetWay(bool& l, bool& t, bool& r, bool& b);
 	void SetState(int state);
+	int GetIdPlayScene() { return IdPlayScene; }
 
 };
 

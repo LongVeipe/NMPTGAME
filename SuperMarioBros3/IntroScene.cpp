@@ -32,6 +32,8 @@ using namespace std;
 #define STAGE_MARIO_WALK_IN_MIDDLE	2
 #define STAGE_PULL_DOWN_NAMEOFGAME	3
 
+#define BIGBUSH_SPRITE_ID	20010
+
 CIntroScene::CIntroScene(int id, LPCWSTR filePath): CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
@@ -221,6 +223,12 @@ void CIntroScene::Load()
 	background->IsEnable = true;
 	objects.push_back(background);
 
+
+	menu = new CMenuIntro();
+	menu->IsEnable = false;
+	objects.push_back(menu);
+	menu->SetPosition(72, 145);
+
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
 
 	ifstream f;
@@ -272,6 +280,8 @@ void CIntroScene::Render()
 	{
 		objects[i]->Render();
 	}
+	if (bigBush != nullptr)
+		bigBush->Draw(193, 90);
 }
 void CIntroScene::Update(DWORD dt)
 {
@@ -296,19 +306,24 @@ void CIntroScene::Update(DWORD dt)
 }
 void CIntroScene::Unload()
 {
-	/*for (int i = 0; i < objects.size(); i++)
+	for (int i = 0; i < objects.size(); i++)
 		delete objects[i];
 
 	objects.clear();
-	player = NULL;
 
-	delete map;
-	map = nullptr;
+	mario = NULL;
+	luigi = nullptr;
+	background = nullptr;
+	curtain = nullptr;
+	goomba = nullptr;
+	greenTurtoise = nullptr;
+	star = nullptr;
+	mushroom = nullptr;
+	leaf = nullptr;
+	bigBush = nullptr;
+	menu = nullptr;
 
-	delete hud;
-	hud = nullptr;
-
-	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);*/
+	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
 void CIntroScene::HandleMario()
@@ -385,6 +400,23 @@ void CIntroScene::HandleMario()
 	else if(mario->GetLevel() == MARIO_LEVEL_BIG && greenTurtoise->x > mario->x && luigi->x > CGame::GetInstance()->GetScreenWidth())
 	{
 		mario->SetLevel(MARIO_LEVEL_SMALL);
+	}
+	else if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+	{
+		if (greenTurtoise->IsEnable == false && mario->state == MARIO_STATE_IDLE)
+			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+		else if (mario->state == MARIO_STATE_WALKING_RIGHT && mario->x > 230 && bigBush == nullptr)
+			mario->SetState(MARIO_STATE_WALKING_LEFT);
+		else if (mario->state == MARIO_STATE_WALKING_LEFT && mario->x < 155 && bigBush == nullptr)
+		{
+			mario->SetState(MARIO_STATE_WALKING_RIGHT);
+			ShowBigBush();
+		}
+		else if (mario->x > 300 && mario->IsEnable)
+		{
+			mario->IsEnable = false;
+			ShowMenu();
+		}
 	}
 
 }
@@ -550,7 +582,14 @@ void CIntroScene::ShowMushroom()
 {
 	mushroom->IsEnable = true;
 }
-
+void CIntroScene::ShowBigBush()
+{
+	bigBush = CSprites::GetInstance()->Get(BIGBUSH_SPRITE_ID);
+}
+void CIntroScene::ShowMenu()
+{
+	menu->IsEnable = true;
+}
 
 
 
@@ -564,12 +603,26 @@ void CIntroScenceKeyHandler::KeyState(BYTE* states)
 void CIntroScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-
+	CIntroScene* s =(CIntroScene*) CGame::GetInstance()->GetCurrentScene();
+	CMenuIntro* menu = s->GetMenuIntro();
 	switch (KeyCode)
 	{
 	case DIK_Q:
+		if (menu->IsEnable)
+		{
+			if (menu->state == MENU_STATE_1PLAYER)
+				menu->SetState(MENU_STATE_2PLAYER);
+			else
+				menu->SetState(MENU_STATE_1PLAYER);
+		}
 		break;
 	case DIK_W:
+		if (menu->IsEnable == false)
+			s->ShowMenu();
+		else
+		{
+			CGame::GetInstance()->SwitchScene(WORLDMAP_1_ID);
+		}
 		break;
 	}
 }

@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "HUD.h"
 #include "Portal.h"
+#include "Mario.h"
 class CWorldMap: public CScene
 {
 private:
@@ -34,7 +35,7 @@ public:
 
 	void TransferZone(CPortal* portal);
 
-	CMarioWM* GetPlayer() { return player; }
+	virtual CMarioWM* GetPlayer() { return player; }
 	Map* GetMap() { return map; }
 	CHUD* GetHUD() { return hud; }
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }

@@ -7,7 +7,7 @@
 #include "Star.h"
 #include "Reward_LevelUp.h"
 #include "Koopa_Small.h"
-
+#include "MenuIntro.h"
 
 class CIntroScene: public CScene
 {
@@ -22,7 +22,8 @@ private:
 	CStar* star;
 	CReward_LevelUp* mushroom;
 	CReward_LevelUp* leaf;
-
+	LPSPRITE bigBush = nullptr;
+	CMenuIntro* menu;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
@@ -47,16 +48,18 @@ public:
 
 	void CalculateEnable();
 	CMario* GetMario(){return mario;}
+	CMenuIntro* GetMenuIntro() { return menu; }
 
 	void ShowMario();
 	void ShowLuigi();
 	void ShowNameOfGame();
 	void ShowStar();
 	void ShowGoomba();
-	void ShowKoopa();
 	void ShowLeaf();
 	void ShowMushroom();
 	void ShowGreenTurtoise();
+	void ShowBigBush();
+	void ShowMenu();
 };
 
 class CIntroScenceKeyHandler : public CScenceKeyHandler

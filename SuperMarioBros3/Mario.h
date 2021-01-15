@@ -4,7 +4,8 @@
 
 #define MARIO_WALKING_SPEED_START	0.04f 
 #define MARIO_WALKING_ACCELERATION	0.00015f
-#define MARIO_WALKING_FRICTION	0.00025f
+#define MARIO_WALKING_GROUND_FRICTION	0.00025f
+#define MARIO_WALKING_AIR_FRICTION	0.00005f
 #define MARIO_WALKING_SPEED_MAX		0.1
 #define MARIO_FLYING_SPEED_MAX		0.06
 #define MARIO_IMMINANT_WALKING_SPEED		0.02
@@ -50,8 +51,8 @@
 #define MARIO_ANI_BIG_KICKING_LEFT			19
 #define MARIO_ANI_BIG_SKIDDING_RIGHT		20
 #define MARIO_ANI_BIG_SKIDDING_LEFT			21
-#define MARIO_ANI_BIG_BONK					79
-#define MARIO_ANI_BIG_LOOKING_UP			80
+#define MARIO_ANI_BIG_BONK					109
+#define MARIO_ANI_BIG_LOOKING_UP			110
 
 #define MARIO_ANI_SMALL_IDLE_RIGHT			22
 #define MARIO_ANI_SMALL_IDLE_LEFT			23
@@ -194,6 +195,8 @@ class CMario : public CGameObject
 	int type;
 	unsigned int money;
 	unsigned int points;
+	unsigned int life;
+	int* typeCard;
 	float start_x;			// initial position of Mario at scene
 	float start_y;
 	vector<LPGAMEOBJECT> Bullets;
@@ -266,7 +269,14 @@ public:
 	int GetType() { return type; }
 	void SetType(int _type) { type = _type; }
 	int GetMoney() { return money; }
+	void SetMoney(unsigned int _money) { money = _money; }
 	int GetPoints() { return points; }
+	void SetPoints(unsigned int _p) { points = _p; }
+	unsigned int GetLife() { return life; }
+	void SetTypeCard(int* tc) { typeCard = tc; }
+	int* GetTypeCard() { return typeCard; }
+	void AddCard(int card);
+	void SetLife(unsigned int l) { life = l; }
 	void UpJumpStack() { jumpStack += 1; }
 	void downImminent();
 	void upImminent();

@@ -1,6 +1,7 @@
 #pragma once
 #include "Animations.h"
 #include "Mario.h"
+#include "MarioWM.h"
 #include "Font.h"
 //using namespace std;
 
@@ -29,6 +30,12 @@
 #define HUD_MONEY_Y				7
 #define HUD_TIME_X				129
 #define HUD_TIME_Y				15
+#define HUD_LIFE_X				50
+#define HUD_LIFE_Y				15
+#define HUD_ID_X				50
+#define HUD_ID_Y				7
+#define HUD_CARD_X				165
+#define HUD_CARD_Y				0
 
 
 #define HUD_MAX_POINTS_NUMBER_OF_DIGIT		7
@@ -37,33 +44,44 @@
 #define HUD_HEIGHT	30
 #define HUD_WIDTH	234
 #define HUD_NORMAL_IMMINENT_WIDTH	8
+#define HUD_CARD_WIDTH		24
+
+#define HUD_TYPE_WORLDMAP	1
+#define HUD_TYPE_PLAYSCENE	2
 
 
 class CHUD
 {
 private:
+	int typeScene;
+	CFont* font;
 	float x;
 	float y;
-	CMario* player;
+	CMario* mario = nullptr;
+	CMarioWM* marioWM = nullptr;
 	int idWorld;
 	int typePlayer;
 	unsigned int money;
 	DWORD remainTime;
 	int Imminent;
 	unsigned int points;
+	unsigned int life;
+	int* typeCard;
 	LPANIMATION_SET animation_set;
 	
 public:
-	CHUD();
+	CHUD(int _typeScene);
 	~CHUD();
 	void Update(DWORD _dt);
 	void Render();
 	void RenderMainBoard(CSprites* sprites);
 	void RenderPlayerIcon(CSprites* sprites);
 	void RenderImminent(CSprites* sprites);
-	void RenderPoints(CSprites* sprites, CFont* font);
+	void RenderPoints(CSprites* sprites);
 	void RenderWorldId();
-	void RenderTime(CSprites* sprites, CFont* font);
-	void RenderMoney(CSprites* sprites, CFont* font);
+	void RenderTime(CSprites* sprites);
+	void RenderMoney(CSprites* sprites);
+	void RenderLife();
+	void RenderCard();
 	void Reset();
 };

@@ -363,6 +363,8 @@ void CGoomba::BeDamaged_X(CGameObject* obj)
 }
 void CGoomba::Reset()
 {
+	if (state == GOOMBA_STATE_DIE_X || state == GOOMBA_STATE_DIE_Y)
+		return;
 	type = start_type;
 	SetPosition(start_x, start_y);
 	SetType(start_type);
