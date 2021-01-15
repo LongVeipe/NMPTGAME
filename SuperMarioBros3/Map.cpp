@@ -72,13 +72,24 @@ void Map::Render()
 	game->GetCamPos(cx, cy);
 	int startRow, startCol, limitRow, limitCol;
 	startCol = cx / TileWidth;
-	limitCol = startCol + (game->GetScreenWidth() / TileWidth)+1;
+	limitCol = startCol + (game->GetScreenWidth() / TileWidth) + 2;
 
 	if (limitCol >= TotalColsOfMap) limitCol = TotalColsOfMap - 1;
 
-	for(int r = 0; r<TotalRowsOfMap; r++)
-		for (int c = startCol; c < limitCol; c++)
-		{
-			Tiles[Matrix[r][c] - 1]->Draw(c * TileWidth,r * TileHeight - HUD_HEIGHT, 255);
-		}
+	if (dynamic_cast<CPlayScene*>(game->GetCurrentScene()))
+	{
+		for (int r = 0; r < TotalRowsOfMap; r++)
+			for (int c = startCol; c < limitCol; c++)
+			{
+				Tiles[Matrix[r][c] - 1]->Draw(c * TileWidth, r * TileHeight - HUD_HEIGHT, 255);
+			}
+	}
+	else
+	{
+		for (int r = 0; r < TotalRowsOfMap; r++)
+			for (int c = startCol; c < limitCol; c++)
+			{
+				Tiles[Matrix[r][c] - 1]->Draw((c-1) * TileWidth, r * TileHeight, 255);
+			}
+	}
 }

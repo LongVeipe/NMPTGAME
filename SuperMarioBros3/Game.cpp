@@ -7,6 +7,7 @@
 
 #include "PlayScence.h"
 #include "IntroScene.h"
+#include "WorldMap.h"
 
 #define TYPE_INTRO_SCENE	1
 #define TYPE_WORLD_MAP		2
@@ -352,6 +353,7 @@ void CGame::_ParseSection_SCENES(string line)
 		scene = new CIntroScene(id, path);
 		break;
 	case TYPE_WORLD_MAP:
+		scene = new CWorldMap(id, path);
 		break;
 	case TYPE_PLAY_SCENE:
 		scene = new CPlayScene(id, path);

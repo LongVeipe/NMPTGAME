@@ -351,7 +351,7 @@ void CKoopa_Small::Render()
 	{
 		if (state == KOOPA_SMALL_STATE_IDLE)
 			ani = KOOPA_SMALL_ANI_RED_TURTOISESHELL_IDLE;
-		else if (state == KOOPA_SMALL_STATE_RUNNING_LEFT)
+		else if (state == KOOPA_SMALL_STATE_RUNNING_LEFT || state == KOOPA_SMALL_STATE_RUNNING_RIGHT)
 			ani = KOOPA_SMALL_ANI_RED_TURTOISESHELL_RUNNING;
 		//else if(state == KOOPA_SMALL_STATE_BE_KNOCKED_DOWN)
 
@@ -445,7 +445,7 @@ void CKoopa_Small::BeKicked(int mnx)
 }
 
 void CKoopa_Small:: BeDamaged_Y()
-{
+ {
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
 	{

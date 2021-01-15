@@ -45,10 +45,10 @@ void CAnimation::Render(float x, float y, int alpha)
 	CScene* scene = CGame::GetInstance()->GetCurrentScene();
 	if (scene != nullptr)
 	{
-		if (dynamic_cast<CIntroScene*>(scene))
-			frames[currentFrame]->GetSprite()->Draw(x, y, alpha);
-		else
+		if (dynamic_cast<CPlayScene*>(scene))
 			frames[currentFrame]->GetSprite()->Draw(x, y - HUD_HEIGHT, alpha);
+		else
+			frames[currentFrame]->GetSprite()->Draw(x, y, alpha);
 	}
 }
 

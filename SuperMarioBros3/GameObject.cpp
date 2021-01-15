@@ -177,10 +177,10 @@ void CGameObject::RenderBoundingBox()
 	CScene* scene = CGame::GetInstance()->GetCurrentScene();
 	if (scene != nullptr)
 	{
-		if (dynamic_cast<CIntroScene*>(scene))
-			CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
-		else
+		if (dynamic_cast<CPlayScene*>(scene))
 			CGame::GetInstance()->Draw(x, y - HUD_HEIGHT, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
+		else
+			CGame::GetInstance()->Draw(x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 	}
 }
 

@@ -115,6 +115,15 @@
     <ClCompile Include="WorldMap.cpp">
       <Filter>HeaderAndSource\WorldMap</Filter>
     </ClCompile>
+    <ClCompile Include="MarioWM.cpp">
+      <Filter>HeaderAndSource\Mario</Filter>
+    </ClCompile>
+    <ClCompile Include="Station.cpp">
+      <Filter>HeaderAndSource\WorldMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Bush.cpp">
+      <Filter>HeaderAndSource\WorldMap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -229,6 +238,15 @@
       <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
     <ClInclude Include="WorldMap.h">
+      <Filter>HeaderAndSource\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="MarioWM.h">
+      <Filter>HeaderAndSource\Mario</Filter>
+    </ClInclude>
+    <ClInclude Include="Station.h">
+      <Filter>HeaderAndSource\WorldMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Bush.h">
       <Filter>HeaderAndSource\WorldMap</Filter>
     </ClInclude>
   </ItemGroup>

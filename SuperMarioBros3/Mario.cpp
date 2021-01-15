@@ -940,8 +940,6 @@ void CMario::SetState(int _state)
 {
 	if (IsLookingUp)
 		IsLookingUp = false;
-	else if (IsTransforming)
-		return;
 	if (this->state == MARIO_STATE_DIE)
 		return;
 	CGameObject::SetState(_state);
@@ -1150,7 +1148,7 @@ void CMario::BeDamaged()
 }
 void CMario::UpLevel()
 {
-	SetState(MARIO_STATE_IDLE);
+	//SetState(MARIO_STATE_IDLE);
 	transform_start = GetTickCount64();
 	CScene* s = CGame::GetInstance()->GetCurrentScene();
 

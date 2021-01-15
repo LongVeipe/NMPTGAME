@@ -36,7 +36,7 @@
 #define MARIO_ANI_BIG_JUMPING_LEFT			5
 #define MARIO_ANI_BIG_RUNNING_RIGHT			6
 #define MARIO_ANI_BIG_RUNNING_LEFT			7
-#define MARIO_ANI_BIG_RUNNING_JUMP_RIGHT		8
+#define MARIO_ANI_BIG_RUNNING_JUMP_RIGHT	8
 #define MARIO_ANI_BIG_RUNNING_JUMP_LEFT		9
 #define MARIO_ANI_BIG_HOLDING_IDLE_RIGHT	10
 #define MARIO_ANI_BIG_HOLDING_RIGHT			11
@@ -246,6 +246,7 @@ public:
 	CMario(float x = 0.0f, float y = 0.0f);
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	virtual void Render();
+	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
@@ -257,7 +258,6 @@ public:
 	void StartThrowFire();
 	void StartSwingTail();
 
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 
 	void BasicCollision(float min_tx, float min_ty, float nx, float ny, float x0, float y0);
 	int GetJumpStack() { return jumpStack; }

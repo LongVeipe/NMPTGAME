@@ -56,8 +56,8 @@ void CGoomba::Calculate_vy()
 }
 void CGoomba::Calculate_vx()
 {
-	if (state == GOOMBA_STATE_WALKING && !IsTouchingGround)
-		vx = 0;
+	/*if (state == GOOMBA_STATE_WALKING && !IsTouchingGround)
+		vx = 0;*/
 }
 void CGoomba::Update_FlyingRed()
 {
@@ -140,7 +140,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			return;
 	}
 	CGameObject::Update(dt, coObjects);
-
 	Calculate_vy();
 	Calculate_vx();
 	if (type == GOOMBA_TYPE_FLYING_RED)
@@ -219,7 +218,7 @@ void CGoomba::Render()
 {
 	if (!IsEnable)
 		return;
-	int ani = -1;
+ 	int ani = -1;
 	if (type == GOOMBA_TYPE_NORMAL)
 	{
 		if (state == GOOMBA_STATE_IDLE)

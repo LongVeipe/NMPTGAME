@@ -315,6 +315,7 @@ void CPlayScene::Load()
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 
 	hud = new CHUD();
+	SetCamera();
 }
 
 void CPlayScene::Update(DWORD dt)
