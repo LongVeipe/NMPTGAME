@@ -129,6 +129,7 @@
     <ClCompile Include="BackUp.cpp" />
     <ClCompile Include="Bush.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="LifeUp.cpp" />
     <ClCompile Include="MarioWM.cpp" />
     <ClCompile Include="MenuIntro.cpp" />
     <ClCompile Include="NameOfGame.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="BackUp.h" />
     <ClInclude Include="Bush.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="LifeUp.h" />
     <ClInclude Include="MarioWM.h" />
     <ClInclude Include="MenuIntro.h" />
     <ClInclude Include="NameOfGame.h" />

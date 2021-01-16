@@ -1,5 +1,5 @@
 [SETTINGS]
-start	101
+start	0
 #scene list
 [SCENES]
 #id	path			type	idWM

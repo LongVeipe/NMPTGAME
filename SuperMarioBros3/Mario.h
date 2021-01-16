@@ -281,6 +281,7 @@ public:
 	void downImminent();
 	void upImminent();
 	void UpPoints(unsigned int _points) { points += _points; }
+	void UpLife() { life += 1; }
 	void UpMoney() { money += 1; }
 	void BeDamaged();
 	void SlowFall();

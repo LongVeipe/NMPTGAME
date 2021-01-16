@@ -1,6 +1,7 @@
 #include "RewardBox.h"
 #include "Coin.h"
 #include "Reward_LevelUp.h"
+#include "LifeUp.h"
 #include "SwitchBlock.h"
 #include "Mario.h"
 #include "PlayScence.h"
@@ -192,6 +193,11 @@ void CRewardBox::BeAttacked()
 				CReward_LevelUp* lvUp = (CReward_LevelUp*)reward;
 				lvUp->SetState(REWARD_LEVEL_UP_STATE_JUMPING);
 			}
+			else if (rewardType == REWARD_BOX_TYPE_REWARD_LIFE_UP)
+			{
+				CLifeUp* lifeUp = (CLifeUp*)reward;
+				lifeUp->SetState(LIFEUP_STATE_JUMPING);
+			}
 			SetState(REWARD_BOX_STATE_JUMPING);
 			isEmpty = true;
 		}
@@ -218,6 +224,7 @@ void CRewardBox::CreateReward()
 		reward = new CReward_LevelUp(x, y);
 		break;
 	case REWARD_BOX_TYPE_REWARD_LIFE_UP:
+		reward = new CLifeUp(x, y);
 		break;
 	case REWARD_BOX_TYPE_REWARD_SWITCH:
 		reward = new CSwitchBlock(x, y - SWITCH_BLOCK_BBOX_INACTIVE_HEIGHT);

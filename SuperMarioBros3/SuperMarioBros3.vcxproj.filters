@@ -133,6 +133,9 @@
     <ClCompile Include="Item.cpp">
       <Filter>HeaderAndSource\LittleObject</Filter>
     </ClCompile>
+    <ClCompile Include="LifeUp.cpp">
+      <Filter>HeaderAndSource\Reward</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -266,6 +269,9 @@
     </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>HeaderAndSource\LittleObject</Filter>
+    </ClInclude>
+    <ClInclude Include="LifeUp.h">
+      <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

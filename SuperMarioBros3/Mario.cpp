@@ -951,6 +951,8 @@ void CMario::SetState(int _state)
 {
 	if (IsLookingUp)
 		IsLookingUp = false;
+	if (IsDucking)
+		IsDucking = false;
 	if (this->state == MARIO_STATE_DIE)
 		return;
 	CGameObject::SetState(_state);

@@ -518,7 +518,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	case DIK_LEFT:
 		mario->SetState(MARIO_STATE_IDLE);
 		break;
-	case DIK_B:
+	case DIK_A:
 		mario->IsReadyHolding = false;
 		if (mario->IsHolding)
 			mario->StartKick();
@@ -599,10 +599,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 			mario->SetState(MARIO_STATE_IDLE);
 		mario->downImminent();
 	}
-	if (game->IsKeyDown(DIK_B))
+	if (game->IsKeyDown(DIK_A))
 	{
 		mario->IsReadyHolding = true;
 	}
-	
 		
 }
