@@ -1,12 +1,12 @@
 # id	file_path	transparent_color_r	g	b
 [TEXTURES]
 0	textures\panel.png	166	185	255
-30	map\map1\WorldMap\1_bank.png	0	0	0
+30	map\World1\WorldMap\1_bank.png	0	0	0
 40	textures\HUD.png	0	204	129
 
 #ID	TWidth	THeight	TRTSet	TCTSet	TRMap	TCMap	TTiles	Matrix_Path
 [MAP]
-30	16	16	4	11	11	17	37	map\map1\WorldMap\1.txt
+30	16	16	4	11	11	17	37	map\World1\WorldMap\1.txt
 
 [ZONE]
 #ID	l	t	r	b

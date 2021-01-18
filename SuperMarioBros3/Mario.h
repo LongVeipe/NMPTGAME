@@ -244,6 +244,7 @@ public:
 	bool IsDucking;
 	bool IsBonk;
 	bool IsLookingUp;
+	bool IsEnteringDrain;
 
 
 	CMario(float x = 0.0f, float y = 0.0f);

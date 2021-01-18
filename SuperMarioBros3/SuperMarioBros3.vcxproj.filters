@@ -34,9 +34,6 @@
     <ClCompile Include="Map.cpp">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClCompile>
-    <ClCompile Include="PlayScence.cpp">
-      <Filter>HeaderAndSource\Platform</Filter>
-    </ClCompile>
     <ClCompile Include="Scence.cpp">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClCompile>
@@ -86,46 +83,46 @@
       <Filter>HeaderAndSource\Reward</Filter>
     </ClCompile>
     <ClCompile Include="HUD.cpp">
-      <Filter>HeaderAndSource\StatusBoard</Filter>
+      <Filter>HeaderAndSource\HUD</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
-      <Filter>HeaderAndSource\StatusBoard</Filter>
+      <Filter>HeaderAndSource\HUD</Filter>
     </ClCompile>
     <ClCompile Include="PointsEffect.cpp">
-      <Filter>HeaderAndSource\StatusBoard</Filter>
+      <Filter>HeaderAndSource\HUD</Filter>
     </ClCompile>
     <ClCompile Include="Zone.cpp">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClCompile>
     <ClCompile Include="IntroScene.cpp">
-      <Filter>HeaderAndSource\IntroScene</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene</Filter>
     </ClCompile>
     <ClCompile Include="IntroSceneBackground.cpp">
-      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene\IntroSceneBackgrond</Filter>
     </ClCompile>
     <ClCompile Include="Curtain.cpp">
-      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene\IntroSceneBackgrond</Filter>
     </ClCompile>
     <ClCompile Include="NameOfGame.cpp">
-      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene\IntroSceneBackgrond</Filter>
     </ClCompile>
     <ClCompile Include="Star.cpp">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClCompile>
     <ClCompile Include="WorldMap.cpp">
-      <Filter>HeaderAndSource\WorldMap</Filter>
+      <Filter>HeaderAndSource\Scene\WorldMap</Filter>
     </ClCompile>
     <ClCompile Include="MarioWM.cpp">
       <Filter>HeaderAndSource\Mario</Filter>
     </ClCompile>
     <ClCompile Include="Station.cpp">
-      <Filter>HeaderAndSource\WorldMap</Filter>
+      <Filter>HeaderAndSource\Scene\WorldMap</Filter>
     </ClCompile>
     <ClCompile Include="Bush.cpp">
-      <Filter>HeaderAndSource\WorldMap</Filter>
+      <Filter>HeaderAndSource\Scene\WorldMap</Filter>
     </ClCompile>
     <ClCompile Include="MenuIntro.cpp">
-      <Filter>HeaderAndSource\IntroScene</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene</Filter>
     </ClCompile>
     <ClCompile Include="BackUp.cpp">
       <Filter>HeaderAndSource\Platform</Filter>
@@ -135,6 +132,9 @@
     </ClCompile>
     <ClCompile Include="LifeUp.cpp">
       <Filter>HeaderAndSource\Reward</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayScence.cpp">
+      <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,9 +172,6 @@
       <Filter>HeaderAndSource\Platform</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
-      <Filter>HeaderAndSource\Platform</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayScence.h">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClInclude>
     <ClInclude Include="Scence.h">
@@ -223,46 +220,46 @@
       <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
     <ClInclude Include="HUD.h">
-      <Filter>HeaderAndSource\StatusBoard</Filter>
+      <Filter>HeaderAndSource\HUD</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
-      <Filter>HeaderAndSource\StatusBoard</Filter>
+      <Filter>HeaderAndSource\HUD</Filter>
     </ClInclude>
     <ClInclude Include="PointsEffect.h">
-      <Filter>HeaderAndSource\StatusBoard</Filter>
+      <Filter>HeaderAndSource\HUD</Filter>
     </ClInclude>
     <ClInclude Include="Zone.h">
       <Filter>HeaderAndSource\Platform</Filter>
     </ClInclude>
     <ClInclude Include="IntroScene.h">
-      <Filter>HeaderAndSource\IntroScene</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene</Filter>
     </ClInclude>
     <ClInclude Include="IntroSceneBackground.h">
-      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene\IntroSceneBackgrond</Filter>
     </ClInclude>
     <ClInclude Include="Curtain.h">
-      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene\IntroSceneBackgrond</Filter>
     </ClInclude>
     <ClInclude Include="NameOfGame.h">
-      <Filter>HeaderAndSource\IntroScene\IntroSceneBackgrond</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene\IntroSceneBackgrond</Filter>
     </ClInclude>
     <ClInclude Include="Star.h">
       <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
     <ClInclude Include="WorldMap.h">
-      <Filter>HeaderAndSource\WorldMap</Filter>
+      <Filter>HeaderAndSource\Scene\WorldMap</Filter>
     </ClInclude>
     <ClInclude Include="MarioWM.h">
       <Filter>HeaderAndSource\Mario</Filter>
     </ClInclude>
     <ClInclude Include="Station.h">
-      <Filter>HeaderAndSource\WorldMap</Filter>
+      <Filter>HeaderAndSource\Scene\WorldMap</Filter>
     </ClInclude>
     <ClInclude Include="Bush.h">
-      <Filter>HeaderAndSource\WorldMap</Filter>
+      <Filter>HeaderAndSource\Scene\WorldMap</Filter>
     </ClInclude>
     <ClInclude Include="MenuIntro.h">
-      <Filter>HeaderAndSource\IntroScene</Filter>
+      <Filter>HeaderAndSource\Scene\IntroScene</Filter>
     </ClInclude>
     <ClInclude Include="BackUp.h">
       <Filter>HeaderAndSource\Platform</Filter>
@@ -272,6 +269,9 @@
     </ClInclude>
     <ClInclude Include="LifeUp.h">
       <Filter>HeaderAndSource\Reward</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayScence.h">
+      <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -305,17 +305,23 @@
     <Filter Include="HeaderAndSource\PlatformObject">
       <UniqueIdentifier>{af93004e-9b6d-4a1e-97c9-cdc900dca52e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HeaderAndSource\StatusBoard">
-      <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
+    <Filter Include="HeaderAndSource\Scene">
+      <UniqueIdentifier>{92e55df1-deab-4bbf-906d-b38bb746f6d1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HeaderAndSource\IntroScene">
+    <Filter Include="HeaderAndSource\Scene\WorldMap">
+      <UniqueIdentifier>{76d0fdc9-d151-4441-a5ac-5271db8cb9cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\Scene\IntroScene">
       <UniqueIdentifier>{46b7cc35-faf8-4450-8c92-e8cafdf8c966}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HeaderAndSource\IntroScene\IntroSceneBackgrond">
+    <Filter Include="HeaderAndSource\Scene\IntroScene\IntroSceneBackgrond">
       <UniqueIdentifier>{b122288c-2bce-47ac-8b4d-be8008f9f3c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="HeaderAndSource\WorldMap">
-      <UniqueIdentifier>{76d0fdc9-d151-4441-a5ac-5271db8cb9cc}</UniqueIdentifier>
+    <Filter Include="HeaderAndSource\Scene\PlayScene">
+      <UniqueIdentifier>{f3a3a91a-c1a9-4396-b155-98e63fbbeba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HeaderAndSource\HUD">
+      <UniqueIdentifier>{172a7a33-caba-4c85-befc-b8f812ea6269}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

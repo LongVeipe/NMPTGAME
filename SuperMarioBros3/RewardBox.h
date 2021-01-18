@@ -24,6 +24,8 @@
 #define REWARD_BOX_GRAVITY			0.003f
 #define REWARD_BOX_MAX_FALLING_SPEED	0.5f
 
+#define REWARD_HIDING_TIME		7000
+
 class CRewardBox: public CGameObject
 {
 private:
@@ -31,6 +33,7 @@ private:
 	int rewardType;
 	float start_y;
 	CGameObject* reward;
+	DWORD hide_start;
 
 	void CalculateBeSwingedTail();
 public:
@@ -48,7 +51,9 @@ public:
 	void Update_GoldBox(vector<LPGAMEOBJECT>* coObjects);
 	void BeAttacked();
 	void BeBroken();
+	void Hide();
 	void CreateReward();
+	void UpdateFlag();
 
 	int GetType() { return this->type; }
 	void SetState(int _state);

@@ -84,8 +84,10 @@ void CKoopa_Small::Update_vy()
 
 bool CKoopa_Small::CalculateTurningAround(vector<LPGAMEOBJECT>* coObjects)
 {
-	//just use for walking type
+	//just use for red walking type
 	//
+	if(type != KOOPA_SMALL_TYPE_RED_WALKING)
+		return false;
 	if (!isTouchingGround)
 		return false;
 	float kl, kt, kr, kb;
@@ -96,22 +98,24 @@ bool CKoopa_Small::CalculateTurningAround(vector<LPGAMEOBJECT>* coObjects)
 		if (!object->IsInCamera())
 			continue;
 
-		if (!dynamic_cast<CBrick*>(object))
+		if (!dynamic_cast<CBrick*>(object) && !dynamic_cast<CRewardBox*>(object))
 			continue;
 
-		//object is Break
+		//object is Break or RBox
 		float ol, ot, or , ob;
 		object->GetBoundingBox(ol, ot, or , ob);
+		/*if (object->x == 2096 && object->y == 384)
+			DebugOut(L"kb: %f, ot: %f \n", kb, ot);*/
 		if (kb > ot - 2 && kb < ot)
 		{
 			if (state == KOOPA_SMALL_STATE_WALKING_LEFT)
 			{
-				if (kl > ol && kl < or )
+				if ((kl + 4 > ol && kl + 8 < or ) || (kl +4 <= or && kl+8 >= or))
 					return false;
 			}
 			else if (state == KOOPA_SMALL_STATE_WALKING_RIGHT)
 			{
-				if (or > kr && ol < kr)
+				if ((kr - 8 > ol && kr - 4 < or) || (kr -8 <= ol && kr - 4 >= ol ))
 					return false;
 			}
 		}
@@ -173,6 +177,7 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	
 	CGameObject::Update(dt, coObjects);
 
+	//DebugOut(L"state Update: %d\n", state);
 	if (IsBeingHeld)
 	{
 		BeHeld();
@@ -270,6 +275,7 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				if (e->nx != 0)
 				{
 					this->x = x0 + min_tx * this->dx + e->nx * 0.1f;
+
 					TurnAround();
 					if (type == KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL || type == KOOPA_SMALL_TYPE_RED_TURTOISESHELL)
 					{
@@ -288,9 +294,12 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 
 	}
-	//UpdaetState();
-	if (CalculateTurningAround(coObjects) && type == KOOPA_SMALL_TYPE_RED_WALKING)
+
+	if (CalculateTurningAround(coObjects))
+	{
+		//DebugOut(L"stateUpdate: %d\n", state);
 		TurnAround();
+	}
 	CalculateBeSwingedTail();
 
 	// clean up collision events
@@ -298,7 +307,8 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
 		Update_Wings();
 
-	//DebugOut(L"[INFO] isTouchingGround: %d \n", isTouchingGround);
+	//DebugOut(L"[INFO] stateUpdate: %d \n", state);
+
 }
 
 void CKoopa_Small::Render()
@@ -306,6 +316,7 @@ void CKoopa_Small::Render()
 	if (!IsEnable)
 		return;
 
+	//DebugOut(L"[INFO] stateRender: %d \n", state);
 	int ani = -1;
 	if ( type == KOOPA_SMALL_TYPE_RED_WALKING)
 	{

@@ -9,14 +9,14 @@ CCoin::CCoin(float _x, float _y)
 	this->x = _x;
 	this->y = _y;
 	this->start_y = _y;
-	isEnable = true;
+	IsEnable = true;
 	type = COIN_TYPE_DEFAULT;
 }
 void CCoin::Render()
 {
 	if (!IsInCamera())
 		return;
-	if (isEnable)
+	if (IsEnable)
 	{
 		animation_set->at(0)->Render(x, y);
 	}
@@ -24,7 +24,7 @@ void CCoin::Render()
 
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	if (!IsInCamera() || !isEnable)
+	if (!IsInCamera() || !IsEnable)
 		return;
 	CGameObject::Update(dt, coObjects);
 	if (state != COIN_STATE_JUMPING)
@@ -38,7 +38,7 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		y = start_y;
 		this->vy = 0;
-		isEnable = false;
+		IsEnable = false;
 		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 		mario->UpPoints(POINTS_100);
 		mario->UpMoney();
@@ -54,7 +54,7 @@ void CCoin::CalcPotentialCollisionWithMario()
 
 	if (e->t > 0 && e->t <= 1.0f)
 	{
-		isEnable = false;
+		IsEnable = false;
 		mario->UpMoney();
 		if (type == COIN_TYPE_GOLD_BOX)
 			mario->UpPoints(50);
@@ -66,7 +66,7 @@ void CCoin::CalcPotentialCollisionWithMario()
 
 void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	if (!isEnable)
+	if (!IsEnable)
 		l = t = r = b = 0;
 	else
 	{

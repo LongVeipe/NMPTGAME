@@ -404,6 +404,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					{
 						if (this->state == MARIO_STATE_BEND_DOWN)
 						{
+							//IsEnteringDrain = true;
 							CPlayScene* scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 							scene->TransferZone(p);
 						}
@@ -951,7 +952,7 @@ void CMario::SetState(int _state)
 {
 	if (IsLookingUp)
 		IsLookingUp = false;
-	if (IsDucking)
+	if (IsDucking && _state != MARIO_STATE_IDLE)
 		IsDucking = false;
 	if (this->state == MARIO_STATE_DIE)
 		return;

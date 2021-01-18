@@ -302,6 +302,7 @@ void CIntroScene::Update(DWORD dt)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
+
 	//DebugOut(L"isFlying: %d \n", mario->IsFlying);
 }
 void CIntroScene::Unload()

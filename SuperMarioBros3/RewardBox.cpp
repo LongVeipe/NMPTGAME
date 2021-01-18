@@ -77,6 +77,11 @@ void CRewardBox::Render()
 		animation_set->at(ani)->Render(x, y);
 }
 
+void CRewardBox::UpdateFlag()
+{
+	if (isHiding && GetTickCount64() - hide_start > REWARD_HIDING_TIME && reward->IsEnable)
+		isHiding = false;
+}
 void CRewardBox::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	//DebugOut(L"[INFO] Update at x: %f, y: %f \n", x, y);
@@ -98,7 +103,7 @@ void CRewardBox::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		}
 
 	}
-
+	UpdateFlag();
 	CalculateBeSwingedTail();
 	if (type == REWARD_BOX_TYPE_GOLD)
 		Update_GoldBox(coObjects);
@@ -206,6 +211,8 @@ void CRewardBox::BeAttacked()
 
 void CRewardBox::CreateReward()
 {
+	if (reward)
+		return;
 	switch (rewardType)
 	{
 	case REWARD_BOX_TYPE_REWARD_COIN:
@@ -245,4 +252,10 @@ void CRewardBox::SetState(int _state)
 		vy = -REWARD_BOX_JUMP_SPEED_Y;
 		break;
 	}
+}
+
+void CRewardBox::Hide()
+{
+	isHiding = true;
+	hide_start = GetTickCount64();
 }

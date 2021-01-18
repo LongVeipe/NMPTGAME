@@ -75,7 +75,7 @@ void CSwitchBlock::HideGoldBox(vector<LPGAMEOBJECT>* coObjects)
 				if (box->isEnable && box->GetRewardType() == REWARD_BOX_TYPE_REWARD_COIN)
 				{
 
-					box->isHiding = true;
+					box->Hide();
 					box->CreateReward();
 				}
 			}
