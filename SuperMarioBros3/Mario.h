@@ -254,7 +254,7 @@ public:
 
 	void SetState(int state);
 	void SetLevel(int l) { level = l; }
-	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
+	void StartUntouchable() { untouchable = 1; untouchable_start =(DWORD) GetTickCount64(); }
 	void SetJumpStack(int _num) { jumpStack = _num; }
 
 

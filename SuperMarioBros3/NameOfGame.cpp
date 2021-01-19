@@ -13,6 +13,7 @@ CNameOfGame::CNameOfGame()
 	ny = 1;
 	isFinish = false;
 	IsEnable = false;
+	shake_start = (DWORD)0;
 }
 void CNameOfGame::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
@@ -35,7 +36,7 @@ void CNameOfGame::Update(DWORD dt)
 			{
 				// v?a b? kéo xu?ng
 				isShaking = true;
-				shake_start = GetTickCount64();
+				shake_start = (DWORD)GetTickCount64();
 				isReadyToShake = false;
 				y = 0;
 			}
@@ -83,21 +84,21 @@ void CNameOfGame::Render()
 void CNameOfGame::Shake()
 {
 	if (y >= 0 && y < 1 && ny >0)
-		y += 0.4;
+		y += 0.4f;
 	else if (y >= 1)
 	{
-		y -= 0.4;
+		y -= 0.4f;
 		ny = -1;
 	}
 	else if (y < 1 && y > 0 && ny < 0)
 	{
-		y -= 0.4;
+		y -= 0.4f;
 		if (y < 0)
 			y = 0;
 	}
 	else if (y == 0)
 	{
 		ny = 1;
-		y += 0.4;
+		y += 0.4f;
 	}
 }

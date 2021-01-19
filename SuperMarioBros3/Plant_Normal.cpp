@@ -123,11 +123,11 @@ void CPlant_Normal::SetState(int _state)
 		break;
 	case PLANT_NORMAL_STATE_ATTACKING:
 		vy = 0;
-		this->attacking_start = GetTickCount64();
+		this->attacking_start = (DWORD)GetTickCount64();
 		break;
 	case PLANT_NORMAL_STATE_SLEEPING:
 		vy = 0;
-		this->sleep_start = GetTickCount64();
+		this->sleep_start =(DWORD) GetTickCount64();
 		break;
 	}
 }

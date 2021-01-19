@@ -316,7 +316,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							IsHolding = true;
 							koopa->IsBeingHeld = true;
 							koopa->SetHolder(this);
-							koopa->SetState(KOOPA_SMALL_STATE_IDLE);
+							//koopa->SetState(KOOPA_SMALL_STATE_IDLE);
 							IsReadyHolding = false;
 						}
 						else

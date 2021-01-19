@@ -9,7 +9,7 @@
 
 #define NAMEOFGAME_HEIGHT		187
 
-#define NAMEOFGAME_SPEED_Y		0.4
+#define NAMEOFGAME_SPEED_Y		0.4f
 
 #define NAMEOFGAME_SHAKING_TIME	1000
 class CNameOfGame: public CGameObject

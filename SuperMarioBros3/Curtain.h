@@ -3,7 +3,7 @@
 #include "Sprites.h"
 
 #define CURTAIN_SPRITE_ID	20001
-#define CURTAIN_SPEED_Y		0.1
+#define CURTAIN_SPEED_Y		0.1f
 
 #define CURTAIN_HEIGHT		187
 class CCurtain: public CGameObject

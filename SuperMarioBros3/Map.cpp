@@ -16,6 +16,7 @@ Map::Map(int _idMap, int _tileWidth, int _tileHeight, int _tRTileSet, int	_tCTil
 	this->TileWidth = _tileWidth;
 	this->TotalTiles = _totalTiles;
 	this->MapHeight = this->MapWidth = 0;
+	Matrix = nullptr;
 }
 Map::~Map()
 {

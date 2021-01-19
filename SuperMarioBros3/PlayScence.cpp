@@ -139,7 +139,7 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	int ani_id = atoi(tokens[0].c_str());
-	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	for (unsigned int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i+1].c_str());
@@ -160,7 +160,7 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimations *animations = CAnimations::GetInstance();
 
-	for (int i = 1; i < tokens.size(); i++)
+	for (unsigned int i = 1; i < tokens.size(); i++)
 	{
 		int ani_id = atoi(tokens[i].c_str());
 		
@@ -179,8 +179,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
+	float x =(float) atof(tokens[1].c_str());
+	float y = (float)atof(tokens[2].c_str());
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
@@ -217,26 +217,26 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_KOOPA_SMALL:
 	{
-		float typeKoopa = atof(tokens[4].c_str());
+		int typeKoopa = atoi(tokens[4].c_str());
 		obj = new CKoopa_Small(x, y, typeKoopa);
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA:
 	{
-		float typeGoomba = atof(tokens[4].c_str());
+		int typeGoomba = atoi(tokens[4].c_str());
 		obj = new CGoomba(x, y, typeGoomba);
 		break;
 	}
 	case OBJECT_TYPE_PLANT_FIRE:
 	{
-		float limit_y = atof(tokens[4].c_str());
+		float limit_y =(float) atof(tokens[4].c_str());
 		int type = atoi(tokens[5].c_str());
 		obj = new CPlant_Fire(x, y, limit_y, type);
 		break;
 	}
 	case OBJECT_TYPE_PLANT_NORMAL:
 	{
-		float limit_y = atof(tokens[4].c_str());
+		float limit_y = (float)atof(tokens[4].c_str());
 		int type = atoi(tokens[5].c_str());
 		obj = new CPlant_Normal(x, y, limit_y, type);
 		break;
@@ -253,11 +253,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_PORTAL:
 	{
-		float r = atof(tokens[4].c_str());
-		float b = atof(tokens[5].c_str());
+		float r =(float) atof(tokens[4].c_str());
+		float b = (float)atof(tokens[5].c_str());
 		int targetZone = atoi(tokens[6].c_str());
-		float targetX = atof(tokens[7].c_str());
-		float targetY = atof(tokens[8].c_str());
+		float targetX =(float) atof(tokens[7].c_str());
+		float targetY =(float) atof(tokens[8].c_str());
 		int type = atoi(tokens[9].c_str());
 		obj = new CPortal(x, y, r, b, targetZone, targetX, targetY, type);
 	}
@@ -380,17 +380,17 @@ void CPlayScene::SetCamera()
 	zone->GetZone(lZone, tZone, rZone, bZone);
 	int sWidth = game->GetScreenWidth();
 	if (cx >rZone  - sWidth / 2)
-		cx = rZone - sWidth;
+		cx = float(rZone - sWidth);
 	else if (cx < lZone + sWidth / 2)
-		cx = lZone;
+		cx = (float)lZone;
 	else
 		cx -= sWidth / 2;
 	//cy
 	int sHeight = game->GetScreenHeight();
 	if (cy < tZone + sHeight / 2)
-		cy = tZone;
+		cy = (float)tZone;
 	else if (cy > bZone - sHeight / 2)
-		cy = bZone - sHeight;
+		cy =(float) (bZone - sHeight);
 	else
 		cy -= sHeight / 2;
 	if (!player->IsSwingTail)
@@ -400,7 +400,7 @@ void CPlayScene::Render()
 {
 	if (map)
 		this->map->Render();
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Render();
 	}
@@ -416,7 +416,7 @@ void CPlayScene::Unload()
 {
 	if(player)
 		CBackUp::GetInstance()->BackUpMario(player);
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 		delete objects[i];
 	
 	objects.clear();

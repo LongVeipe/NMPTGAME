@@ -7,6 +7,7 @@
 CBullet_Mario::CBullet_Mario(float _x, float _y) :CBullet(_x,_y)
 {
 	state = BULLET_STATE_FLYING;
+	StartExplode_time = (DWORD)0;
 }
 
 
@@ -97,7 +98,7 @@ void CBullet_Mario::SetState(int _state)
 	{
 	case BULLET_STATE_EXPLODING:
 		vx = vy = 0;
-		StartExplode_time = GetTickCount64();
+		StartExplode_time =(DWORD) GetTickCount64();
 		break;
 	}
 }

@@ -14,6 +14,7 @@ CLifeUp::CLifeUp(float _x, float _y)
 	this->y = _y;
 	this->start_y = _y;
 	IsEnable = true;
+	IsTouchingGround = false;
 }
 void CLifeUp::Render()
 {

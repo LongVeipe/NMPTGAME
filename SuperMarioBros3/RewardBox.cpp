@@ -257,5 +257,5 @@ void CRewardBox::SetState(int _state)
 void CRewardBox::Hide()
 {
 	isHiding = true;
-	hide_start = GetTickCount64();
+	hide_start = (DWORD)GetTickCount64();
 }

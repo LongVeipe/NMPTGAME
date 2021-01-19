@@ -21,7 +21,7 @@ private:
 	float start_y;
 	void CalcPotentialCollisionWithMario();
 public:
-	bool IsTouchingGround;
+	bool IsTouchingGround = false;
 	CLifeUp(float _x, float _y);
 	virtual void Render();
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);

@@ -12,18 +12,18 @@
 class CIntroScene: public CScene
 {
 private:
-	CIntroSceneBackground* background;
-	CCurtain* curtain;
+	CIntroSceneBackground* background = nullptr;
+	CCurtain* curtain = nullptr;
 	vector<LPGAMEOBJECT> objects;
-	CMario* mario;
-	CMario* luigi;
-	CGoomba* goomba;
-	CKoopa_Small* greenTurtoise;
-	CStar* star;
-	CReward_LevelUp* mushroom;
-	CReward_LevelUp* leaf;
+	CMario* mario = nullptr;
+	CMario* luigi = nullptr;
+	CGoomba* goomba = nullptr;
+	CKoopa_Small* greenTurtoise = nullptr;
+	CStar* star = nullptr;
+	CReward_LevelUp* mushroom = nullptr;
+	CReward_LevelUp* leaf = nullptr;
 	LPSPRITE bigBush = nullptr;
-	CMenuIntro* menu;
+	CMenuIntro* menu = nullptr;
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

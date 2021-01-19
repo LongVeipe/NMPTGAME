@@ -37,6 +37,7 @@ using namespace std;
 CIntroScene::CIntroScene(int id, LPCWSTR filePath): CScene(id, filePath)
 {
 	key_handler = new CIntroScenceKeyHandler(this);
+
 }
 
 void CIntroScene::_ParseSection_TEXTURES(string line)
@@ -86,7 +87,7 @@ void CIntroScene::_ParseSection_ANIMATIONS(string line)
 	LPANIMATION ani = new CAnimation();
 
 	int ani_id = atoi(tokens[0].c_str());
-	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	for (unsigned int i = 1; i < tokens.size(); i += 2)
 	{
 		int sprite_id = atoi(tokens[i].c_str());
 		int frame_time = atoi(tokens[i + 1].c_str());
@@ -107,7 +108,7 @@ void CIntroScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimations* animations = CAnimations::GetInstance();
 
-	for (int i = 1; i < tokens.size(); i++)
+	for (unsigned int i = 1; i < tokens.size(); i++)
 	{
 		int ani_id = atoi(tokens[i].c_str());
 
@@ -126,8 +127,8 @@ void CIntroScene::_ParseSection_OBJECTS(string line)
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
 	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
+	float x =(float) atof(tokens[1].c_str());
+	float y =(float) atof(tokens[2].c_str());
 
 	int ani_set_id = atoi(tokens[3].c_str());
 
@@ -179,7 +180,7 @@ void CIntroScene::_ParseSection_OBJECTS(string line)
 		break;
 	case OBJECT_TYPE_GOOMBA:
 	{
-		float typeGoomba = atof(tokens[4].c_str());
+		int typeGoomba = atoi(tokens[4].c_str());
 		obj = new CGoomba(x, y, typeGoomba);
 		goomba = (CGoomba*)obj;
 		goomba->SetState(GOOMBA_STATE_IDLE);
@@ -187,7 +188,7 @@ void CIntroScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_KOOPA:
 	{
-		float typeKoopa = atof(tokens[4].c_str());
+		int typeKoopa = atoi(tokens[4].c_str());
 		obj = new CKoopa_Small(x, y, typeKoopa);
 		greenTurtoise = (CKoopa_Small*)obj;
 		break;
@@ -212,7 +213,8 @@ void CIntroScene::_ParseSection_OBJECTS(string line)
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
 	obj->SetAnimationSet(ani_set);
-	obj->IsEnable = false;
+	if(obj != nullptr)
+		obj->IsEnable = false;
 	objects.push_back(obj);
 }
 
@@ -307,7 +309,7 @@ void CIntroScene::Update(DWORD dt)
 }
 void CIntroScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
+	for (unsigned int i = 0; i < objects.size(); i++)
 		delete objects[i];
 
 	objects.clear();

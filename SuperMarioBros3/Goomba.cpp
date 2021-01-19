@@ -14,7 +14,7 @@ CGoomba::CGoomba(float _x, float _y, int _type):CEnemy(_x, _y, _type)
 	}
 	SetState(GOOMBA_STATE_WALKING);
 	this->PARA_jumpStack = 0;
-	loop_start == GetTickCount64();
+	loop_start = (DWORD)GetTickCount64();
 }
 CGoomba::~CGoomba()
 {
@@ -83,7 +83,7 @@ void CGoomba::Update_FlyingRed()
 		if ((GetTickCount64() - loop_start) > GOOMBA_TIME_PARA_OPERATION_LOOP && PARA_jumpStack == 0 )
 		{
 			SetState(GOOMBA_STATE_JUMPING);
-			loop_start = GetTickCount64();
+			loop_start = (DWORD)GetTickCount64();
 			PARA_jumpStack++;
 		}
 		else if (PARA_jumpStack > 0 && PARA_jumpStack < GOOMBA_PARA_MAX_JUMP_STACK)
@@ -312,7 +312,7 @@ void CGoomba::SetState(int state)
 }
 void CGoomba::SetDeadTime()
 {
-	this->DeadTime = GetTickCount64();
+	this->DeadTime =(DWORD) GetTickCount64();
 }
 void CGoomba::CalculateBeSwingedTail()
 {
@@ -376,6 +376,6 @@ void CGoomba::Reset()
 	}
 	SetState(GOOMBA_STATE_WALKING);
 	this->PARA_jumpStack = 0;
-	loop_start == GetTickCount64();
+	loop_start =(DWORD) GetTickCount64();
 	IsEnable = false;
 }

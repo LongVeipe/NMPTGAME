@@ -7,11 +7,11 @@
 #define KOOPA_BE_KNOCKED_DOWN_SPEED_X 0.04f
 #define KOOPA_JUMP_SPEED_Y		0.28f
 #define KOOPA_GRAVITY			0.001f
-#define KOOPA_MAX_FALL_SPEED	0.12
+#define KOOPA_MAX_FALL_SPEED	0.12f
 #define KOOPA_WALKING_SPEED 0.032f;
-#define KOOPA_SPEED_TURTOISESHELL_X	0.2
-#define KOOPA_SPEED_TURTOISESHELL_DEFLECT_X	0.08
-#define KOOPA_SPEED_TURTOISESHELL_DEFLECT_Y	0.1
+#define KOOPA_SPEED_TURTOISESHELL_X	0.2f
+#define KOOPA_SPEED_TURTOISESHELL_DEFLECT_X	0.08f
+#define KOOPA_SPEED_TURTOISESHELL_DEFLECT_Y	0.1f
 
 #define KOOPA_SMALL_BBOX_WIDTH 16
 #define KOOPA_SMALL_BBOX_HEIGHT 26
@@ -34,25 +34,30 @@
 #define KOOPA_SMALL_STATE_RUNNING_RIGHT		500
 #define KOOPA_SMALL_STATE_RUNNING_LEFT		600
 #define KOOPA_SMALL_STATE_BE_KNOCKED_DOWN	700
+#define KOOPA_SMALL_STATE_DIE				800
 
 #define KOOPA_SMALL_ANI_GREEN_WALKING_LEFT						0
 #define KOOPA_SMALL_ANI_GREEN_WALKING_RIGHT						1
 #define KOOPA_SMALL_ANI_GREEN_TURTOISESHELL_IDLE				2
 #define KOOPA_SMALL_ANI_GREEN_TURTOISESHELL_WAGGLE				3
 #define KOOPA_SMALL_ANI_GREEN_TURTOISESHELL_RUNNING				4
-#define KOOPA_SMALL_ANI_GREEN_TURTOISESHELL_BE_KNOCKED_DOWN		5
-#define KOOPA_SMALL_ANI_GREEN_TURTOISESHELL_WAGGLE_2			6
+#define KOOPA_SMALL_ANI_GREEN_BE_KNOCKED_DOWN_IDLE				5
+#define KOOPA_SMALL_ANI_GREEN_BE_KNOCKED_DOWN_WAGGLE			6
+#define KOOPA_SMALL_ANI_GREEN_BE_KNOCKED_DOWN_RUNNING			7
 
-#define KOOPA_SMALL_ANI_RED_WALKING_LEFT						7
-#define KOOPA_SMALL_ANI_RED_WALKING_RIGHT						8
-#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_IDLE					9
-#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_WAGGLE				10
-#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_RUNNING				11
-#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_BE_KNOCKED_DOWN		12
-#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_WAGGLE_2				13
 
-#define KOOPA_RED_SMALL_TURTOISESHELL_ANI_IDLE 0
-#define KOOPA_RED_SMALL_ANI_DIE 2
+#define KOOPA_SMALL_ANI_RED_WALKING_LEFT						8
+#define KOOPA_SMALL_ANI_RED_WALKING_RIGHT						9
+#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_IDLE					10
+#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_WAGGLE				11
+#define KOOPA_SMALL_ANI_RED_TURTOISESHELL_RUNNING				12
+#define KOOPA_SMALL_ANI_RED_BE_KNOCKED_DOWN_IDLE				13
+#define KOOPA_SMALL_ANI_RED_BE_KNOCKED_DOWN_WAGGLE				14
+#define KOOPA_SMALL_ANI_RED_BE_KNOCKED_DOWN_RUNNING				15
+
+
+#define KOOPA_SMALL_IS_TURTOISESHELL_TIME		9000
+#define KOOPA_SMALL_WAGGLE_TIME				2500
 
 class CKoopa_Small: public CKoopas
 {
@@ -61,8 +66,12 @@ private:
 	CWing* rightWing;
 	CMario* holder;
 
+	DWORD isTurtoiseshell_start;
+	//DWORD waggle_start;
+
 public:
 
+	bool IsBeingKnockedDown;
 	bool IsBeingHeld;
 	bool IsWaggling;
 
@@ -76,6 +85,7 @@ public:
 
 
 	void Update_vy();
+	void UpdateFlag();
 	bool CalculateTurningAround(vector<LPGAMEOBJECT>* coObjects);
 	void TurnAround();
 	void Update_Wings();
@@ -84,13 +94,16 @@ public:
 	virtual void SetState(int state);
 	void SetHolder(CMario* _holder) { holder = _holder; }
 	int GetType() { return this->type; }
+	void SetType(int _type);
 
 	void BeHeld();
 	void BeKicked(int mnx);
+	void BeSwingTail(CMario*);
 	void CalculateBeSwingedTail();
 	void BeDamaged_Y();
-	void BeDamaged_X(CGameObject* obj);
 
 	virtual void Reset();
+
+	bool IsOnTheLeftOfMario();
 };
 
