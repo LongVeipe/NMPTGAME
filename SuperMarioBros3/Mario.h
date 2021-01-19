@@ -223,6 +223,7 @@ class CMario : public CGameObject
 public: 
 	bool IsReadyJump;
 	bool IsReadyHolding;
+	bool IsReadyDucking;
 
 
 	bool IsTouchingGround;
@@ -291,4 +292,6 @@ public:
 	bool IsRaccoonReadyFly();
 	bool IsUntouchable() { if (untouchable == 1) return true; return false; }
 	void UpLevel();
+	void Duck();
+	void StandUp();
 };

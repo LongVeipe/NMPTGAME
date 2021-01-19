@@ -506,7 +506,7 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 	switch (KeyCode)
 	{
 	case DIK_DOWN:
-		mario->SetState(MARIO_STATE_IDLE);
+		mario->StandUp();
 		break;
 	case DIK_S:
 		mario->SetJumpStack(MARIO_MAX_JUMPIMG_STACKS);
@@ -523,7 +523,6 @@ void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
 		if (mario->IsHolding)
 			mario->StartKick();
 		mario->IsHolding = false;
-
 		break;
 	}
 }
@@ -603,5 +602,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		mario->IsReadyHolding = true;
 	}
-		
+	if (game->IsKeyDown(DIK_DOWN))
+	{
+		if(mario->GetLevel() == MARIO_LEVEL_BIG || mario->GetLevel() == MARIO_LEVEL_RACCOON)
+			mario->IsReadyDucking = true;
+	}
 }

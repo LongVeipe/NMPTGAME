@@ -261,7 +261,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 					break;
 				}
 				}
-				
+				if (IsReadyDucking)
+				{
+					Duck();
+				}
 			}
 			else if(dynamic_cast<CRewardBox*>(e->obj))
 			{
@@ -376,11 +379,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					if (e->ny > 0)
 					{
-						IsDucking = true;
 						SetState(MARIO_STATE_IDLE);
 						ax = 0;
 						vx = 0;
-						y = y + MARIO_BIG_BBOX_HEIGHT - MARIO_BBOX_DUCKING_HEIGHT;
+						Duck();
 					}
 				}
 			}
@@ -809,6 +811,13 @@ void CMario::Render()
 			ani = MARIO_ANI_RACCOON_KICKING_RIGHT;
 		else ani = MARIO_ANI_RACCOON_KICKING_LEFT;
 	}
+	else if (IsDucking)
+	{
+		if (nx > 0)
+			ani = MARIO_ANI_RACCOON_DUCKING_RIGHT;
+		else
+			ani = MARIO_ANI_RACCOON_DUCKING_LEFT;
+	}
 	else if (IsSwingTail)
 	{
 		if (nx > 0)
@@ -953,7 +962,7 @@ void CMario::SetState(int _state)
 	if (IsLookingUp)
 		IsLookingUp = false;
 	if (IsDucking && _state != MARIO_STATE_IDLE)
-		IsDucking = false;
+		StandUp();
 	if (this->state == MARIO_STATE_DIE)
 		return;
 	CGameObject::SetState(_state);
@@ -1212,5 +1221,23 @@ void CMario::AddCard(int  card)
 			typeCard[i] = card;
 			return;
 		}
+	}
+}
+void CMario::Duck()
+{
+	if(!IsDucking && state == MARIO_STATE_IDLE)
+		if (level == MARIO_LEVEL_RACCOON || level == MARIO_LEVEL_BIG)
+		{
+			IsDucking = true;
+			y = y + MARIO_BIG_BBOX_HEIGHT - MARIO_BBOX_DUCKING_HEIGHT;
+		}
+}
+void CMario::StandUp()
+{
+	if (IsDucking)
+	{
+		IsDucking = false;
+		IsReadyDucking = false;
+		y = y - MARIO_BIG_BBOX_HEIGHT + MARIO_BBOX_DUCKING_HEIGHT;
 	}
 }
