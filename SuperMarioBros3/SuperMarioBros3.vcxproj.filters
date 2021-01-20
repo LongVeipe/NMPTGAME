@@ -136,6 +136,9 @@
     <ClCompile Include="PlayScence.cpp">
       <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="EndSceneNotification.cpp">
+      <Filter>HeaderAndSource\Scene\PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -271,6 +274,9 @@
       <Filter>HeaderAndSource\Reward</Filter>
     </ClInclude>
     <ClInclude Include="PlayScence.h">
+      <Filter>HeaderAndSource\Scene\PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="EndSceneNotification.h">
       <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClInclude>
   </ItemGroup>

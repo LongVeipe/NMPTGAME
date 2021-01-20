@@ -22,7 +22,7 @@ void CPortal::Render()
 void CPortal::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	l = x ;
-	t = y -0.1;
+	t = y -0.1f;
 	r = x + width;
 	b = y + height;
 }

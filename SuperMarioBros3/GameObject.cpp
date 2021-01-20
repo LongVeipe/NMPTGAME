@@ -20,6 +20,7 @@ CGameObject::CGameObject()
 	nx = 1;	
 	ny = 0;
 	ax = ay = 0;
+	animation_set = nullptr;
 }
 
 void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
@@ -189,8 +190,8 @@ bool CGameObject::IsInCamera()
 	CGame* game = CGame::GetInstance();
 	float cx, cy;
 	game->GetCamPos(cx, cy);
-	float scrW = game->GetScreenWidth();
-	float scrH = game->GetScreenHeight();
+	int scrW = game->GetScreenWidth();
+	int scrH = game->GetScreenHeight();
 	int tH = ((CPlayScene*)(game->GetCurrentScene()))->GetMap()->GetTileHeight();
 	int tW = ((CPlayScene*)(game->GetCurrentScene()))->GetMap()->GetTileWidth();
 	if (this->x <cx - 2 * tW || this->y<cy - 2 * tH || this->x > cx + scrW + 2 * tW || this->y >cy + scrH + 2 * tH)

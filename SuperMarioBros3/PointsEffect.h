@@ -24,8 +24,8 @@ using namespace std;
 #define POINTS_8000		8000
 #define POINTS_1VP		0
 
-#define	POINTS_FLYING_SPEED_Y	0.08
-#define POINTS_GRAVITY			0.0001
+#define	POINTS_FLYING_SPEED_Y	0.08f
+#define POINTS_GRAVITY			0.0001f
 
 
 class CPointsEffect: public CGameObject

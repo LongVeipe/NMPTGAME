@@ -17,6 +17,7 @@
 #include "RewardBox.h"
 #include "Plant_Normal.h"
 #include "Item.h"
+#include "EndSceneNotification.h"
 using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
@@ -350,7 +351,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 							koopa->vy = -KOOPA_SPEED_TURTOISESHELL_DEFLECT_Y;
 							koopa->vx = -KOOPA_SPEED_TURTOISESHELL_DEFLECT_X;
 							IsBonk = true;
-							bonk_start = GetTickCount64();
+							bonk_start =(DWORD) GetTickCount64();
 							SetState(MARIO_STATE_IDLE);
 						}
 						else if (untouchable == 0)
@@ -393,6 +394,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					item->BeTaken();
 					AddCard(item->GetType());
+					CPlayScene* s = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+					CEndSceneNotification* noti = new CEndSceneNotification(item->x - 3 * ITEM_BBOX_WIDTH, item->y - 4 * ITEM_BBOX_HEIGHT);
+					s->SetNoti(noti);
 				}
 			}
 			else if (dynamic_cast<CPortal*>(e->obj))
@@ -1091,7 +1095,7 @@ void CMario::StartThrowFire()
 		bullet->vx =  this->nx * BULLET_MARIO_SPEED_X;
 		bullet->vy = BULLET_MARIO_FIRST_SPEED_Y;
 		Bullets.push_back(bullet);
-		throwFire_start = GetTickCount64();
+		throwFire_start = (DWORD)GetTickCount64();
 	}
 }
 void CMario::upImminent()
@@ -1108,7 +1112,7 @@ void CMario::upImminent()
 					imminentStack = MARIO_MAX_IMMINENT_STACKS;
 					IsRunning = true;
 				}
-				changeImminent_start = GetTickCount64();
+				changeImminent_start = (DWORD)GetTickCount64();
 			}
 		}
 	}
@@ -1128,7 +1132,7 @@ void CMario::downImminent()
 		imminentStack--;
 		if (imminentStack < 0)
 			imminentStack = 0;
-		changeImminent_start = GetTickCount64();
+		changeImminent_start = (DWORD)GetTickCount64();
 	}
 	IsRunning = false;
 }
@@ -1137,7 +1141,7 @@ void CMario::StartSwingTail()
 	if (GetTickCount64() - swingTail_start >= MARIO_SWING_TAIL_TIME)
 	{
 		IsSwingTail = true;
-		swingTail_start = GetTickCount64();
+		swingTail_start = (DWORD)GetTickCount64();
 		StageOfSwingTail = 0;
 		if (nx > 0)
 			x -= 2;
@@ -1147,7 +1151,7 @@ void CMario::StartSwingTail()
 }
 void CMario::BeDamaged()
 {
-	transform_start = GetTickCount64();
+	transform_start = (DWORD)GetTickCount64();
 	switch (level)
 	{
 	case MARIO_LEVEL_SMALL:
@@ -1172,7 +1176,7 @@ void CMario::BeDamaged()
 void CMario::UpLevel()
 {
 	//SetState(MARIO_STATE_IDLE);
-	transform_start = GetTickCount64();
+	transform_start = (DWORD)GetTickCount64();
 	CScene* s = CGame::GetInstance()->GetCurrentScene();
 
 	switch (level)
@@ -1194,12 +1198,12 @@ void CMario::UpLevel()
 void CMario::SlowFall()
 {
 		IsFallingSlowly = true;
-		fallSlowly_start = GetTickCount64();
+		fallSlowly_start = (DWORD)GetTickCount64();
 }
 void CMario::RaccoonStartFlyHigh()
 {
 	IsRaccoonCanFlyHigh = true;
-	canFlyHigh_start = GetTickCount64();
+	canFlyHigh_start = (DWORD)GetTickCount64();
 }
 bool CMario::IsRaccoonReadyFly()
 {
@@ -1210,7 +1214,7 @@ bool CMario::IsRaccoonReadyFly()
 void CMario::StartKick()
 {
 	IsKicking = true;
-	kick_start = GetTickCount64();
+	kick_start = (DWORD)GetTickCount64();
 }
 void CMario::AddCard(int  card)
 {

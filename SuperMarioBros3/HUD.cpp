@@ -26,6 +26,7 @@ CHUD::CHUD(int _typeS)
 	money = 0;
 	points = 0;
 	remainTime = COUNT_DOWN_TIME_DEFAULT/1000;
+	animation_set = nullptr;
 }
 CHUD::~CHUD()
 {
@@ -60,7 +61,7 @@ void CHUD::RenderWorldId()
 {
 	string strWorldId = to_string(idWorld);
 	vector<LPSPRITE> spritesId = font->StringToSprites(strWorldId);
-	for (int i = 1; i <= strWorldId.size(); i++)
+	for (unsigned int i = 1; i <= strWorldId.size(); i++)
 	{
 		spritesId.at(strWorldId.size() - i)->Draw(x + HUD_ID_X - i * FONT_WIDTH, y + HUD_ID_Y);
 	}
@@ -106,7 +107,7 @@ void CHUD::RenderMoney(CSprites* sprites)
 {
 	string strMoney = to_string(money);
 	vector<LPSPRITE> spritesMoney = font->StringToSprites(strMoney);
-	for (int i = 1; i <= strMoney.size(); i++)
+	for (unsigned int i = 1; i <= strMoney.size(); i++)
 	{
 		spritesMoney.at(strMoney.size() - i)->Draw(x + HUD_MONEY_X - i * FONT_WIDTH, y + HUD_MONEY_Y);
 	}
@@ -132,7 +133,7 @@ void CHUD::RenderLife()
 {
 	string strLife = to_string(life);
 	vector<LPSPRITE> spritesLife = font->StringToSprites(strLife);
-	for (int i = 1; i <= strLife.size(); i++)
+	for (unsigned int i = 1; i <= strLife.size(); i++)
 	{
 		spritesLife.at(strLife.size() - i)->Draw(x + HUD_LIFE_X - i * FONT_WIDTH, y + HUD_LIFE_Y);
 	}

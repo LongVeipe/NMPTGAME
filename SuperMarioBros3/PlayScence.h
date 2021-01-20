@@ -11,6 +11,8 @@
 #include "HUD.h"
 #include "Font.h"
 #include "Portal.h"
+#include "Item.h"
+#include "EndSceneNotification.h"
 
 #define COUNT_DOWN_TIME_DEFAULT			300000
 
@@ -24,7 +26,8 @@ protected:
 	CHUD* hud;
 	DWORD remainTime;
 	int idZone = 1;
-	int idWorldMap;
+	int idWorldMap = 1;
+	CEndSceneNotification* noti = nullptr;
 
 
 	void _ParseSection_TEXTURES(string line);
@@ -50,6 +53,7 @@ public:
 	CHUD* GetHUD() { return hud; }
 	DWORD GetRemainTime() { return remainTime; }
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }
+	void SetNoti(CEndSceneNotification* n) { noti = n; }
 	void TransferZone(CPortal* portal);
 	
 	//friend class CPlayScenceKeyHandler;

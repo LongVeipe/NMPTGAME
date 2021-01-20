@@ -152,7 +152,7 @@ void CMarioWM::BePrevented()
 {
 	SetState(MARIOWM_STATE_IDLE);
 	IsBeingPrevented = true;
-	bePrevented_start = GetTickCount64();
+	bePrevented_start =(DWORD) GetTickCount64();
 }
 
 void CMarioWM::AddCard(int  card)

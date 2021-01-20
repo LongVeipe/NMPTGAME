@@ -13,7 +13,7 @@
 #define LIFEUP_GRAVITY 0.0033f
 #define LIFEUP_MAX_FALLING_SPEED	0.5f
 #define LIFEUP_WALKING_SPEED	0.07f
-#define LIFEUP_JUMP_SPEED_Y	0.01
+#define LIFEUP_JUMP_SPEED_Y	0.01f
 
 class CLifeUp: public CGameObject
 {

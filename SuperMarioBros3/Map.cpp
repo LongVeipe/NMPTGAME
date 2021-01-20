@@ -71,8 +71,8 @@ void Map::Render()
 	float cx, cy;
 	CGame* game = CGame::GetInstance();
 	game->GetCamPos(cx, cy);
-	int startRow, startCol, limitRow, limitCol;
-	startCol = cx / TileWidth;
+	int  startCol, limitCol;
+	startCol = (int)(cx / TileWidth);
 	limitCol = startCol + (game->GetScreenWidth() / TileWidth) + 2;
 
 	if (limitCol >= TotalColsOfMap) limitCol = TotalColsOfMap - 1;
@@ -82,7 +82,7 @@ void Map::Render()
 		for (int r = 0; r < TotalRowsOfMap; r++)
 			for (int c = startCol; c < limitCol; c++)
 			{
-				Tiles[Matrix[r][c] - 1]->Draw(c * TileWidth, r * TileHeight - HUD_HEIGHT, 255);
+				Tiles[Matrix[r][c] - 1]->Draw(float(c * TileWidth), float(r * TileHeight - HUD_HEIGHT), 255);
 			}
 	}
 	else
@@ -90,7 +90,7 @@ void Map::Render()
 		for (int r = 0; r < TotalRowsOfMap; r++)
 			for (int c = startCol; c < limitCol; c++)
 			{
-				Tiles[Matrix[r][c] - 1]->Draw((c-1) * TileWidth, r * TileHeight, 255);
+				Tiles[Matrix[r][c] - 1]->Draw(float(c-1) * TileWidth, (float)r * TileHeight, 255);
 			}
 	}
 }

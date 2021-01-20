@@ -6,9 +6,9 @@
 #define STAR_BBOX_HEIGHT	16
 
 #define STAR_JUMP_SPEED_Y	0.4f
-#define STAR_SPEED_X		0.1
+#define STAR_SPEED_X		0.1f
 #define STAR_GRAVITY		0.0012f
-#define STAR_MAX_FALL_SPEED	0.1
+#define STAR_MAX_FALL_SPEED	0.1f
 
 #define STAR_STATE_JUMP_RIGHT	1
 

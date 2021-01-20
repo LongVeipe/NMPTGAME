@@ -48,8 +48,8 @@ public:
 	float x; 
 	float y;
 
-	float dx;	// dx = vx*dt
-	float dy;	// dy = vy*dt
+	float dx = 0;	// dx = vx*dt
+	float dy = 0;	// dy = vy*dt
 
 	float vx;
 	float vy;
@@ -59,9 +59,9 @@ public:
 
 	float ax, ay;
 
-	int state;
+	int state = 0;
 
-	DWORD dt; 
+	DWORD dt = 0; 
 
 	LPANIMATION_SET animation_set;
 

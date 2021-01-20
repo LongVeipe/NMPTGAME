@@ -80,8 +80,8 @@ void CKoopa_Small::Update_vy()
 	}
 	else
 	{
-		if (vy > 2.5*KOOPA_MAX_FALL_SPEED)
-			vy = 2.5*KOOPA_MAX_FALL_SPEED;
+		if (vy > 2.5f*KOOPA_MAX_FALL_SPEED)
+			vy = 2.5f*KOOPA_MAX_FALL_SPEED;
 	}
 }
 void CKoopa_Small::UpdateFlag()
@@ -484,7 +484,7 @@ void CKoopa_Small::SetType(int _type)
 {
 	CEnemy::SetType(_type);
 	if (_type == KOOPA_SMALL_TYPE_RED_TURTOISESHELL || _type == KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL)
-		isTurtoiseshell_start = GetTickCount64();
+		isTurtoiseshell_start =(DWORD) GetTickCount64();
 }
 
 void CKoopa_Small::BeHeld()

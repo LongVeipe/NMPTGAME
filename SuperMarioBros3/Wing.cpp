@@ -67,7 +67,7 @@ void CWing::SetState(int state)
 	if (state == WING_STATE_FLYING)
 	{
 		StageOfFlying = 1;
-		fly_start = GetTickCount64();
+		fly_start =(DWORD) GetTickCount64();
 	}
 }
 

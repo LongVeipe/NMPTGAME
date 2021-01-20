@@ -14,7 +14,7 @@
 
 #define ITEM_CHANGE_TYPE_TIME	100
 
-#define ITEM_SPEED_Y		0.15
+#define ITEM_SPEED_Y		0.15f
 
 class CItem: public CGameObject
 {

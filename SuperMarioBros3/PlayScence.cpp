@@ -396,6 +396,7 @@ void CPlayScene::SetCamera()
 	if (!player->IsSwingTail)
 		CGame::GetInstance()->SetCamPos(round(cx), round(cy));
 }
+
 void CPlayScene::Render()
 {
 	if (map)
@@ -407,6 +408,8 @@ void CPlayScene::Render()
 
 	hud->Render();
 	CPointsEffects::GetInstance()->Render();
+	if (noti)
+		noti->Render();
 }
 
 /*
@@ -427,6 +430,9 @@ void CPlayScene::Unload()
 
 	delete hud;
 	hud = nullptr;
+
+	delete noti;
+	noti = nullptr;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }

@@ -13,8 +13,8 @@ CBullet_Plant::CBullet_Plant(float _x, float _y, int angle) :CBullet(_x, _y)
 
 void CBullet_Plant::Calculate_vxvy(int angle)
 {
-	vx = cos(angle*PI/180) * BULLET_PLANT_SPEED;
-	vy = sin(angle*PI/180) * BULLET_PLANT_SPEED;
+	vx =(float) (cos(angle*PI/180) * BULLET_PLANT_SPEED);
+	vy =(float) (sin(angle*PI/180) * BULLET_PLANT_SPEED);
 }
 
 void CBullet_Plant::CalcPotentialCollisionWithMario()

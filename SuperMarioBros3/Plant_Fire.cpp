@@ -288,15 +288,15 @@ void CPlant_Fire::SetState(int _state)
 		break;
 	case PLANT_FIRE_STATE_SIGHTING:
 		vy = 0;
-		this->sight_start = GetTickCount64();
+		this->sight_start = (DWORD)GetTickCount64();
 		break;
 	case PLANT_FIRE_STATE_SHOOTING:
-		shoot_start = GetTickCount64();
+		shoot_start = (DWORD)GetTickCount64();
 		ShootBullet_Plant();
 		break;
 	case PLANT_FIRE_STATE_SLEEPING:
 		vy = 0;
-		this->sleep_start = GetTickCount64();
+		this->sleep_start = (DWORD)GetTickCount64();
 		break;
 	}
 }

@@ -55,17 +55,17 @@ class CHUD
 private:
 	int typeScene;
 	CFont* font;
-	float x;
-	float y;
+	float x =  0;
+	float y  = 0;
 	CMario* mario = nullptr;
 	CMarioWM* marioWM = nullptr;
 	int idWorld;
 	int typePlayer;
-	unsigned int money;
-	DWORD remainTime;
-	int Imminent;
-	unsigned int points;
-	unsigned int life;
+	unsigned int money = 0;
+	DWORD remainTime = 0;
+	int Imminent = 0;
+	unsigned int points =  0;
+	unsigned int life = 0;
 	int* typeCard;
 	LPANIMATION_SET animation_set;
 	
