@@ -681,7 +681,7 @@
 #ITEM
 8	2688	336	40000	2	17
 #== MARIO ==
-0	50.0	384	1	2	0
+0	1500.0	384	1	2	10
 #0	1500.0	0	1
 # --- SCENE PORTAL ----
 # type	l	t	ani_set	r	b	tgZone	tgX	tgY	type

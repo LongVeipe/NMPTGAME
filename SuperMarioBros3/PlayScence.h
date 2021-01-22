@@ -24,6 +24,7 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 	vector<CUnit*> listUnits;
+	vector<CEnemy*> listEnemies;
 	Map* map;
 	CHUD* hud;
 	DWORD remainTime;

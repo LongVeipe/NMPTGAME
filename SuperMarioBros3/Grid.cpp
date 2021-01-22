@@ -142,7 +142,7 @@ void CGrid::Get(float cam_x, float cam_y, vector<CUnit*>& listUnits)
 			CUnit* unit = cells[i][j];
 			while (unit != NULL)
 			{
-				if (unit->GetObj()->IsEnable)
+				if (unit->GetObj()->IsInCamera())
 					listUnits.push_back(unit);
 				unit = unit->next;
 			}

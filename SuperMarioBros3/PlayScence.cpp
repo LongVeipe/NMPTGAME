@@ -258,12 +258,14 @@ void CPlayScene::_ParseObjectsFromGrid(string line)
 	{
 		int typeKoopa = atoi(tokens[4].c_str());
 		obj = new CKoopa_Small(x, y, typeKoopa);
+		listEnemies.push_back((CKoopa_Small*)obj);
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA:
 	{
 		int typeGoomba = atoi(tokens[4].c_str());
 		obj = new CGoomba(x, y, typeGoomba);
+		listEnemies.push_back((CGoomba*)obj);
 		break;
 	}
 	case OBJECT_TYPE_PLANT_FIRE:
@@ -484,18 +486,26 @@ void CPlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	GetListUnitFromGrid();
 	vector<LPGAMEOBJECT> coObjects;
-	vector<LPGAMEOBJECT> coObjects2;
-	/*for (size_t i = 1; i < listUnits.size(); i++)
-		coObjects2.push_back(listUnits.at(i)->GetObj());*/
+	for (size_t i = 0; i < listUnits.size(); i++)
+		coObjects.push_back(listUnits.at(i)->GetObj());
 
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < listUnits.size(); i++)
 	{
-		coObjects.push_back(objects[i]);
+		LPGAMEOBJECT 
+			object = listUnits[i]->GetObj();
+		if (!dynamic_cast<CBrick*>(object))
+		{
+			object->Update(dt, &coObjects);
+
+				float newx, newy;
+			listUnits[i]->GetObj()->GetPosition(newx, newy);
+			listUnits[i]->Move(newx, newy);
+		}
 	}
-	for (size_t i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Update(dt, &coObjects);
-	}
+
+	for (size_t i = 0; i < listEnemies.size(); i++)
+		if (listEnemies[i]->IsInCamera() == false)
+			listEnemies[i]->Update(dt, &coObjects);
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
@@ -553,13 +563,10 @@ void CPlayScene::Render()
 {
 	if (map)
 		this->map->Render();
-	/*for (unsigned int i = 0; i < listUnits.size(); i++)
+
+	for (int i = listUnits.size()-1; i >= 0; i--)
 	{
 		listUnits[i]->GetObj()->Render();
-	}*/
-	for (unsigned int i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Render();
 	}
 
 	hud->Render();
@@ -606,6 +613,7 @@ void CPlayScene::TransferZone(CPortal* portal)
 }
 void CPlayScene::GetListUnitFromGrid()
 {
+	listUnits.clear();
 	float cx = 0, cy = 0;
 	CGame::GetInstance()->GetCamPos(cx, cy);
 	grid->Get(cx, cy, listUnits);

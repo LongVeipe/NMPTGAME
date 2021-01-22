@@ -191,10 +191,10 @@ bool CGameObject::IsInCamera()
 	float cx, cy;
 	game->GetCamPos(cx, cy);
 	int scrW = game->GetScreenWidth();
-	int scrH = game->GetScreenHeight();
-	int tH = ((CPlayScene*)(game->GetCurrentScene()))->GetMap()->GetTileHeight();
+	//int scrH = game->GetScreenHeight();
+	//int tH = ((CPlayScene*)(game->GetCurrentScene()))->GetMap()->GetTileHeight();
 	int tW = ((CPlayScene*)(game->GetCurrentScene()))->GetMap()->GetTileWidth();
-	if (this->x <cx - 2 * tW || this->y<cy - 2 * tH || this->x > cx + scrW + 2 * tW || this->y >cy + scrH + 2 * tH)
+	if (this->x <cx - 2 * tW || this->x > cx + scrW + 2 * tW )
 		return false;
 	return true;
 }
