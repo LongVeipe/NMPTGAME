@@ -24,7 +24,7 @@ CRewardBox::~CRewardBox()
 }
 void CRewardBox::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	if (!isEnable ||isHiding)
+	if (!isEnable || isHiding)
 	{
 		l = t = r = b = 0;
 		return;
@@ -72,8 +72,8 @@ void CRewardBox::Render()
 		else
 			reward->Render();
 	}
-	
-	if(!isHiding)
+
+	if (!isHiding)
 		animation_set->at(ani)->Render(x, y);
 }
 
@@ -85,7 +85,7 @@ void CRewardBox::UpdateFlag()
 void CRewardBox::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	//DebugOut(L"[INFO] Update at x: %f, y: %f \n", x, y);
-	if (isEmpty && state != REWARD_BOX_STATE_IDLE)
+	if ( state != REWARD_BOX_STATE_IDLE)
 	{
 		CGameObject::Update(dt, coObjects);
 
@@ -129,7 +129,7 @@ void CRewardBox::Update_GoldBox(vector<LPGAMEOBJECT>* coObjects)
 	{
 		CSwitchBlock* s = (CSwitchBlock*)reward;
 		s->CalcPotentialCollisionWithMario(coObjects);
-		
+
 	}
 }
 
@@ -152,7 +152,7 @@ void CRewardBox::CalculateBeSwingedTail()
 		ml -= MARIO_RACCOON_TAIL_BBOX_WIDTH;
 		mr += MARIO_RACCOON_TAIL_BBOX_WIDTH;
 		mt += MARIO_RACCOON_HEAD_BBOX_HEIGHT;
-		if (bb<mt || bt>mb || ml > br || mr < bl )
+		if (bb<mt || bt>mb || ml > br || mr < bl)
 			return;
 		if ((bl<ml && br>ml) || (bl < mr && mr < br))
 		{
@@ -174,8 +174,16 @@ void CRewardBox::BeAttacked()
 					CReward_LevelUp* lvUp = (CReward_LevelUp*)reward;
 					lvUp->SetState(REWARD_LEVEL_UP_STATE_JUMPING);
 				}
+				else if (rewardType == REWARD_BOX_TYPE_REWARD_COINS)
+				{
+					CCoin* coin = (CCoin*)reward;
+					coin->SetState(COIN_STATE_JUMPING);
+					coinStack--;
+				}
 				SetState(REWARD_BOX_STATE_JUMPING);
 				isEmpty = true;
+				if (rewardType == REWARD_BOX_TYPE_REWARD_COINS && coinStack > 0)
+					isEmpty = false;
 			}
 		}
 		else
@@ -211,12 +219,16 @@ void CRewardBox::BeAttacked()
 
 void CRewardBox::CreateReward()
 {
-	if (reward)
+	if (reward && rewardType != REWARD_BOX_TYPE_REWARD_COINS)
 		return;
 	switch (rewardType)
 	{
+	case REWARD_BOX_TYPE_REWARD_COINS:
+		reward = new CCoin(x + 3, y - 24);
+		reward->SetAnimationSet(CAnimationSets::GetInstance()->Get(COIN_ANI_SET_ID));
+		break;
 	case REWARD_BOX_TYPE_REWARD_COIN:
-		if(type == REWARD_BOX_TYPE_QUESTION)
+		if (type == REWARD_BOX_TYPE_QUESTION)
 			reward = new CCoin(x + 3, y - 24);
 		else
 		{

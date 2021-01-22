@@ -5,6 +5,7 @@
 #define REWARD_BOX_TYPE_REWARD_LEVEL_UP	2
 #define REWARD_BOX_TYPE_REWARD_LIFE_UP	3
 #define REWARD_BOX_TYPE_REWARD_SWITCH	4
+#define REWARD_BOX_TYPE_REWARD_COINS	5
 
 #define REWARD_BOX_TYPE_QUESTION	1
 #define REWARD_BOX_TYPE_GOLD		2
@@ -25,8 +26,9 @@
 #define REWARD_BOX_MAX_FALLING_SPEED	0.5f
 
 #define REWARD_HIDING_TIME		7000
+#define REWARD_BOX_MAX_COIN_STACK	10
 
-class CRewardBox: public CGameObject
+class CRewardBox : public CGameObject
 {
 private:
 	int type;
@@ -34,6 +36,7 @@ private:
 	float start_y;
 	CGameObject* reward;
 	DWORD hide_start;
+	int coinStack = REWARD_BOX_MAX_COIN_STACK;
 
 	void CalculateBeSwingedTail();
 public:
@@ -64,4 +67,3 @@ public:
 	void SetReward(CGameObject* rew) { this->reward = rew; }
 
 };
-

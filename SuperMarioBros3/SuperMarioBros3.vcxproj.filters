@@ -139,6 +139,7 @@
     <ClCompile Include="EndSceneNotification.cpp">
       <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -279,6 +280,7 @@
     <ClInclude Include="EndSceneNotification.h">
       <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClInclude>
+    <ClInclude Include="Grid.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HeaderAndSource">

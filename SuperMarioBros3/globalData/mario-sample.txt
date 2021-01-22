@@ -4,6 +4,7 @@ start	101
 [SCENES]
 #id	path			type	idWM
 #1: intro; 2: WorldMap; 3: playScene
-0	scene\IntroScene.txt	1
+0	scene\IntroScene.txt0	1
 1	scene\WorldMap1.txt	2
 101	scene\World1-1.txt	3	1
+104	scene\World1-4.txt	3	1

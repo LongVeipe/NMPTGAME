@@ -13,6 +13,7 @@
 #include "Portal.h"
 #include "Item.h"
 #include "EndSceneNotification.h"
+#include "Grid.h"
 
 #define COUNT_DOWN_TIME_DEFAULT			300000
 
@@ -22,6 +23,7 @@ protected:
 	CMario* player;					// A play scene has to have player, right? 
 
 	vector<LPGAMEOBJECT> objects;
+	vector<CUnit*> listUnits;
 	Map* map;
 	CHUD* hud;
 	DWORD remainTime;
@@ -29,16 +31,21 @@ protected:
 	int idWorldMap = 1;
 	CEndSceneNotification* noti = nullptr;
 
+	CGrid* grid = nullptr;
+
 
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 	void _ParseSection_ANIMATION_SETS(string line);
-	void _ParseSection_OBJECTS(string line);
+	void _ParseObjectsFromGrid(string line);
 	void _ParseSection_MAP(string line);
 	void _ParseSection_ZONE(string line);
+	void _ParseSection_GRID(string line);
+	void _ParseSection_OBJECTS(string line);
 
 	void SetCamera();
+	void GetListUnitFromGrid();
 public:
 
 	CPlayScene(int id, LPCWSTR filePath, int _idWorldMap);

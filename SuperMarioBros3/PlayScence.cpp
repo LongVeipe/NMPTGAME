@@ -43,6 +43,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath, int idWM):CScene(id, filePath)
 #define SCENE_SECTION_OBJECTS	6
 #define SCENE_SECTION_MAP		7
 #define SCENE_SECTION_ZONE		8
+#define SCENE_SECTION_GRID		9
 
 #define OBJECT_TYPE_MARIO			0
 #define OBJECT_TYPE_BRICK			1
@@ -170,11 +171,49 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 
 	CAnimationSets::GetInstance()->Add(ani_set_id, s);
 }
-void CPlayScene::_ParseSection_OBJECTS(string line)
+void CPlayScene::_ParseSection_GRID(string line)
+{
+	ifstream gridFile;
+	gridFile.open(line);
+
+	int gridCols = -1;
+	int gridRows = -1;
+
+	if (!gridFile)
+	{
+		DebugOut(L"Failed to open grid file\n");
+		return;
+	}
+
+	gridFile >> gridRows >> gridCols;
+
+
+	if (gridCols == -1 || gridRows == -1)
+		return;
+
+	grid = new CGrid(gridRows, gridCols);
+
+
+	char str[MAX_SCENE_LINE];
+	while (gridFile.getline(str, MAX_SCENE_LINE))
+	{
+		string line(str);
+
+		if (line[0] == '#')
+			continue;
+
+		_ParseObjectsFromGrid(line);
+	}
+
+	gridFile.close();
+
+
+	DebugOut(L"\nParseSection_GRID: Done\n");
+}
+void CPlayScene::_ParseObjectsFromGrid(string line)
 {
 	vector<string> tokens = split(line);
 
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
 
 	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
 
@@ -274,8 +313,116 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	obj->SetAnimationSet(ani_set);
 	objects.push_back(obj);
-}
 
+	int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
+	int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
+	CUnit* unit = new CUnit(gridRow, gridCol, grid, obj);
+}
+void CPlayScene::_ParseSection_OBJECTS(string line)
+{
+	vector<string> tokens = split(line);
+
+	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+
+	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+
+	int object_type = atoi(tokens[0].c_str());
+	float x = (float)atof(tokens[1].c_str());
+	float y = (float)atof(tokens[2].c_str());
+
+	int ani_set_id = atoi(tokens[3].c_str());
+
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+
+	CGameObject* obj = NULL;
+
+	switch (object_type)
+	{
+	case OBJECT_TYPE_MARIO:
+		if (player != NULL)
+		{
+			DebugOut(L"[ERROR] MARIO object was created before!\n");
+			return;
+		}
+		obj = new CMario(x, y);
+		player = (CMario*)obj;
+
+		DebugOut(L"[INFO] Player object created!\n");
+		break;
+		//case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
+	case OBJECT_TYPE_BRICK:
+	{
+		int type = atoi(tokens[4].c_str());
+		obj = new CBrick(x, y, type);
+		break;
+	}
+	case OBJECT_TYPE_REWARD_BOX:
+	{
+		int type = atoi(tokens[4].c_str());
+		int rewardType = atoi(tokens[5].c_str());
+		obj = new CRewardBox(x, y, type, rewardType);
+		break;
+	}
+	case OBJECT_TYPE_KOOPA_SMALL:
+	{
+		int typeKoopa = atoi(tokens[4].c_str());
+		obj = new CKoopa_Small(x, y, typeKoopa);
+		break;
+	}
+	case OBJECT_TYPE_GOOMBA:
+	{
+		int typeGoomba = atoi(tokens[4].c_str());
+		obj = new CGoomba(x, y, typeGoomba);
+		break;
+	}
+	case OBJECT_TYPE_PLANT_FIRE:
+	{
+		float limit_y = (float)atof(tokens[4].c_str());
+		int type = atoi(tokens[5].c_str());
+		obj = new CPlant_Fire(x, y, limit_y, type);
+		break;
+	}
+	case OBJECT_TYPE_PLANT_NORMAL:
+	{
+		float limit_y = (float)atof(tokens[4].c_str());
+		int type = atoi(tokens[5].c_str());
+		obj = new CPlant_Normal(x, y, limit_y, type);
+		break;
+	}
+	case OBJECT_TYPE_COIN:
+	{
+		obj = new CCoin(x, y);
+		break;
+	}
+	case OBJECT_TYPE_ITEM:
+	{
+		obj = new CItem();
+		break;
+	}
+	case OBJECT_TYPE_PORTAL:
+	{
+		float r = (float)atof(tokens[4].c_str());
+		float b = (float)atof(tokens[5].c_str());
+		int targetZone = atoi(tokens[6].c_str());
+		float targetX = (float)atof(tokens[7].c_str());
+		float targetY = (float)atof(tokens[8].c_str());
+		int type = atoi(tokens[9].c_str());
+		obj = new CPortal(x, y, r, b, targetZone, targetX, targetY, type);
+	}
+	break;
+	default:
+		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
+		return;
+	}
+
+	// General object setup
+	obj->SetPosition(x, y);
+
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+
+	obj->SetAnimationSet(ani_set);
+	objects.push_back(obj);
+}
 void CPlayScene::Load()
 {
 	DebugOut(L"[INFO] Start loading scene resources from : %s \n", sceneFilePath);
@@ -299,7 +446,8 @@ void CPlayScene::Load()
 		if (line == "[SPRITES]") { section = SCENE_SECTION_SPRITES; continue; }
 		if (line == "[ANIMATIONS]") { section = SCENE_SECTION_ANIMATIONS; continue; }
 		if (line == "[ANIMATION_SETS]") { section = SCENE_SECTION_ANIMATION_SETS; continue; }
-		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; }
+		if (line == "[OBJECTS]") { break; }
+		if (line == "[GRID]") { section = SCENE_SECTION_GRID; continue; }
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
 
 		//
@@ -311,9 +459,10 @@ void CPlayScene::Load()
 			case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
 			case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 			case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
-			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+			//case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			case SCENE_SECTION_MAP: _ParseSection_MAP(line); break;
 			case SCENE_SECTION_ZONE: _ParseSection_ZONE(line); break;
+			case SCENE_SECTION_GRID: _ParseSection_GRID(line); break;
 		}
 	}
 
@@ -333,15 +482,18 @@ void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
-
+	GetListUnitFromGrid();
 	vector<LPGAMEOBJECT> coObjects;
+	vector<LPGAMEOBJECT> coObjects2;
+	/*for (size_t i = 1; i < listUnits.size(); i++)
+		coObjects2.push_back(listUnits.at(i)->GetObj());*/
+
 	for (size_t i = 1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-
 		objects[i]->Update(dt, &coObjects);
 	}
 
@@ -401,6 +553,10 @@ void CPlayScene::Render()
 {
 	if (map)
 		this->map->Render();
+	/*for (unsigned int i = 0; i < listUnits.size(); i++)
+	{
+		listUnits[i]->GetObj()->Render();
+	}*/
 	for (unsigned int i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Render();
@@ -434,6 +590,9 @@ void CPlayScene::Unload()
 	delete noti;
 	noti = nullptr;
 
+	delete grid;
+	grid = nullptr;
+
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 void CPlayScene::TransferZone(CPortal* portal)
@@ -444,6 +603,12 @@ void CPlayScene::TransferZone(CPortal* portal)
 
 	player->SetPosition(targetX, targetY);
 	idZone = tartgetZone;
+}
+void CPlayScene::GetListUnitFromGrid()
+{
+	float cx = 0, cy = 0;
+	CGame::GetInstance()->GetCamPos(cx, cy);
+	grid->Get(cx, cy, listUnits);
 }
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
