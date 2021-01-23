@@ -13,11 +13,18 @@ CKoopa_Small::CKoopa_Small(float _x, float _y, int _type) :CKoopas(_x, _y, _type
 {
 	if (_type == KOOPA_SMALL_TYPE_RED_WALKING || _type == KOOPA_SMALL_TYPE_GREEN_WALKING)
 		SetState(KOOPA_SMALL_STATE_WALKING_LEFT);
-	else if (_type == KOOPA_SMALL_TYPE_RED_FLYING || _type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+	else if ( _type == KOOPA_SMALL_TYPE_GREEN_FLYING)
 	{
 		SetState(KOOPA_SMALL_STATE_JUMPING_LEFT);
 		leftWing = new CWing(WING_TYPE_LEFT);
 		rightWing = new CWing(WING_TYPE_RIGHT);
+	}
+	else if (_type == KOOPA_SMALL_TYPE_RED_FLYING)
+	{
+		SetState(KOOPA_SMALL_STATE_FLYING_DOWN);
+		leftWing = new CWing(WING_TYPE_LEFT);
+		rightWing = new CWing(WING_TYPE_RIGHT);
+		nx = -1;
 	}
 	else //type == turtoiseshell
 		SetState(KOOPA_SMALL_STATE_IDLE);
@@ -60,20 +67,43 @@ void CKoopa_Small::GetBoundingBox(float& left, float& top, float& right, float& 
 
 void CKoopa_Small::Update_Wings()
 {
+	if (!rightWing || !leftWing)
+		return;
 	if (state == KOOPA_SMALL_STATE_JUMPING_LEFT)
 		rightWing->SetPosition(x + 8, y - 1);
 	else if(state == KOOPA_SMALL_STATE_JUMPING_RIGHT)
 		leftWing->SetPosition(x, y - 1);
+	else if(nx == 1)
+		leftWing->SetPosition(x, y - 1);
+	else 
+		rightWing->SetPosition(x + 8, y - 1);
 }
-void CKoopa_Small::UpdateFlyingType()
+void CKoopa_Small::UpdateGreenFlying()
 {
 	if (isTouchingGround)
 		SetState(state);
 }
+void CKoopa_Small::UpdateRedFlying()
+{
+	if (state == KOOPA_SMALL_STATE_FLYING_DOWN)
+	{
+		vy -= KOOPA_RED_SMALL_FLYING_JET_SPEED;
+		if (vy < 0)
+			SetState(KOOPA_SMALL_STATE_FLYING_UP);
+	}
+	else if (state == KOOPA_SMALL_STATE_FLYING_UP )
+	{
+		vy += KOOPA_RED_SMALL_FLYING_JET_SPEED;
+		if (vy > 0)
+			SetState(KOOPA_SMALL_STATE_FLYING_DOWN);
+	}
+}
 void CKoopa_Small::Update_vy()
 {
+	if (type == KOOPA_SMALL_TYPE_RED_FLYING)
+		return;
 	vy += dt * KOOPA_GRAVITY;
-	if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+	if ( type == KOOPA_SMALL_TYPE_GREEN_FLYING)
 	{
 		if (vy > KOOPA_MAX_FALL_SPEED)
 			vy = KOOPA_MAX_FALL_SPEED;
@@ -163,9 +193,10 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	
 	Update_vy();
 	
-	if ((type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING))
-		UpdateFlyingType();
-
+	if ( type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+		UpdateGreenFlying();
+	else if(type == KOOPA_SMALL_TYPE_RED_FLYING)
+		UpdateRedFlying();
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -305,6 +336,7 @@ void CKoopa_Small::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (CalculateTurningAround(coObjects))
 		TurnAround();
 	CalculateBeSwingedTail();
+	CalculateBeAtackedByBox(coObjects);
 
 	// clean up collision events
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
@@ -331,7 +363,7 @@ void CKoopa_Small::Render()
 	}
 	else if (type == KOOPA_SMALL_TYPE_RED_FLYING)
 	{
-		if (state == KOOPA_SMALL_STATE_JUMPING_LEFT)
+		if (nx == -1)
 		{
 			ani = KOOPA_SMALL_ANI_RED_WALKING_LEFT;
 			rightWing->Render();
@@ -459,6 +491,13 @@ void CKoopa_Small::SetState(int state)
 			vx = -KOOPA_BE_KNOCKED_DOWN_SPEED_X;
 		else
 			vx = KOOPA_BE_KNOCKED_DOWN_SPEED_X;
+		break;
+	case KOOPA_SMALL_STATE_FLYING_DOWN:
+		vy = KOOPA_RED_SMALL_FLYING_MAIN_SPEED;
+		break;
+	case KOOPA_SMALL_STATE_FLYING_UP:
+		vy = -KOOPA_RED_SMALL_FLYING_MAIN_SPEED;
+		break;
 	case KOOPA_SMALL_STATE_IDLE:
 		vx = 0;
 		break;
@@ -626,6 +665,47 @@ void CKoopa_Small::CalculateBeSwingedTail()
 		}
 	}
 }
+void CKoopa_Small::CalculateBeAtackedByBox(vector<LPGAMEOBJECT>* coObjects)
+{
+	for (unsigned int i = 0; i < coObjects->size(); i++)
+	{
+		if (dynamic_cast<CRewardBox*>(coObjects->at(i)))
+		{
+			CRewardBox* box = dynamic_cast<CRewardBox*>(coObjects->at(i));
+			if (box->GetState() == REWARD_BOX_STATE_JUMPING)
+			{
+				float bl, bt, br, bb;
+				box->GetBoundingBox(bl, bt, br, bb);
+				float kl, kt, kr, kb;
+				this->GetBoundingBox(kl, kt, kr, kb);
+				if (kb<bt || kt>bb || bl > kr || br < kl)
+					return;
+				if ((kl<bl && kr>bl) || (kl < br && br < kr))
+				{
+					SetState(KOOPA_SMALL_STATE_BE_KNOCKED_DOWN);
+					if (IsOnTheLeftOfMario())
+						vx = -KOOPA_BE_KNOCKED_DOWN_SPEED_X;
+					else
+						vx = KOOPA_BE_KNOCKED_DOWN_SPEED_X;
+
+					//setType
+					switch (type)
+					{
+					case KOOPA_SMALL_TYPE_RED_FLYING:
+					case KOOPA_SMALL_TYPE_RED_WALKING:
+						SetType(KOOPA_SMALL_TYPE_RED_TURTOISESHELL);
+						break;
+					case KOOPA_SMALL_TYPE_GREEN_FLYING:
+					case KOOPA_SMALL_TYPE_GREEN_WALKING:
+						SetType(KOOPA_SMALL_TYPE_GREEN_TURTOISESHELL);
+						break;
+					}
+					return;
+				}
+			}
+		}
+	}
+}
 
 bool CKoopa_Small::CalculateTurningAround(vector<LPGAMEOBJECT>* coObjects)
 {
@@ -693,7 +773,7 @@ void CKoopa_Small::Reset()
 	SetType(start_type);
 	if (type == KOOPA_SMALL_TYPE_RED_WALKING || type == KOOPA_SMALL_TYPE_GREEN_WALKING)
 		SetState(KOOPA_SMALL_STATE_WALKING_LEFT);
-	else if (type == KOOPA_SMALL_TYPE_RED_FLYING || type == KOOPA_SMALL_TYPE_GREEN_FLYING)
+	else if ( type == KOOPA_SMALL_TYPE_GREEN_FLYING)
 	{
 		SetState(KOOPA_SMALL_STATE_JUMPING_LEFT);
 		if(!rightWing)
@@ -702,6 +782,13 @@ void CKoopa_Small::Reset()
 			delete leftWing;
 		leftWing = new CWing(WING_TYPE_LEFT);
 		rightWing = new CWing(WING_TYPE_RIGHT);
+	}
+	else if (type == KOOPA_SMALL_TYPE_RED_FLYING)
+	{
+		SetState(KOOPA_SMALL_STATE_FLYING_DOWN);
+		leftWing = new CWing(WING_TYPE_LEFT);
+		rightWing = new CWing(WING_TYPE_RIGHT);
+		nx = -1;
 	}
 	else //type == turtoiseshell
 		SetState(KOOPA_SMALL_STATE_IDLE);

@@ -14,6 +14,7 @@
 #include "Item.h"
 #include "EndSceneNotification.h"
 #include "Grid.h"
+#include "MovingEdge.h"
 
 #define COUNT_DOWN_TIME_DEFAULT			300000
 
@@ -33,6 +34,7 @@ protected:
 	CEndSceneNotification* noti = nullptr;
 
 	CGrid* grid = nullptr;
+	CMovingEdge* edge = nullptr;
 
 
 	void _ParseSection_TEXTURES(string line);
@@ -63,7 +65,10 @@ public:
 	vector<LPGAMEOBJECT> GetObjects() { return objects; }
 	void SetNoti(CEndSceneNotification* n) { noti = n; }
 	void TransferZone(CPortal* portal);
+	CGrid* GetGrid() { return grid; }
 	
+
+	void Tele(float x, float y);
 	//friend class CPlayScenceKeyHandler;
 };
 

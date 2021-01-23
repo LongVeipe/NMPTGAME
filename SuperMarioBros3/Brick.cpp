@@ -8,9 +8,11 @@ CBrick::CBrick(float _x, float _y, int _type)
 
 void CBrick::Render()
 {
-	int ani = 0;
-	animation_set->at(ani)->Render(x, y);
-	RenderBoundingBox();
+	if (type == BRICK_TYPE_PIPE)
+	{
+		int ani = 0;
+		animation_set->at(ani)->Render(x, y);
+	}
 }
 
 void CBrick::GetBoundingBox(float &l, float &t, float &r, float &b)

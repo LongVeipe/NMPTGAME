@@ -135,7 +135,16 @@ void CGrid::Get(float cam_x, float cam_y, vector<CUnit*>& listUnits)
 	int ENDCOL = (int)ceil((mapWidth) / CELL_WIDTH);
 	if (endCol > ENDCOL)
 		endCol = ENDCOL;
-	for (int i = 0; i < numRows; i++)
+
+	int startRow = (int)(cam_y / CELL_HEIGHT - 1);
+	if (startRow < 0)
+		startRow = 0;
+
+	int endRow = (int)ceil((cam_y + SCREEN_HEIGHT / CELL_HEIGHT +1));
+	int ENDROW = (int)ceil((mapHeight / CELL_HEIGHT));
+	if (endRow > ENDROW)
+		endRow = ENDROW;
+	for (int i = startRow; i < endRow; i++)
 	{
 		for (int j = startCol; j < endCol; j++)
 		{

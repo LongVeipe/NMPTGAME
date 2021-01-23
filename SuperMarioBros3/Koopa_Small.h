@@ -12,6 +12,8 @@
 #define KOOPA_SPEED_TURTOISESHELL_X	0.2f
 #define KOOPA_SPEED_TURTOISESHELL_DEFLECT_X	0.08f
 #define KOOPA_SPEED_TURTOISESHELL_DEFLECT_Y	0.1f
+#define KOOPA_RED_SMALL_FLYING_JET_SPEED	0.0002f
+#define KOOPA_RED_SMALL_FLYING_MAIN_SPEED	0.05f
 
 #define KOOPA_SMALL_BBOX_WIDTH 16
 #define KOOPA_SMALL_BBOX_HEIGHT 26
@@ -35,6 +37,8 @@
 #define KOOPA_SMALL_STATE_RUNNING_LEFT		600
 #define KOOPA_SMALL_STATE_BE_KNOCKED_DOWN	700
 #define KOOPA_SMALL_STATE_DIE				800
+#define KOOPA_SMALL_STATE_FLYING_UP			900
+#define KOOPA_SMALL_STATE_FLYING_DOWN		1000
 
 #define KOOPA_SMALL_ANI_GREEN_WALKING_LEFT						0
 #define KOOPA_SMALL_ANI_GREEN_WALKING_RIGHT						1
@@ -87,9 +91,11 @@ public:
 	void Update_vy();
 	void UpdateFlag();
 	bool CalculateTurningAround(vector<LPGAMEOBJECT>* coObjects);
+	void CalculateBeAtackedByBox(vector<LPGAMEOBJECT>* coObjects);
 	void TurnAround();
 	void Update_Wings();
-	void UpdateFlyingType();
+	void UpdateGreenFlying();
+	void UpdateRedFlying();
 
 	virtual void SetState(int state);
 	void SetHolder(CMario* _holder) { holder = _holder; }

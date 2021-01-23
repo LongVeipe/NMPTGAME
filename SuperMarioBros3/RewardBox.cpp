@@ -6,6 +6,8 @@
 #include "Mario.h"
 #include "PlayScence.h"
 #include "Utils.h"
+#include "BrokenBrickEffect.h"
+#include "PointsEffect.h"
 
 CRewardBox::CRewardBox(float _x, float _y, int _type, int _rewardType)
 {
@@ -136,6 +138,10 @@ void CRewardBox::Update_GoldBox(vector<LPGAMEOBJECT>* coObjects)
 void CRewardBox::BeBroken()
 {
 	isEnable = false;
+	CBrokenBrickEffect* eff = new CBrokenBrickEffect(x, y);
+	CPlayScene* s = (CPlayScene*)(CGame::GetInstance()->GetCurrentScene());
+	CGrid* grid = s->GetGrid();
+	CUnit* unit = new CUnit(grid, eff);
 }
 
 void CRewardBox::CalculateBeSwingedTail()
@@ -178,7 +184,16 @@ void CRewardBox::BeAttacked()
 				{
 					CCoin* coin = (CCoin*)reward;
 					coin->SetState(COIN_STATE_JUMPING);
+
+					CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+					mario->UpPoints(POINTS_100);
+					mario->UpMoney();
 					coinStack--;
+				}
+				else if (rewardType == REWARD_BOX_TYPE_REWARD_LIFE_UP)
+				{
+					CLifeUp* lifeUp = (CLifeUp*)reward;
+					lifeUp->SetState(LIFEUP_STATE_JUMPING);
 				}
 				SetState(REWARD_BOX_STATE_JUMPING);
 				isEmpty = true;
@@ -200,6 +215,10 @@ void CRewardBox::BeAttacked()
 			{
 				CCoin* coin = (CCoin*)reward;
 				coin->SetState(COIN_STATE_JUMPING);
+
+				CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+				mario->UpPoints(POINTS_100);
+				mario->UpMoney();
 			}
 			else if (rewardType == REWARD_BOX_TYPE_REWARD_LEVEL_UP)
 			{

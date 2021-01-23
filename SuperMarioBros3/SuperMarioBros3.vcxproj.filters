@@ -140,6 +140,11 @@
       <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="MovingPlatform.cpp">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClCompile>
+    <ClCompile Include="BrokenBrickEffect.cpp" />
+    <ClCompile Include="MovingEdge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coin.h">
@@ -281,6 +286,11 @@
       <Filter>HeaderAndSource\Scene\PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Grid.h" />
+    <ClInclude Include="MovingPlatform.h">
+      <Filter>HeaderAndSource\PlatformObject</Filter>
+    </ClInclude>
+    <ClInclude Include="BrokenBrickEffect.h" />
+    <ClInclude Include="MovingEdge.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="HeaderAndSource">

@@ -18,6 +18,7 @@
 #include "Plant_Normal.h"
 #include "Item.h"
 #include "EndSceneNotification.h"
+#include "MovingPlatform.h"
 using namespace  std;
 
 CMario::CMario(float x, float y) : CGameObject()
@@ -246,6 +247,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				switch (brick->GetType())
 				{
 				case BRICK_TYPE_PLATFORM:
+				case BRICK_TYPE_PIPE:
 					BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
 					break;
 				case BRICK_TYPE_BIG_BLOCK:
@@ -421,6 +423,27 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 						scene->TransferZone(p);
 					}
 				}
+			}
+			else if (dynamic_cast<CMovingPlatform*>(e->obj))
+			{
+			if (e->ny < 0)
+			{
+				IsTouchingGround = true;
+				CMovingPlatform* mPlatform = dynamic_cast<CMovingPlatform*>(e->obj);
+				mPlatform->SetState(MPLATFORM_STATE_FALLING);
+				mPlatform->isBeingTouched = true;
+				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+			}
+			else if (e->nx != 0)
+			{
+				if (e->obj->vx < 0)
+					vx = -0.0000001f;
+			}
+			else if (e->ny > 0)
+			{
+				BasicCollision(min_tx, min_ty, e->nx, e->ny, x0, y0);
+			}
+
 			}
 
 		}

@@ -39,9 +39,6 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		y = start_y;
 		this->vy = 0;
 		IsEnable = false;
-		CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-		mario->UpPoints(POINTS_100);
-		mario->UpMoney();
 		CPointsEffect* pe = new CPointsEffect(x, y, POINTS_100);
 		CPointsEffects::GetInstance()->Add(pe);
 	}
@@ -50,9 +47,14 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void CCoin::CalcPotentialCollisionWithMario()
 {
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
-	LPCOLLISIONEVENT e = SweptAABBEx(mario);
+	float ml, mt, mr, mb;
+	mario->GetBoundingBox(ml, mt, mr, mb);
+	float cl, ct, cr, cb;
+	GetBoundingBox(cl, ct, cr, cb);
 
-	if (e->t > 0 && e->t <= 1.0f)
+	if (cb<mt || ct>mb || ml > cr || mr < cl)
+		return;
+	if ((cl<ml && cr>ml) || (cl < mr && mr < cr))
 	{
 		IsEnable = false;
 		mario->UpMoney();
@@ -60,7 +62,6 @@ void CCoin::CalcPotentialCollisionWithMario()
 			mario->UpPoints(50);
 		else
 			mario->UpPoints(100);
-
 	}
 }
 

@@ -7,6 +7,7 @@
 
 #define BRICK_TYPE_PLATFORM		0
 #define BRICK_TYPE_BIG_BLOCK	1
+#define BRICK_TYPE_PIPE			2
 
 #define BRICK_JUMP_SPEED_Y		0.3f
 #define BRICK_GRAVITY			0.003f

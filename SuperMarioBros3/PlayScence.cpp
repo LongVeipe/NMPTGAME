@@ -17,6 +17,7 @@
 #include "PointsEffect.h"
 #include "BackUp.h"
 #include "Item.h"
+#include "MovingPlatform.h"
 
 using namespace std;
 
@@ -54,6 +55,8 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath, int idWM):CScene(id, filePath)
 #define OBJECT_TYPE_PLANT_FIRE		6
 #define OBJECT_TYPE_PLANT_NORMAL	7
 #define OBJECT_TYPE_ITEM			8
+#define OBJECT_TYPE_MPLATFORM		9
+#define OBJECT_TYPE_MOVING_EDGE		10
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -294,15 +297,27 @@ void CPlayScene::_ParseObjectsFromGrid(string line)
 	}
 	case OBJECT_TYPE_PORTAL:
 	{
-		float r =(float) atof(tokens[4].c_str());
+		float r = (float)atof(tokens[4].c_str());
 		float b = (float)atof(tokens[5].c_str());
 		int targetZone = atoi(tokens[6].c_str());
-		float targetX =(float) atof(tokens[7].c_str());
-		float targetY =(float) atof(tokens[8].c_str());
+		float targetX = (float)atof(tokens[7].c_str());
+		float targetY = (float)atof(tokens[8].c_str());
 		int type = atoi(tokens[9].c_str());
 		obj = new CPortal(x, y, r, b, targetZone, targetX, targetY, type);
-	}
 		break;
+	}
+	case OBJECT_TYPE_MPLATFORM:
+	{
+		obj = new CMovingPlatform(x, y);
+		break;
+	}
+	case OBJECT_TYPE_MOVING_EDGE:
+	{
+		float limit_x =(float) atof(tokens[3].c_str());
+		obj = new CMovingEdge(x, y, limit_x);
+		edge = (CMovingEdge*)obj;
+		break;
+	}
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -311,14 +326,17 @@ void CPlayScene::_ParseObjectsFromGrid(string line)
 	// General object setup
 	obj->SetPosition(x, y);
 
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+	if (!dynamic_cast<CMovingEdge*>(obj))
+	{
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
-	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
+		obj->SetAnimationSet(ani_set);
+		objects.push_back(obj);
 
-	int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
-	int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
-	CUnit* unit = new CUnit(gridRow, gridCol, grid, obj);
+		int gridCol = (int)atoi(tokens[tokens.size() - 1].c_str());
+		int gridRow = (int)atoi(tokens[tokens.size() - 2].c_str());
+		CUnit* unit = new CUnit(gridRow, gridCol, grid, obj);
+	}
 }
 void CPlayScene::_ParseSection_OBJECTS(string line)
 {
@@ -491,8 +509,7 @@ void CPlayScene::Update(DWORD dt)
 
 	for (size_t i = 0; i < listUnits.size(); i++)
 	{
-		LPGAMEOBJECT 
-			object = listUnits[i]->GetObj();
+		LPGAMEOBJECT object = listUnits[i]->GetObj();
 		if (!dynamic_cast<CBrick*>(object))
 		{
 			object->Update(dt, &coObjects);
@@ -510,7 +527,8 @@ void CPlayScene::Update(DWORD dt)
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
-
+	if (edge && edge->state == MOVING_EDGE_STATE_MOVING)
+		edge->Update(dt, &coObjects);
 	// Update camera to follow mario
 	SetCamera();
 
@@ -532,9 +550,17 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::SetCamera()
 {
-
 	float cx, cy;
 	player->GetPosition(cx, cy);
+
+	if (edge && edge->state == MOVING_EDGE_STATE_MOVING)
+	{
+		cx = edge->x;
+		cy = edge->y;
+		if (!player->IsSwingTail)
+			CGame::GetInstance()->SetCamPos(round(cx), round(cy));
+		return;
+	}
 	CGame* game = CGame::GetInstance();
 	CZone* zone = CZones::GetInstance()->Get(idZone);
 	//cx
@@ -668,6 +694,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetState(MARIO_STATE_BEND_DOWN);
 		break;
 	case DIK_Z:
+	{
 		int newLevel = mario->GetLevel() + 1;
 		if (newLevel > MARIO_MAX_LEVEL)
 			newLevel = 1;
@@ -676,6 +703,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		mario->SetPosition(cur_x, cur_y - 16);
 		mario->SetLevel(newLevel);
 		break;
+	}
+	case DIK_T:
+	{
+		((CPlayScene*)scence)->Tele(1936, 304);
+		break;
+	}
 	}
 }
 void CPlayScenceKeyHandler::OnKeyUp(int KeyCode)
@@ -786,4 +819,12 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if(mario->GetLevel() == MARIO_LEVEL_BIG || mario->GetLevel() == MARIO_LEVEL_RACCOON)
 			mario->IsReadyDucking = true;
 	}
+}
+
+void CPlayScene::Tele(float x, float y)
+{
+	player->SetPosition(x, y);
+
+	edge = nullptr;
+	CGame::GetInstance()->SetCamPos(x, y);
 }

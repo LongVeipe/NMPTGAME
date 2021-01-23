@@ -227,6 +227,7 @@ public:
 
 
 	bool IsTouchingGround;
+	bool IsTouchingPlattform;
 	bool IsJumping;
 	bool IsFalling;
 	bool IsFlying;

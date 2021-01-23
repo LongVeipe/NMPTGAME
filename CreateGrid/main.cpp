@@ -40,8 +40,8 @@ void CreateGridFile(int idScene)
 	if (mapWidth == 0 || mapHeight == 0)
 		return;
 
-	int colsOfGrid = (int)(mapWidth / CELL_WIDTH);
-	int rowsOfGrid = (int)(mapHeight / CELL_HEIGHT);
+	int colsOfGrid = (int)(mapWidth / CELL_WIDTH +1);
+	int rowsOfGrid = (int)(mapHeight / CELL_HEIGHT +1);
 
 	WriteGridFile(scenePath, colsOfGrid, rowsOfGrid);
 }
